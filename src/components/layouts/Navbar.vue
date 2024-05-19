@@ -4,9 +4,9 @@
         v-if="collapsed"
         class="trigger"
         @click="onCollapsed"
-        style="font-size: 20px; margin-left: -30px;"
+        style="font-size: 20px; margin-left: -35px;"
         />
-        <menu-fold-outlined v-else class="trigger" @click="onCollapsed" style="margin-left: -30px; font-size: 20px;"/>
+        <menu-fold-outlined v-else class="trigger" @click="onCollapsed" style="margin-left: -35px; font-size: 20px;"/>
 
         <div class="header-action-container">
             <a-badge count="2">

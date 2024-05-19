@@ -1,4 +1,12 @@
 <template>
+    <a-flex justify="space-between" :align="'flex-start'">
+        <p style="font-size: 16px; font-weight: bold; color: #1890ff;">
+            <line-chart-outlined />
+            ລາຍການສັ່ງຊື້
+        </p>
+        <a-button type="primary" @click="createOrder">ເພີ່ມລາຍການ</a-button>
+    </a-flex>
+    <a-divider style="margin-top: 10px;"/>
     <a-table 
         :columns="columns" 
         :data-source="myData" 
@@ -11,13 +19,13 @@
           <a @click="showModal(record)">ເເກ້ໄຂ</a>
         </template>
       </template>
+      <!-- <template v-slot:emptyText>
+        <div class="ant-empty-icon">
+            <inbox-outlined class="empty-icon" />
+        </div>
+        <span>No data</span>
+    </template> -->
     </a-table>
-
-    <modal-component 
-        ref="modalVisible" 
-        :data="getData"
-        @on-success="onSuccess" 
-    />
 
 </template>
 
@@ -25,8 +33,10 @@
     import type { TableColumnsType } from 'ant-design-vue';
     import axios from 'axios';
     import { onMounted, ref } from 'vue';
-    import ModalComponent from '../components/Modal.Component.vue';
+    import { LineChartOutlined } from '@ant-design/icons-vue';
+    import { useRouter } from 'vue-router';
 
+    const router = useRouter()
     const modalVisible = ref();
     const getData = ref();
 
@@ -35,11 +45,9 @@
         modalVisible.value.open = true;
     }
 
-    const onSuccess = () => {
-        console.log('success');
+    const createOrder = () => {
+        router.push({ name: 'create.order' });
     }
-
-    
 
     const columns: TableColumnsType = [
         { title: 'ຊື່ເຈົ້າຂອງ', width: 20, dataIndex: 'name', key: 'name' },
@@ -101,7 +109,7 @@
     const fetchData = async () => {
         loading.value = true;
         try {
-            const response = await axios.get('http://188.166.183.153:8000/api/customer/realestate/list', {
+            const response = await axios.get('https://api.hellonewyears.com/api/customer/realestate/list', {
                 params: {
                     page: paginationConfig.value.current, 
                     per_page: paginationConfig.value.pageSize,
@@ -121,3 +129,7 @@
         await fetchData();
     })
 </script>  
+
+<style lang="scss">
+
+</style>

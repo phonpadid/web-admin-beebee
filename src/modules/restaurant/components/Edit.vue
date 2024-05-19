@@ -1,10 +1,10 @@
 <template>
-    <a-modal v-model:open="open" title="Basic Modal" :footer="null">
+    <a-modal v-model:open="open" title="Edit Restaurant" :footer="null">
       <p>{{ props.data.name }}</p>
       <p>{{ props.data.agent_name }}</p>
       <p>{{ props.data.real_esate_number }}</p>
       <a-button @click="submitData">
-        Add Item
+        Edit Item
       </a-button>
     </a-modal>
 </template>

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import ListTable from "../views/ListTable.vue";
-import TestTable from "../views/TestTable.vue";
+import { restaurantRoute } from "../modules/restaurant/router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,10 +7,7 @@ const router = createRouter({
     {
       path: "/admin",
       component: () => import("../components/layouts/Layout.vue"),
-      children: [
-        { path: "/list/data", component: ListTable },
-        { path: "/test/table", component: TestTable },
-      ],
+      children: [...restaurantRoute],
     },
   ],
 });

@@ -1,8 +1,14 @@
 <script setup lang="ts">
+  import { notification } from 'ant-design-vue';
+  import { provide } from 'vue';
 
+  const [api, contextHolder] = notification.useNotification();
+  
+  provide("notificationApi", api);
 </script>
 
 <template>
+    <context-holder />
     <RouterView />
 </template>
 
