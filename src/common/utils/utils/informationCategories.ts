@@ -1,0 +1,92 @@
+export const dataCategories = [
+  {
+    id: "1",
+    name: "Beer",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "2",
+    name: "Wine",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "3",
+    name: "Spirits",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "4",
+    name: "Cocktails",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "5",
+    name: "Soft Drinks",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "6",
+    name: "Juices",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "7",
+    name: "Tea",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "8",
+    name: "Coffee",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "9",
+    name: "Water",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "10",
+    name: "Milkshakes",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "11",
+    name: "Smoothies",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "12",
+    name: "Energy Drinks",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "13",
+    name: "Mocktails",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "14",
+    name: "Ciders",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+  {
+    id: "15",
+    name: "Champagne",
+    created_at: "20/07/2024",
+    updated_at: "21/07/2024",
+  },
+];

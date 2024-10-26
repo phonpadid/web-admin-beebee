@@ -1,0 +1,92 @@
+export const dataPermissions = [
+  {
+    id: "1",
+    name: "create",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "2",
+    name: "read",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "3",
+    name: "update",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "4",
+    name: "delete",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "5",
+    name: "view",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "6",
+    name: "edit",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "7",
+    name: "export",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "8",
+    name: "import",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "9",
+    name: "manage_users",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "10",
+    name: "manage_roles",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "11",
+    name: "manage_permissions",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "12",
+    name: "view_reports",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "13",
+    name: "generate_reports",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "14",
+    name: "approve_requests",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+  {
+    id: "15",
+    name: "deny_requests",
+    created_at: "12/08/2024",
+    updated_at: "13/08/2024",
+  },
+];
