@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { Modal, notification } from "ant-design-vue";
-import { createVNode, ref , onMounted} from "vue";
+import { notification } from "ant-design-vue";
+import { ref , onMounted} from "vue";
 import { useAuthStore } from "../store/index";
-
-const { logout, state, showMe } = useAuthStore();
-const profileModal = ref<boolean>(false);
+import { useRouter } from "vue-router";
+const { push } = useRouter();
+const { logout, stateGetMe, showMe } = useAuthStore();
 
 const showModal = () => {
-  profileModal.value = true;
+  open.value = false;
+  push({name: 'getMe.index'})
 };
 
 // Drawer state management
@@ -50,8 +50,8 @@ onMounted(async () => {
       >
         <div class="w-10 h-10 rounded-full">
             <img
-            v-if="state.data?.avatar"
-            :src="(state.data?.avatar)"
+            v-if="stateGetMe.data?.avatar"
+            :src="(stateGetMe.data?.avatar)"
             alt=""
             class="w-10 h-10 rounded-full flex items-center justify-center"
           />
@@ -80,8 +80,8 @@ onMounted(async () => {
           class="flex items-center gap-2 shadow-lg py-1 px-1 ring-1 ring-slate-200 cursor-pointer hover:bg-slate-200 rounded-md"
         >
           <img
-            v-if="state.data?.avatar"
-            :src="(state.data?.avatar)"
+            v-if="stateGetMe.data?.avatar"
+            :src="(stateGetMe.data?.avatar)"
             alt=""
             class="w-10 h-10 rounded-full flex items-center justify-center"
           />
@@ -91,7 +91,7 @@ onMounted(async () => {
             alt=""
             class="w-10 h-10 rounded-full flex items-center justify-center"
           />
-          <p class="text-slate-600 mt-1">{{ state.data?.email }}</p>
+          <p class="text-slate-600 mt-1">{{ stateGetMe.data?.email }}</p>
         </div>
       </router-link>
 
@@ -104,7 +104,22 @@ onMounted(async () => {
       class="text-red-600"
     >
       <button
-        class="mt-4 h-[50px] gap-2 w-full items-center ring-1 ring-slate-200 hover:bg-slate-200 shadow-xl py-1 px-3 cursor-pointer rounded-md text-slate-500 text-[15px] flex p-2"
+        class="mt-4 h-[50px] gap-2 w-full items-center ring-1 ring-slate-200 hover:bg-slate-200 shadow-md py-1 px-3 cursor-pointer rounded-md text-slate-500 text-[15px] flex p-2"
+      >
+       
+          ປ່ຽນລະຫັດຜ່ານ
+        </button>
+      </a-popconfirm>
+      <a-popconfirm
+      title="ເຈົ້າເເນ່ໃຈທີ່ຈະລຶບຂໍ້ມູນນີ້ ຫຼື ບໍ?"
+      ok-text="ເເມ່ນ"
+      cancel-text="ຍົກເລີກ"
+      @confirm="confirm"
+      @cancel="cancel"
+      class="text-red-600"
+    >
+      <button
+        class="mt-4 h-[50px] gap-2 w-full items-center ring-1 ring-slate-200 hover:bg-slate-200 shadow-md py-1 px-3 cursor-pointer rounded-md text-slate-500 text-[15px] flex p-2"
       >
        
           ອອກຈາກລະບົບ

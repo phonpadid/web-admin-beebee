@@ -9,4 +9,5 @@ export const authenticationRoute: RouteRecordRaw[] = [
       lable: ["ເຂົ້າສູ່ລະບົບ"],
     },
   },
+  
 ];

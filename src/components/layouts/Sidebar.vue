@@ -13,7 +13,7 @@
       <home-outlined class="menu-icon" />
       <span>ຫນ້າຫລັກ</span>
     </a-menu-item>
-    <a-menu-item key="2" class="menu" @click="goToRoute('restaurants')">
+    <a-menu-item key="2" class="menu" @click="goToRoute('customer')">
       <shopping-cart-outlined class="menu-icon" />
       <span>ລາຍການສັ່ງຊື້</span>
     </a-menu-item>
@@ -46,7 +46,7 @@
       </template>
       <a-menu-item key="8" class="menu" @click="goToRoute('user')">ຜູ້ໃຊ້</a-menu-item>
       <a-menu-item key="9" class="menu" @click="goToRoute('roles')">ບົດບາດ</a-menu-item>
-      <a-menu-item key="10" class="menu" @click="goToRoute('roles_permissions')">ສິດທີ່</a-menu-item>
+      <a-menu-item key="10" class="menu" @click="goToRoute('permissions')">ສິດທີ່</a-menu-item>
     </a-sub-menu>
   </a-menu>
 </template>
@@ -69,11 +69,11 @@ const selectedKeys = ref<string[]>([]);
 
 const routeToKeyMap: Record<string, string> = {
   admin_dashboard: "1",
-  restaurants: "2",
+  customer: "2",
   tenants: "3",
   user: "8",
   roles: "9",
-  roles_permissions: "10"
+  permissions: "10"
 };
 watchEffect(() => {
   const routeName = route.name as string;

@@ -7,7 +7,7 @@ import FormInputText from "@/components/form/FormInputText.vue";
 import FormInputPassword from "@/components/form/FormInputPassword.vue";
 import { ref } from "vue";
 
-const { state, login, form } = useAuthStore();
+const { stateGetMe, login, form } = useAuthStore();
 
 const { handleSubmit, resetForm } = useForm({
   validationSchema: loginSchema,
@@ -27,7 +27,7 @@ const loginUser = handleSubmit(async (values) => {
 
   await login(values);
 
-  if (state.errorMessage) {
+  if (stateGetMe.errorMessage) {
     showWarningValidateBackend();
   } else {
     showToastSuccess();
@@ -48,7 +48,7 @@ const checkEmailPassword = () => {
 
 const showWarningValidateBackend = () => {
   message.error({
-    content: state.errorMessage,
+    content: stateGetMe.errorMessage,
     duration: 3,
   });
 };

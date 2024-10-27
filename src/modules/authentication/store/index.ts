@@ -15,7 +15,7 @@ export interface AuthState {
 export const useAuthStore = defineStore("auth", () => {
   const router = useRouter();
   const authService = container.resolve(AuthService);
-  const state = reactive<AuthState>({
+  const stateGetMe = reactive<AuthState>({
     data: null,
     isLoading: false,
     errorMessage: "",
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore("auth", () => {
   });
 
   async function login(item: any) {
-    state.isLoading = true;
+    stateGetMe.isLoading = true;
 
     try {
       const result = await authService.login(item);
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore("auth", () => {
         // );
         // localStorage.setItem("locale", "en");
 
-        state.errorMessage = "";
+        stateGetMe.errorMessage = "";
         router.push({ name: "admin_dashboard" });
 
         // const roleUsers = result.data.roles;
@@ -71,7 +71,7 @@ export const useAuthStore = defineStore("auth", () => {
         //   });
         // }
       } else {
-        state.errorMessage = result.message ? result.message : "";
+        stateGetMe.errorMessage = result.message ? result.message : "";
       }
     } catch (error: any) {
       let responseError = "";
@@ -84,9 +84,9 @@ export const useAuthStore = defineStore("auth", () => {
       } else {
         responseError = error.response.data.error;
       }
-      state.errorMessage = responseError;
+      stateGetMe.errorMessage = responseError;
     }
-    state.isLoading = false;
+    stateGetMe.isLoading = false;
   }
 
   async function logout(): Promise<void> {
@@ -98,16 +98,14 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   async function showMe() {
-    state.isLoading = true;
+    stateGetMe.isLoading = true;
     const results = await authService.showMe();
 
     if (results && results.data && results.status === "success") {
-      console.log('ab:');
-      
-      state.data = results.data;
-      state.isLoading = false;
+      stateGetMe.data = results.data;
+      stateGetMe.isLoading = false;
     }
     // console.log("Data from API:", state.data.props);
   }
-  return { state, form, login, logout, showMe };
+  return { stateGetMe, form, login, logout, showMe };
 });

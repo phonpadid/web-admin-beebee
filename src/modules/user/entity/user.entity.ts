@@ -11,9 +11,9 @@ export interface UserEntity {
   last_name?: string;
   status?: string;
   user_type?: string;
-  groups: [];
+  groups: string[];
   phone_number: string;
-  user_permissions: [];
+  user_permissions: string[];
   password?: string;
   password_confirmation?: string;
   avatar?: string | File;

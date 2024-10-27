@@ -40,4 +40,5 @@ export interface UserInterfaces {
   getAll(
     args: IGPaginate<Pick<UserEntity, UserFilterType>>
   ): Promise<IResponse<IGPaginated<UserEntity>>>;
+  getOne(id: number): Promise<any>;
 }

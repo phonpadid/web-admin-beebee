@@ -40,7 +40,7 @@ export const rolesPermissionsStore = defineStore(
     const setStateFilter = reactive<
       IGPaginate<Pick<RolesPermissionsEntity, RolesPermissionsFilterType>>
     >({
-      page: 1,
+      // page: 1,
       limit: 10,
       filter: {},
     });

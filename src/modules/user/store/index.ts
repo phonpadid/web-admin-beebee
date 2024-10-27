@@ -11,13 +11,18 @@ import { UserEntity, UserFilterType } from "../entity/user.entity";
 // import { NotificationInstance } from "ant-design-vue/es/notification";
 // import { NotificationService } from "@/common/notification";
 
+export interface StateGetOne {
+  data: UserEntity | null;
+  isLoading: boolean;
+  errorMessage: string;
+}
 export const usersStore = defineStore("user-store", () => {
   // const notificationApi = inject<NotificationInstance>("notificationApi");
   const service = container.resolve<UserService>(UserService);
   // const notificationService = new NotificationService(i18n, notificationApi);
   // const notificationService = new NotificationService(notificationApi);
 
-  const state = reactive<IGState<IGPaginated<UserEntity>>>({
+  const stateUser = reactive<IGState<IGPaginated<UserEntity>>>({
     data: {
       props: [],
       total: 0,
@@ -35,8 +40,8 @@ export const usersStore = defineStore("user-store", () => {
     }
   );
 
-  async function getAll() {
-    state.isLoading = true;
+  async function getAllUser() {
+    stateUser.isLoading = true;
     const results = await service.getAll({
       page: setStateFilter.page,
       limit: setStateFilter.limit,
@@ -44,9 +49,27 @@ export const usersStore = defineStore("user-store", () => {
     });
 
     if (results && results.data && results.status === "success") {
-      state.data.props = results.data.props;
-      state.data.total = results.data.total;
-      state.isLoading = false;
+      stateUser.data.props = results.data.props;
+      stateUser.data.total = results.data.total;
+      stateUser.isLoading = false;
+    }
+    // console.log("Data from API:", state.data.props);
+  }
+
+  
+  const stateGetOne = reactive<StateGetOne>({
+    data: null,
+    isLoading: false,
+    errorMessage: "",
+  });
+  async function getOneUser(id: number) {
+    stateGetOne.isLoading = true;
+    const results = await service.getOne(id);
+
+    if (results && results.data && results.status === "success") {
+      stateGetOne.data = results.data;
+      stateGetOne.isLoading = false;
+      
     }
     // console.log("Data from API:", state.data.props);
   }
@@ -79,10 +102,12 @@ export const usersStore = defineStore("user-store", () => {
   }
 
   return {
-    getAll,
+    getAllUser,
     create,
     update,
-    state,
+    getOneUser,
+    stateGetOne,
+    stateUser,
     setStateFilter,
   };
 });

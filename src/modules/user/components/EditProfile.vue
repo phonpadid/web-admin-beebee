@@ -6,7 +6,12 @@
     </p>
   </div>
 
-  <a-form layout="vertical" ref="form" :rules="UserShcema" class="flex-col flex">
+  <a-form 
+  layout="vertical" 
+  ref="form" 
+  :rules="UserShcema"
+  :model="userFormState"
+  class="flex-col flex">
     <!-- Upload section -->
     <a-form-item class="flex items-center justify-start mb-10" name="avatar">
       <a-upload
@@ -55,28 +60,11 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ເບອໂທ" name="phone_number" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນເບອໂທ" class="h-12" v-model:value="userFormState.phone_number"/>
+      <a-form-item label="ເບິໂທ" name="phone_number" class="w-full">
+        <a-input placeholder="ກະລຸນາປ້ອນເບີໂທ" class="h-12" v-model:value="userFormState.phone_number"/>
       </a-form-item>
       <a-form-item label="ອີເມວ" name="email" class="w-full">
         <a-input placeholder="ກະລຸນາປ້ອນອີເມວ" class="h-12" v-model:value="userFormState.email" />
-      </a-form-item>
-    </div>
-
-    <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ສະຖານະ" name="status" class="w-full">
-        <a-select
-        v-model:value="userFormState.status"
-          placeholder="ເລືອກສະຖານະຜູ້ໃຊ້"
-          :options="userTypeOptions"
-        />
-      </a-form-item>
-      <a-form-item label="ເລືອກປະເພດຜູ້ໃຊ້" name="user_type" class="w-full">
-        <a-select
-        v-model:value="userFormState.user_type"
-          placeholder="ເລືອກປະເພດຜູ້ໃຊ້"
-          :options="userTypeOptions"
-        />
       </a-form-item>
     </div>
 
@@ -100,7 +88,7 @@
     </div>
 
     <!-- Role Selection -->
-    <a-collapse v-model:activeKey="activeKey">
+    <a-collapse v-model:activeKey="activeKey" class="mt-2">
       <a-collapse-panel key="2" header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້" name="groups" class="w-full">
         <div v-if="loadingRoles">Loading roles...</div>
         <a-checkbox-group
@@ -120,7 +108,7 @@
       </a-collapse-panel>
     </a-collapse>
     <!-- Role Selection -->
-    <a-collapse v-model:activeKey="activeKeyPermission">
+    <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
       <a-collapse-panel key="2" header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້" name="user_permission" class="w-full">
         <div v-if="loadingRoles">Loading permission...</div>
         <a-checkbox-group
@@ -150,26 +138,25 @@
     </div>
   </a-form>
 </template>
-
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
-import { LineChartOutlined } from "@ant-design/icons-vue";
-import { ref, onMounted } from "vue";
-import DeleteOutlined from "@ant-design/icons-vue/DeleteOutlined";
+import { ref, onMounted, watch } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { rolesPermissionsStore } from "@/modules/role_permissions/store/role.permissions.store";
 import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 import { UserEntity } from "../entity/user.entity";
 import { usersStore } from "../store/index";
 import { notification } from "ant-design-vue";
-import { useRouter } from "vue-router";
-import { UserShcema } from "../schema/user.schema";
+import { useRouter, useRoute } from "vue-router";
+import { permissionsStore } from "@/modules/permissions/store/permissions.store";
+
 const { push } = useRouter();
 const { state, getAll } = rolesStore();
-const { statePermission, getAllPermission } = rolesPermissionsStore();
+const { statePermission, getAllPer } = permissionsStore();
 const uploadImg = ref<string>("");
-const imageErrorMessage = ref<string>("");
-const {create} = usersStore()
+
+const { create, stateGetOne, getOneUser } = usersStore();
+
 const initialFormState: UserEntity = {
   id: "",
   first_name: "",
@@ -183,34 +170,28 @@ const initialFormState: UserEntity = {
   email: "",
   password: "",
 };
+
 const form = ref();
-const loading = ref(false);
-const userFormState = ref<UserEntity>({
-  ...initialFormState,
-});
+const userFormState = ref<UserEntity>({ ...initialFormState });
 let nextId = ref(1);
 
 const resetForm = () => {
-    userFormState.value = { ...initialFormState };
+  userFormState.value = { ...initialFormState };
 };
+
 const handleOrderDetailsSubmit = async () => {
-    console.log('tou:', userFormState);
-    
   form.value
     .validate()
     .then(async () => {
-      loading.value = true;
       try {
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-          userFormState.value.id = nextId.value.toString();
-          nextId.value += 1;
-          await create(userFormState.value);
-          notification.success({
-            message: "Save Success",
-            description: "ບັນທຶກສຳເລັດ",
-          });
+        userFormState.value.id = nextId.value.toString();
+        nextId.value += 1;
+        await create(userFormState.value);
+        notification.success({
+          message: "Save Success",
+          description: "ບັນທຶກສຳເລັດ",
+        });
         resetForm();
-        loading.value = false;
         push({ name: "order_details" });
       } catch (success) {
         notification.success({
@@ -225,45 +206,17 @@ const handleOrderDetailsSubmit = async () => {
     });
 };
 
-
 const roles = ref<RolesEntity[]>([]);
 const permissions = ref<RolesPermissionsEntity[]>([]);
 const loadingRoles = ref<boolean>(true);
 const loadingPermission = ref<boolean>(true);
 
-// Handle image upload
-function onUpload(avatar: File) {
-  const maxSizeMB = 5;
-  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+const activeKey = ref(["1"]);
+const activeKeyPermission = ref(["1"]);
+const { params } = useRoute();
+const Id = Number(params.id);
 
-  if (avatar.size > maxSizeBytes) {
-    imageErrorMessage.value = `ຂະໜາດຮູບຕ້ອງບໍ່ເກີນ ${maxSizeMB}MB`;
-    return false;
-  }
-
-  imageErrorMessage.value = "";
-  const reader = new FileReader();
-  reader.onload = () => {
-    uploadImg.value = reader.result as string;
-  };
-  reader.readAsDataURL(avatar);
-
-  return false;
-}
-
-const clearImage = () => {
-  uploadImg.value = "";
-};
-
-// User type options
-const userTypeOptions = [
-  { value: "Approved", label: "Approved" },
-  { value: "Pending", label: "Pending" },
-  { value: "Rejected", label: "Rejected" },
-];
-
-// Fetch roles on mount
-onMounted(async () => {
+const populateUserForm = async () => {
   await getAll();
   roles.value = state.data.props.map((role: RolesEntity) => ({
     id: role.id,
@@ -271,20 +224,48 @@ onMounted(async () => {
   }));
   loadingRoles.value = false;
 
-  await getAllPermission();
+  await getAllPer();
   permissions.value = statePermission.data.props.map(
-    (per: RolesPermissionsEntity) => ({
-      id: per.id,
-      name: per.name,
+    (perm: RolesPermissionsEntity) => ({
+      id: perm.id,
+      name: perm.name,
     })
   );
   loadingPermission.value = false;
+
+  await getOneUser(Id);
+  if (stateGetOne.data) {
+    const userData = stateGetOne.data;
+    // Populate userFormState with user data
+    userFormState.value = {
+      ...userData,
+      groups: userData.groups.map((role: RolesEntity) => role.id),
+      user_permissions: userData.user_permissions.map((perm: RolesPermissionsEntity) => perm.id),
+    };
+    uploadImg.value = userData.avatar; // Set avatar
+  }
+};
+
+onMounted(() => {
+  populateUserForm();
 });
 
-
-const activeKey = ref(["1"]);
-const activeKeyPermission = ref(["1"]);
+// Watcher to ensure `user_permissions` updates correctly when data is fetched
+watch(
+  () => stateGetOne.data,
+  (newUser) => {
+    if (newUser) {
+      const userData = newUser;
+      userFormState.value.user_permissions = userData.user_permissions.map(
+        (perm: RolesPermissionsEntity) => perm.id
+      );
+    }
+  },
+  { immediate: true }
+);
 </script>
+
+
 <style scoped>
 .ant-select-selection-search-input {
   /* Ensure the overall height is specified */

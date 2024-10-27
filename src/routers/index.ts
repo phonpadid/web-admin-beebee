@@ -6,6 +6,7 @@ import { rolesRoute } from "@/modules/roles/router";
 import { rolesPermissionsRoute } from "@/modules/role_permissions/router";
 import { dashboardRoute } from "@/modules/admin/dashboard/router";
 import { tenantsRoute } from "@/modules/tenants/router";
+import { permissionsRoute } from "@/modules/permissions/router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,9 +14,11 @@ const router = createRouter({
     {
       path: "/admin",
       component: () => import("../components/layouts/Layout.vue"),
-      children: [ ...restaurantRoute, ...userRoute, ...rolesRoute, ...rolesPermissionsRoute,
+      children: [ 
+        ...restaurantRoute, ...userRoute, ...rolesRoute, ...rolesPermissionsRoute,
         ...dashboardRoute,
-        ...tenantsRoute
+        ...tenantsRoute,
+        ...permissionsRoute
       ],
     },
     ...authenticationRoute,

@@ -25,6 +25,12 @@ export const userRoute: RouteRecordRaw[] = [
     name: "addUser.index",
     component: () => import("../components/AddUser.vue"),
     meta: {label: ['ເພີ່ມຂໍ້ມູນຜູ້ໃຊ້']}
-  }
+  },
+  {
+    path: "getMe",
+    name: "getMe.index",
+    component: () => import("../../authentication/views/GetMeView.vue"),
+    meta: {label: ["ໂປຣຟາຍຂອງຂ້ອຍ"]},
+  },
   
 ];

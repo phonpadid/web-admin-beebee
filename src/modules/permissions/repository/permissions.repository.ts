@@ -5,25 +5,24 @@ import {
 } from "@/common/interfaces/pagination.interface";
 import { IResponse } from "@/common/interfaces/response.interface";
 import {
-  RolesPermissionsEntity,
-  RolesPermissionsFilterType,
-} from "../entity/role.permissions.entity";
-import { RolePermissionsInterfaces } from "../interface/role.permissions.interface";
+  PermissionsEntity,
+  PermissionsFilterType,
+} from "../entity/permissions.entity";
+import { PermissionsInterfaces } from "../interface/permissions.interface";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
-export class RolesPermissionsRepository implements RolePermissionsInterfaces {
+export class PermissionsRepository implements PermissionsInterfaces {
   constructor(@inject(AxiosApi) private _api: AxiosApi) {}
 
   async create(
-    input: RolesPermissionsEntity
-  ): Promise<IResponse<RolesPermissionsEntity>> {
+    input: PermissionsEntity
+  ): Promise<IResponse<PermissionsEntity>> {
     const response = await this._api.axios({
       method: "post",
-      url: `/admin/roles_permissions`,
+      url: `/accounts/permissions/`,
       data: {
-        role_id: input.role_id,
-        permission_id: input.permission_id,
+        name: input.name,
       },
     });
     console.log(response);
@@ -34,14 +33,13 @@ export class RolesPermissionsRepository implements RolePermissionsInterfaces {
     };
   }
   async update(
-    input: RolesPermissionsEntity
-  ): Promise<IResponse<RolesPermissionsEntity>> {
+    input: PermissionsEntity
+  ): Promise<IResponse<PermissionsEntity>> {
     const res = await this._api.axios({
       method: "put",
-      url: `/admin/roles_permissions/update/${input.id}`,
+      url: `/admin/permissions/update/${input.id}`,
       data: {
-        role_id: input.role_id,
-        permission_id: input.permission_id,
+        name: input.name,
       },
     });
     return {
@@ -51,16 +49,18 @@ export class RolesPermissionsRepository implements RolePermissionsInterfaces {
     };
   }
   async getAll(
-    args: IGPaginate<Pick<RolesPermissionsEntity, RolesPermissionsFilterType>>
-  ): Promise<IResponse<IGPaginated<RolesPermissionsEntity>>> {
+    args: IGPaginate<Pick<PermissionsEntity, PermissionsFilterType>>
+  ): Promise<IResponse<IGPaginated<PermissionsEntity>>> {
     const res = await this._api.axios({
       url: "/accounts/permissions/",
       params: {
         page: args.page,
-        per_page: args.limit,
+        page_size: args.limit,
       },
     });
     const { results, count } = res.data;
+    console.log('tou:');
+    
     return {
       data: { props: results, total: count },
       status: "success",

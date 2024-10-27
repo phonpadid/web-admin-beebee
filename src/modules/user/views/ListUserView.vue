@@ -13,7 +13,7 @@ const { push } = useRouter();
 const modalAdd = ref();
 const modalEdit = ref();
 
-const { getAll, state, setStateFilter } = usersStore();
+const { getAllUser, stateUser, setStateFilter } = usersStore();
 
 const openModalAdd = () => {
   if (modalAdd.value) {
@@ -24,7 +24,7 @@ const openModalAdd = () => {
 };
 
 const openModalEdit = (record: UserEntity) => {
-  const foundRecord = state.data.props.find((data) => data.id === record.id);
+  const foundRecord = stateUser.data.props.find((data) => data.id === record.id);
   if (foundRecord && modalEdit.value) {
     modalEdit.value.item = foundRecord;
     modalEdit.value.isEditMode = true;
@@ -33,7 +33,7 @@ const openModalEdit = (record: UserEntity) => {
 };
 
 const confirm = (id: string) => {
-  state.data.props = state.data.props.filter(
+  stateUser.data.props = stateUser.data.props.filter(
     (permissions) => permissions.id !== id
   );
   notification.success({
@@ -50,7 +50,7 @@ const cancel = () => {
 };
 
 const paginationConfig = ref({
-  total: state.data.total,
+  total: stateUser.data.total,
   pageSize: setStateFilter.limit,
   current: setStateFilter.page,
   showSizeChanger: true,
@@ -65,16 +65,16 @@ async function handlePageChange(page: number, pageSize: number) {
   setStateFilter.page = page;
   setStateFilter.limit = pageSize;
 
-  await getAll();
+  await getAllUser();
 }
 
 const getOne = (record: UserEntity) => {
   push({ name: "editProfile", params: { id: record.id } });
 }
 onMounted(async () => {
-  await getAll();
-  paginationConfig.value.total = state.data.total;
-  console.log("data", state.data.props);
+  await getAllUser();
+  paginationConfig.value.total = stateUser.data.total;
+  console.log("data", stateUser.data.props);
 });
 
 const popoverVisible = ref<Record<number, boolean>>({});
@@ -94,16 +94,16 @@ const testing = (id: number) => {
       <line-chart-outlined />
       ລາຍການຜູ້ໃຊ້ລະບົບ
     </p>
-    <a-button type="primary" @click="openModalAdd">ເພີ່ມຂໍ້ມູນ</a-button>
+    <a-button type="primary" @click="push({name: 'addUser.index'})">ເພີ່ມຂໍ້ມູນ</a-button>
   </a-flex>
   <a-divider style="margin-top: 10px" />
   <a-table
     :scroll="{ x: true }"
     class="whitespace-nowrap"
     :columns="columns"
-    :dataSource="state.data.props"
+    :dataSource="stateUser.data.props"
     :pagination="paginationConfig"
-    :loading="state.isLoading"
+    :loading="stateUser.isLoading"
     :row-key="(record: any) => record.id"
   >
     <template #bodyCell="{ column, record }">

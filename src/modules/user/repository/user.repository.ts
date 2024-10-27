@@ -172,18 +172,29 @@ import { UserEntity, UserFilterType } from "../entity/user.entity";
 import { UserInterfaces } from "../interface/user.interface";
 import { inject, injectable } from "tsyringe";
 
+enum userType {
+  Admin = 'admin', Customer = 'customer', Restaurant = 'restaurant'
+}
 @injectable()
 export class UserRepository implements UserInterfaces {
   constructor(@inject(AxiosApi) private _api: AxiosApi) {}
 
   async create(input: UserEntity): Promise<IResponse<UserEntity>> {
+    console.log('input:', input);
     const response = await this._api.axios({
       method: "post",
       url: `/accounts/users/`,
       data: {
-        name: input.name,
         first_name: input.first_name,
         last_name: input.last_name,
+        email: input.email,
+        user_type: userType.Admin,
+        groups: input.groups,
+        phone_number: input.phone_number,
+        user_permissions: input.user_permissions,
+        password: input.password,
+        avatar:null
+        // avatar: input.avatar
       },
     });
     console.log(response);
@@ -194,9 +205,12 @@ export class UserRepository implements UserInterfaces {
     };
   }
   async update(input: UserEntity): Promise<IResponse<UserEntity>> {
+
+   
+    
     const res = await this._api.axios({
       method: "put",
-      url: `/accounts/users/${input.id}`,
+      url: `/accounts/users/${input.id}/`,
       data: {
         name: input.name,
         first_name: input.first_name,
@@ -232,6 +246,18 @@ export class UserRepository implements UserInterfaces {
 
     return {
       data: { props: results, total: count },
+      status: "success",
+    };
+  }
+  async getOne(id: number): Promise<IResponse<UserEntity>> {
+    console.log('props:', );
+    const props = await this._api.axios({
+      url: "/accounts/users/"+id
+    });
+
+    
+    return {
+      data:  props.data,
       status: "success",
     };
   }

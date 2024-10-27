@@ -24,4 +24,7 @@ export class UserService {
   ): Promise<void | IResponse<IGPaginated<UserEntity>>> {
     return await this._api.getAll(input);
   }
+  async getOne(id: number): Promise<void | IResponse<UserEntity>> {
+    return await this._api.getOne(id);
+  }
 }
