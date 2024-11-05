@@ -280,17 +280,31 @@ const populateUserForm = async () => {
   if (stateGetOne.data) {
     const userData = stateGetOne.data;
 
-    userFormState.value = {
-      ...userData,
-      groups: Array.isArray(userData.groups)
-        ? userData.groups.map((role: RolesEntity) => role.id)
-        : userData.groups,
-      user_permissions: Array.isArray(userData.user_permissions)
-        ? userData.user_permissions.map(
-            (perm: RolesPermissionsEntity) => perm.id
-          )
-        : userData.user_permissions,
-    };
+    userFormState.value.user_permissions = Array.isArray(
+      userData.user_permissions
+    )
+      ? userData.user_permissions.map((perm) => ({
+          ...perm, //  `PermissionsEntity` object
+        }))
+      : [];
+
+    userFormState.value.groups = Array.isArray(userData.groups)
+      ? userData.groups.map((group) => ({
+          ...group, // `RolesEntity` object
+        }))
+      : [];
+
+    // userFormState.value = {
+    //   ...userData,
+    //   groups: Array.isArray(userData.groups)
+    //     ? userData.groups.map((role: RolesEntity) => role.id)
+    //     : userData.groups,
+    //   user_permissions: Array.isArray(userData.user_permissions)
+    //     ? userData.user_permissions.map(
+    //         (perm: RolesPermissionsEntity) => perm.id
+    //       )
+    //     : userData.user_permissions,
+    // };
 
     // Set avatar
     uploadImg.value = userData.avatar || null;
@@ -331,13 +345,32 @@ watch(
   (newUser) => {
     if (newUser) {
       const userData = newUser;
-      userFormState.value.user_permissions = userData.user_permissions.map(
-        (perm: RolesPermissionsEntity) => perm.id
-      );
+
+      // แปลง id เป็น string เพื่อให้สอดคล้องกับโครงสร้างของ PermissionsEntity
+      userFormState.value.user_permissions = Array.isArray(
+        userData.user_permissions
+      )
+        ? userData.user_permissions.map((perm: RolesPermissionsEntity) => ({
+            id: perm.id !== undefined ? String(perm.id) : undefined,
+          }))
+        : [];
     }
   },
   { immediate: true }
 );
+
+// watch(
+//   () => stateGetOne.data,
+//   (newUser) => {
+//     if (newUser) {
+//       const userData = newUser;
+//       userFormState.value.user_permissions = userData.user_permissions.map(
+//         (perm: RolesPermissionsEntity) => perm.id
+//       );
+//     }
+//   },
+//   { immediate: true }
+// );
 </script>
 
 <style scoped>
