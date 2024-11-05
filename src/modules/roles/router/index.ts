@@ -9,4 +9,12 @@ export const rolesRoute: RouteRecordRaw[] = [
       label: ["ຈັດການRoles"],
     },
   },
+  {
+    path: "addRoles",
+    name: "addRole.index",
+    component: () => import("../components/AddRole.vue"),
+    meta: {
+      label: ["ຟອມRoles"],
+    },
+  },
 ];
