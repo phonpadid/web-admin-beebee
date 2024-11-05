@@ -59,6 +59,9 @@ export const rolesStore = defineStore("roles-store", () => {
   async function update(input: RolesEntity) {
     return await service.update(input);
   }
+  async function remove(id: number) {
+    return await service.remove(id);
+  }
 
   return {
     getAll,
@@ -66,5 +69,6 @@ export const rolesStore = defineStore("roles-store", () => {
     update,
     state,
     setStateFilter,
+    remove
   };
 });

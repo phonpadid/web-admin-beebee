@@ -17,4 +17,8 @@ export class AuthService {
   async showMe(): Promise<any> {
     return await this._authReposioty.showMe()
   }
+
+  async changePassowrd(input: UserEntity) {
+    return await this._authReposioty.changePassword(input);
+  }
 }

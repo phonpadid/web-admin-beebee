@@ -7,6 +7,7 @@ import { rolesPermissionsRoute } from "@/modules/role_permissions/router";
 import { dashboardRoute } from "@/modules/admin/dashboard/router";
 import { tenantsRoute } from "@/modules/tenants/router";
 import { permissionsRoute } from "@/modules/permissions/router";
+import { customersRoute } from "@/modules/customers/router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,7 +19,8 @@ const router = createRouter({
         ...restaurantRoute, ...userRoute, ...rolesRoute, ...rolesPermissionsRoute,
         ...dashboardRoute,
         ...tenantsRoute,
-        ...permissionsRoute
+        ...permissionsRoute,
+        ...customersRoute
       ],
     },
     ...authenticationRoute,
@@ -30,6 +32,9 @@ router.beforeEach((to, from, next) => {
   const userDataString = localStorage.getItem('access')
   if (!userDataString) {
     if (to.name !== 'login' && !to.meta.skipAuthCheck) {
+      if(to.name === 'resetPassword' || to.name === 'confirmPassword' ) {
+        next()
+      }
       next({ name: 'login' })
     } else {
       next()

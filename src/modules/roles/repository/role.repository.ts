@@ -15,9 +15,10 @@ export class RolesRepository implements RoleInterfaces {
   async create(input: RolesEntity): Promise<IResponse<RolesEntity>> {
     const response = await this._api.axios({
       method: "post",
-      url: `/admin/roles`,
+      url: `accounts/groups/`,
       data: {
         name: input.name,
+        permissions: input.permissions,
       },
     });
     console.log(response);
@@ -30,9 +31,10 @@ export class RolesRepository implements RoleInterfaces {
   async update(input: RolesEntity): Promise<IResponse<RolesEntity>> {
     const res = await this._api.axios({
       method: "put",
-      url: `/admin/roles/update/${input.id}`,
+      url: `accounts/groups/${input.id}/`,
       data: {
         name: input.name,
+        permissions: input.permissions
       },
     });
     return {
@@ -55,6 +57,18 @@ export class RolesRepository implements RoleInterfaces {
     const { results, count } = res.data;
     return {
       data: { props: results, total: count.total },
+      status: "success",
+    };
+  }
+  async remove(id: number): Promise<IResponse<RolesEntity>> {
+    
+    const res = await this._api.axios({
+      method: 'delete',
+      url: "/accounts/groups/"+id
+    });
+    
+    return {
+      data: res.data,
       status: "success",
     };
   }

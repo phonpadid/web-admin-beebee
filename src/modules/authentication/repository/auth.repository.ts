@@ -10,7 +10,6 @@ export class AuthRepository implements IAuthRepository {
 
   async login(input: UserEntity): Promise<IResponse<UserEntity>> {
     const response = await this._api.axios({
-      // /auth
       method: "post",
       url: "/auth/login/",
       data: {
@@ -18,11 +17,11 @@ export class AuthRepository implements IAuthRepository {
         password: input.password,
       },
     });
-    console.log(response.data);
-
+    console.log('tou:', response.data);
+    
     return {
       data: response.data,
-      message: "ເຂົ້າສູ່ລະບົບສຳເລັດແລ້ວ.",
+      message: "ເຂົ້າສູ່ລະບົບສຳເລັດແລ້ວ",
       status: "success",
     };
   }
@@ -34,6 +33,23 @@ export class AuthRepository implements IAuthRepository {
     });
     return {
       data:  props.data,
+      status: "success",
+    };
+  }
+
+  async changePassword(input: MeEntity): Promise<IResponse<MeEntity>> {
+    const res = await this._api.axios({
+      method: "put",
+      url: `/auth/change-password/${input.id}`,
+      data: {
+        old_password: input.old_password,
+        new_password: input.new_password,
+      },
+    });
+
+    return {
+      data: res.data,
+      message: "ອັບເດດສຳເລັດ",
       status: "success",
     };
   }

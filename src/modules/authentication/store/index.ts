@@ -5,6 +5,7 @@ import { defineStore } from "pinia";
 import { container } from "tsyringe";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
+import { MeEntity } from "../entity/me.entity";
 
 export interface AuthState {
   data: UserEntity | null;
@@ -21,7 +22,7 @@ export const useAuthStore = defineStore("auth", () => {
     errorMessage: "",
   });
 
-  const form = reactive<UserEntity>({
+  let form = reactive<UserEntity>({
     email: "",
     password: "",
   });
@@ -31,8 +32,7 @@ export const useAuthStore = defineStore("auth", () => {
 
     try {
       const result = await authService.login(item);
-      console.log(result);
-
+      
       if (result.status === "success" && result.data) {
         localStorage.setItem("access", result.data.access);
         // localStorage.setItem("roles", JSON.stringify(result.data.roles));
@@ -107,5 +107,14 @@ export const useAuthStore = defineStore("auth", () => {
     }
     // console.log("Data from API:", state.data.props);
   }
-  return { stateGetMe, form, login, logout, showMe };
+  async function changePassword(input: MeEntity) {
+    console.log('data:', input);
+    
+    return await authService.changePassowrd(input);
+  }
+
+  function clearFormUser() {
+    form = reactive<UserEntity>({ email: "", password: "" });
+  }
+  return { stateGetMe, form, login, logout, showMe, changePassword, clearFormUser };
 });

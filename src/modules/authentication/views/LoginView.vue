@@ -1,122 +1,101 @@
 <script setup lang="ts">
-import { useForm } from "vee-validate";
-import { loginSchema } from "../schema/login.schema";
 import { useAuthStore } from "../store/index";
 import { message } from "ant-design-vue";
-import FormInputText from "@/components/form/FormInputText.vue";
-import FormInputPassword from "@/components/form/FormInputPassword.vue";
 import { ref } from "vue";
+import { loginSchema } from "../schema/login.schema";
+import { useRouter } from "vue-router";
+const { push } = useRouter();
+const { stateGetMe, login, form, clearFormUser } = useAuthStore();
+const loading = ref(false);
+const formRef = ref();
 
-const { stateGetMe, login, form } = useAuthStore();
-
-const { handleSubmit, resetForm } = useForm({
-  validationSchema: loginSchema,
-});
-
-const showPassword = ref(false);
-
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-};
-
-const loginUser = handleSubmit(async (values) => {
-  if (!values.email || !values.password) {
-    checkEmailPassword();
-    return true;
-  }
-
-  await login(values);
-
-  if (stateGetMe.errorMessage) {
-    showWarningValidateBackend();
-  } else {
-    showToastSuccess();
-    resetForm();
-  }
-});
-
-const showToastSuccess = () => {
-  message.success({
-    content: "ຍີນດີຕ້ອນຮັບເຂົ້າສູ່ລະບົບ.",
-    duration: 3,
-  });
-};
-
-const checkEmailPassword = () => {
-  message.error("ກວດສອບອີເມວ ຫຼື ລະຫັດຜ່ານກ່ອນ.", 3);
-};
-
-const showWarningValidateBackend = () => {
-  message.error({
-    content: stateGetMe.errorMessage,
-    duration: 3,
-  });
+const loginUser = async () => {
+  formRef.value
+    .validate()
+    .then(async () => {
+      if (stateGetMe.errorMessage) {
+        message.error({
+          content: stateGetMe.errorMessage,
+          duration: 3,
+        });
+      } else {
+        loading.value = true;
+        await login(form);
+        message.success({
+          content: "ຍີນດີຕ້ອນຮັບເຂົ້າສູ່ລະບົບ.",
+          duration: 3,
+        });
+        formRef.value.resetFields();
+        clearFormUser();
+      }
+    })
+    .catch((error: any) => {
+      console.log("error", error);
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 };
 </script>
 
 <template>
-  <div class="w-full h-screen flex justify-center bg-gray-100 items-center">
-    <div class="w-[1200px] h-[600px] bg-white shadow">
-      <a-row>
-        <a-col :sm="24" :md="12" :lg="12">
-          <div
-            class="w-full h-[600px] bg-blue-500 rounded-sm flex flex-col items-center justify-center"
+  <div
+    class="w-full flex-col h-screen flex justify-center bg-gray-200 items-center"
+  >
+    <img
+      src="/public/logo_beer.jpg"
+      alt=""
+      srcset=""
+      class="ring-1 ring-slate-200 shadow-md w-[130px] h-[130px] mb-4 -mt-6 rounded-full"
+    />
+    <div
+      class="flex flex-col w-[470px] h-[420px] bg-gray-100 rounded-md shadow-md justify-center p-6"
+    >
+      <div class="flex-col flex items-center mt-8">
+        <h1 class="text-lg -mt-14">ຮ້ານບັນເທີງ LPB-VT</h1>
+        <h2 class="text-[12px] text-gray-600">
+          May our customers be happy when they come to our store.
+        </h2>
+      </div>
+      <div class="p-4">
+        <a-form
+          name="basic"
+          ref="formRef"
+          class="myfont"
+          :model="form"
+          :rules="loginSchema"
+        >
+          <a-form-item name="email">
+            <span class="">ອີເມວ</span>
+            <a-input
+              v-model:value="form.email"
+              placeholder="ປ້ອນອີເມວຂອງທ່ານ"
+            />
+          </a-form-item>
+          <a-form-item name="password">
+            <span class="">ລະຫັດຜ່ານ</span>
+            <a-input-password
+              v-model:value="form.password"
+              placeholder="********"
+            />
+          </a-form-item>
+          <span
+            @click="push({ name: 'resetPassword' })"
+            class="text-blue-400 hover:text-sky-600 cursor-pointer"
+            >ລືມລະຫັດຜ່ານຂອງທ່ານບໍ່ ?</span
           >
-            <div
-              class="w-[140px] h-[140px] bg-white rounded-full overflow-hidden"
+          <a-form-item class="mt-6">
+            <a-button
+              type="primary"
+              @click="loginUser"
+              html-type="submit"
+              class="w-full btn"
             >
-              <img
-                class="w-full h-full object-contain"
-                src="/public/logoBeer.png"
-                alt=""
-              />
-            </div>
-            <div class="text-center mt-6">
-              <h1 class="text-xl text-white">ຮ້ານບັນເທີງ LPB-VT</h1>
-              <h2 class="text-base text-white">
-                May our customers be happy when they come to our store.
-              </h2>
-            </div>
-          </div>
-        </a-col>
-        <a-col :sm="24" :md="12" :lg="12">
-          <div class="w-full h-[600px] flex flex-col justify-center p-10">
-            <!-- <h1 class="text-2xl mb-4">ໂປຣເຈັກຂາວດີ</h1> -->
-            <h1 class="text-2xl mb-4">Master VueJs</h1>
-            <form @click="loginUser" class="space-y-6 w-full">
-              <div class="form-group">
-                <label for="email" class="form-label">ອີເມວຜູ້ໃຊ້</label>
-                <form-input-text
-                  name="email"
-                  v-model="form.email"
-                  class="form-input"
-                  placeholder="ປ້ອນອີເມວຜູ້ໃຊ້"
-                  required
-                />
-
-                <label for="password" class="form-label">ລະຫັດຜ່ານ</label>
-                <form-input-password
-                  name="password"
-                  v-model="form.password"
-                  class="form-input"
-                  placeholder="ລະຫັດຜ່ານ"
-                  :show-password="showPassword"
-                  @toggle-password="togglePasswordVisibility"
-                  required
-                />
-              </div>
-              <a-button
-                class="w-full"
-                type="primary"
-                html-type="submit"
-                :loading="state.isLoading"
-              >
-                ເຂົ້າສູ່ລະບົບ
-              </a-button>
-            </form>
-          </div>
-        </a-col>
-      </a-row>
+              ລ໋ອກອິນ
+            </a-button>
+          </a-form-item>
+        </a-form>
+      </div>
     </div>
   </div>
 </template>

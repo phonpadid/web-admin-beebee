@@ -1,5 +1,5 @@
 export interface RolesPermissionsEntity {
-  id?: string;
+  id?: string | number;
   role_id?: string;
   permission_id?: string;
   name?: string;

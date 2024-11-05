@@ -2,24 +2,24 @@
   <div class="pb-4 flex justify-between">
     <p class="text-base font-bold text-blue-500">
       <line-chart-outlined />
-      ຟອມຜູ້ໃຊ້ລະບົບ
+      ອັບເດດຂໍ້ມູນ
     </p>
   </div>
 
-  <a-form 
-  layout="vertical" 
-  ref="form" 
-  :rules="UserShcema"
-  :model="userFormState"
-  class="flex-col flex">
+  <a-form
+    layout="vertical"
+    ref="form"
+    :rules="updateUserShcema"
+    :model="userFormState"
+    class="flex-col flex"
+  >
     <!-- Upload section -->
     <a-form-item class="flex items-center justify-start mb-10" name="avatar">
       <a-upload
-      v-model:value="userFormState.avatar"
+        v-model:value="userFormState.avatar"
         :showUploadList="false"
         accept=".png, .jpeg, .jpg"
-        :beforeUpload="onUpload"
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        :before-upload="onUpload"
       >
         <span v-if="imageErrorMessage" class="text-red-500">
           {{ imageErrorMessage }}
@@ -42,7 +42,8 @@
         </div>
       </a-upload>
       <a-button
-        class="text-red-700 ml-2 hover:text-red-600"
+        v-if="userFormState.avatar"
+        class="text-red-700 ml-2 -top-3 hover:text-red-600"
         @click="clearImage"
       >
         <DeleteOutlined />
@@ -51,45 +52,54 @@
 
     <!-- Input fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
+      <a-form-item hidden label="ຊື່" name="id" class="w-full">
+        <a-input
+          placeholder="ກະລຸນາປ້ອນຊື່"
+          class="h-12"
+          v-model:value="userFormState.id"
+        />
+      </a-form-item>
       <a-form-item label="ຊື່" name="first_name" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນຊື່" class="h-12" v-model:value="userFormState.first_name"/>
+        <a-input
+          placeholder="ກະລຸນາປ້ອນຊື່"
+          class="h-12"
+          v-model:value="userFormState.first_name"
+        />
       </a-form-item>
       <a-form-item label="ນາມສະກຸນ" name="last_name" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນນາມສະກຸນ" class="h-12" v-model:value="userFormState.last_name" />
+        <a-input
+          placeholder="ກະລຸນາປ້ອນນາມສະກຸນ"
+          class="h-12"
+          v-model:value="userFormState.last_name"
+        />
       </a-form-item>
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item label="ເບິໂທ" name="phone_number" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນເບີໂທ" class="h-12" v-model:value="userFormState.phone_number"/>
-      </a-form-item>
-      <a-form-item label="ອີເມວ" name="email" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນອີເມວ" class="h-12" v-model:value="userFormState.email" />
-      </a-form-item>
-    </div>
-
-    <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ລະຫັດຜ່ານ" name="password" class="w-full">
-        <a-input-password
-          type="password"
-          placeholder="ປ້ອນລະຫັດຜ່ານ"
+        <a-input
+          placeholder="ກະລຸນາປ້ອນເບີໂທ"
           class="h-12"
-          v-model:value="userFormState.password"
+          v-model:value="userFormState.phone_number"
         />
       </a-form-item>
-      <a-form-item label="ຢືນຢັນລະຫັດຜ່ານ" name="password_confirmation" class="w-full">
-        <a-input-password
-          type="password"
-          placeholder="ປ້ອນລະຫັດຜ່ານອີກຄັ້ງ"
+      <a-form-item label="ອີເມວ" name="email" class="w-full">
+        <a-input
+          placeholder="ກະລຸນາປ້ອນອີເມວ"
           class="h-12"
-          v-model:value="userFormState.password_confirmation"
+          v-model:value="userFormState.email"
         />
       </a-form-item>
     </div>
 
     <!-- Role Selection -->
     <a-collapse v-model:activeKey="activeKey" class="mt-2">
-      <a-collapse-panel key="2" header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້" name="groups" class="w-full">
+      <a-collapse-panel
+        key="2"
+        header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້"
+        name="groups"
+        class="w-full"
+      >
         <div v-if="loadingRoles">Loading roles...</div>
         <a-checkbox-group
           v-else
@@ -107,9 +117,15 @@
         </a-checkbox-group>
       </a-collapse-panel>
     </a-collapse>
+
     <!-- Role Selection -->
     <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
-      <a-collapse-panel key="2" header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້" name="user_permission" class="w-full">
+      <a-collapse-panel
+        key="2"
+        header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້"
+        name="user_permission"
+        class="w-full"
+      >
         <div v-if="loadingRoles">Loading permission...</div>
         <a-checkbox-group
           v-else
@@ -128,82 +144,109 @@
       </a-collapse-panel>
     </a-collapse>
 
+    <div class="md:flex md:flex-row flex-col mt-4">
+      <a-form-item label="" name="is_superuser" class="md:w-[10rem]">
+        <a-checkbox
+          :checked="userFormState.is_superuser"
+          @change="userFormState.is_superuser = $event.target.checked"
+        >
+          super user
+        </a-checkbox>
+      </a-form-item>
+      <a-form-item label="" name="is_staff" class="md:w-[10rem]">
+        <a-checkbox
+          :checked="userFormState.is_staff"
+          @change="userFormState.is_staff = $event.target.checked"
+        >
+          ພະນັກງານ
+        </a-checkbox>
+      </a-form-item>
+      <a-form-item label="" name="is_active" class="md:w-[10rem]">
+        <a-checkbox
+          :checked="userFormState.is_active"
+          @change="userFormState.is_active = $event.target.checked"
+        >
+          ສະຖານະ
+        </a-checkbox>
+      </a-form-item>
+    </div>
+
     <!-- Submit Buttons -->
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
-        <a-button type="primary" @click="handleOrderDetailsSubmit">ບັນທຶກ</a-button>
+        <a-button type="primary" @click="handleOrderDetailsSubmit"
+          >ແກ້ໄຂ</a-button
+        >
         &nbsp;
         <a-button danger @click="push({ name: 'user.list' })">ຍົກເລີກ</a-button>
       </a-form-item>
     </div>
   </a-form>
 </template>
+
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { ref, onMounted, watch } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
-import { rolesPermissionsStore } from "@/modules/role_permissions/store/role.permissions.store";
 import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 import { UserEntity } from "../entity/user.entity";
 import { usersStore } from "../store/index";
 import { notification } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
-
-const { push } = useRouter();
+import { DeleteOutlined } from "@ant-design/icons-vue";
+import { updateUserShcema } from "../schema/update-user.schema";
+const router = useRouter();
+const { push } = router;
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
-const uploadImg = ref<string>("");
+const uploadImg = ref<string | File | null>(null);
 
-const { create, stateGetOne, getOneUser } = usersStore();
+const { update, stateGetOne, getOneUser } = usersStore();
 
 const initialFormState: UserEntity = {
   id: "",
   first_name: "",
   last_name: "",
-  status: "",
-  user_type: "",
+  user_type: 0,
   phone_number: "",
   groups: [],
+  is_active: false,
+  is_superuser: false,
+  is_staff: false,
   user_permissions: [],
-  avatar: "",
+  avatar: undefined,
   email: "",
   password: "",
 };
 
 const form = ref();
 const userFormState = ref<UserEntity>({ ...initialFormState });
-let nextId = ref(1);
 
 const resetForm = () => {
   userFormState.value = { ...initialFormState };
+  uploadImg.value = ""; // Reset uploaded image preview
 };
 
 const handleOrderDetailsSubmit = async () => {
-  form.value
-    .validate()
-    .then(async () => {
-      try {
-        userFormState.value.id = nextId.value.toString();
-        nextId.value += 1;
-        await create(userFormState.value);
-        notification.success({
-          message: "Save Success",
-          description: "ບັນທຶກສຳເລັດ",
-        });
-        resetForm();
-        push({ name: "order_details" });
-      } catch (success) {
-        notification.success({
-          message: "Success",
-          description: "ບັນທຶກສຳເລັດ",
-        });
-        push({ name: "user" });
-      }
-    })
-    .catch((error: unknown) => {
-      console.log("error", error);
-    });
+  form.value.validate().then(async () => {
+    try {
+      await update(userFormState.value, userFormState.value.id);
+      notification.success({
+        message: "Save Success",
+        description: "ແກ້ໄຂສຳເລັດ",
+      });
+      resetForm();
+      push({ name: "user" });
+    } catch (error) {
+      console.log("error:", error);
+
+      notification.error({
+        message: "error",
+        description: "ອັບເດດຜິດພາດ",
+      });
+    }
+  });
 };
 
 const roles = ref<RolesEntity[]>([]);
@@ -236,14 +279,46 @@ const populateUserForm = async () => {
   await getOneUser(Id);
   if (stateGetOne.data) {
     const userData = stateGetOne.data;
-    // Populate userFormState with user data
+
     userFormState.value = {
       ...userData,
-      groups: userData.groups.map((role: RolesEntity) => role.id),
-      user_permissions: userData.user_permissions.map((perm: RolesPermissionsEntity) => perm.id),
+      groups: Array.isArray(userData.groups)
+        ? userData.groups.map((role: RolesEntity) => role.id)
+        : userData.groups,
+      user_permissions: Array.isArray(userData.user_permissions)
+        ? userData.user_permissions.map(
+            (perm: RolesPermissionsEntity) => perm.id
+          )
+        : userData.user_permissions,
     };
-    uploadImg.value = userData.avatar; // Set avatar
+
+    // Set avatar
+    uploadImg.value = userData.avatar || null;
   }
+};
+
+const imageErrorMessage = ref<string>("");
+
+function onUpload(avatar: File) {
+  const maxSizeMB = 5;
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+  if (avatar.size > maxSizeBytes) {
+    imageErrorMessage.value = `ຂະໜາດຮູບຕ້ອງບໍ່ເກີນ ${maxSizeMB}MB`;
+    return false;
+  }
+
+  imageErrorMessage.value = "";
+  const objectURL = URL.createObjectURL(avatar);
+  uploadImg.value = objectURL; // Set the upload image preview
+  userFormState.value.avatar = avatar; // Store the avatar file
+
+  return false; // Prevent automatic upload
+}
+
+const clearImage = () => {
+  userFormState.value.avatar = undefined; // Reset the avatar in form state
+  uploadImg.value = ""; // Reset image preview
 };
 
 onMounted(() => {
@@ -265,29 +340,24 @@ watch(
 );
 </script>
 
-
 <style scoped>
 .ant-select-selection-search-input {
-  /* Ensure the overall height is specified */
   height: 48px;
   width: 50%;
 }
 
-/* Ensure the selector itself is set to the desired height */
 .custom-select .ant-select-selector {
-  height: 48px !important; /* Force height to 48px */
-  line-height: 48px !important; /* Center text vertically */
-  display: flex; /* Use flexbox for alignment */
-  align-items: center; /* Center items vertically */
+  height: 48px !important;
+  line-height: 48px !important;
+  display: flex;
+  align-items: center;
 }
 
-/* Adjust padding inside the select */
 .custom-select .ant-select-selector .ant-select-selection-item {
-  padding: 0 12px; /* Adjust padding for text */
+  padding: 0 12px;
 }
 
-/* Ensure the dropdown menu has adequate height */
 .custom-select .ant-select-dropdown {
-  min-height: 200px; /* Adjust as needed */
+  min-height: 200px;
 }
 </style>

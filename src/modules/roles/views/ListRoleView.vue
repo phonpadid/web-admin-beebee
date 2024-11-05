@@ -4,41 +4,42 @@ import { rolesStore } from "../store/role.store";
 import { LineChartOutlined } from "@ant-design/icons-vue";
 import ModalAddRolesView from "../components/ModalRole.vue";
 import { columns } from "./columns";
-import { dataRole as initialRoles } from "@/common/utils/utils/informationRoles";
 import ButtonCircle from "@/components/Button/ButtonCircle.vue";
 import { Icon } from "@iconify/vue";
 import { RolesEntity } from "../entity/role.entity";
 import { notification } from "ant-design-vue";
-import { dataRole } from "@/common/utils/utils/informationRoles";
+import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 const modalAdd = ref();
 const modalEdit = ref();
-
-const RolesData = ref([...initialRoles]);
-
+const { getAll, setStateFilter, state, remove } = rolesStore();
+const {   getAllPer } = permissionsStore();
 const openModalAdd = () => {
   if (modalAdd.value) {
     modalAdd.value.open = true;
     modalAdd.value.isEditMode = false;
     modalAdd.value.item = null;
+    modalAdd.value.permission = getAllPer;
   }
 };
 
 const openModalEdit = (record: RolesEntity) => {
-  const foundRecord = dataRole.find((data) => data.id === record.id);
-  // console.log("Record found:", foundRecord);
+  const foundRecord = state.data.props.find((data: RolesEntity) => data.id === record.id);
   if (foundRecord && modalEdit.value) {
     modalEdit.value.item = foundRecord;
+    modalEdit.value.permissions = getAllPer,
     modalEdit.value.isEditMode = true;
     modalEdit.value.open = true;
   }
 };
 
-const confirm = (id: string) => {
-  RolesData.value = RolesData.value.filter((roles) => roles.id !== id);
+const confirm = async (id: string) => {
+  await remove(Number(id))
   notification.success({
     message: "Delete Success",
     description: "ລົບຂໍ້ມູນສຳເລັດ",
   });
+  await getAll()
+  
 };
 
 const cancel = () => {
@@ -48,7 +49,7 @@ const cancel = () => {
   });
 };
 
-const { getAll, setStateFilter, state } = rolesStore();
+
 const paginationConfig = ref({
   total: 0,
   pageSize: setStateFilter.limit,

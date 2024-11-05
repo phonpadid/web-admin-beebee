@@ -24,4 +24,8 @@ export class RolesService {
   ): Promise<void | IResponse<IGPaginated<RolesEntity>>> {
     return await this._api.getAll(input);
   }
+
+  async remove(id: number) {
+    return await this._api.remove(id);
+  }
 }

@@ -1,5 +1,9 @@
 export const columns = [
   {
+    title: "ໂປຣຟາຍ",
+    dataIndex: "avatar",
+  },
+  {
     title: "ຊື່",
     dataIndex: "first_name",
   },

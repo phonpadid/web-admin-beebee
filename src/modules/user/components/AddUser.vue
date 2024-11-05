@@ -6,60 +6,88 @@
     </p>
   </div>
 
-  <a-form layout="vertical" ref="form" :rules="UserShcema" :model="userFormState" class="flex-col flex">
+  <a-form
+    layout="vertical"
+    ref="form"
+    :rules="UserShcema"
+    :model="userFormState"
+    class="flex-col flex"
+  >
     <!-- Upload section -->
-    <a-form-item class="flex items-center justify-start mb-10" name="avatar">
+
+    <a-form-item label=" " class="-mt-12" name="avatar">
+      <div class="flex flex-col items-center sm:items-start gap-6">
+        <a-image
+          :src="
+            typeof userFormState.avatar === 'object' &&
+            userFormState.avatar.objectURL
+              ? userFormState.avatar.objectURL
+              : '/src/assets/nodata.png'
+          "
+          width="10rem"
+          height="10rem"
+          style="object-fit: contain"
+        />
+        <a-alert
+          v-if="imageErrorMessage"
+          :message="imageErrorMessage"
+          type="error"
+          banner
+          closable
+          @close="imageErrorMessage = ''"
+        />
+      </div>
+    </a-form-item>
+    <a-form-item class="-mt-12" label=" ">
       <a-upload
-      v-model:value="userFormState.avatar"
         :showUploadList="false"
         accept=".png, .jpeg, .jpg"
-        :beforeUpload="onUpload"
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        multiple
+        :before-upload="onUpload"
       >
-        <span v-if="imageErrorMessage" class="text-red-500">
-          {{ imageErrorMessage }}
-        </span>
-        <div
-          v-if="uploadImg"
-          id="photo"
-          class="w-[200px] h-[150px] rounded-md border"
-          :style="{
-            backgroundImage: `url(${uploadImg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }"
-        ></div>
-        <div
-          v-else
-          class="flex-col w-[200px] h-[150px] rounded-md flex justify-center items-center hover:ring-1 border-dashed border-2 border-sky-500 ring-slate-200 ring-1 hover:bg-slate-200 shadow-md"
-        >
-          <div class="ant-upload-text text-slate-500">ເລືອກຮູບພາບ</div>
-        </div>
+        <a-button> ເລືອກຮູບພາບ </a-button>
       </a-upload>
       <a-button
-        class="text-red-700 ml-2 hover:text-red-600"
         @click="clearImage"
+        v-if="userFormState.avatar"
+        class="ml-4 text-red-600"
       >
-        <DeleteOutlined />
+        ລົບຮູບ
       </a-button>
     </a-form-item>
 
     <!-- Input fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item label="ຊື່" name="first_name" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນຊື່" class="h-12" v-model:value="userFormState.first_name"/>
+        <a-input
+          placeholder="ກະລຸນາປ້ອນຊື່"
+          class="h-12"
+          v-model:value="userFormState.first_name"
+        />
       </a-form-item>
       <a-form-item label="ນາມສະກຸນ" name="last_name" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນນາມສະກຸນ" class="h-12" v-model:value="userFormState.last_name" />
+        <a-input
+          placeholder="ກະລຸນາປ້ອນນາມສະກຸນ"
+          class="h-12"
+          v-model:value="userFormState.last_name"
+        />
       </a-form-item>
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item label="ເບີໂທ" name="phone_number" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນເບີໂທ" class="h-12" v-model:value="userFormState.phone_number"/>
+        <a-input
+          placeholder="ກະລຸນາປ້ອນເບີໂທ"
+          class="h-12"
+          v-model:value="userFormState.phone_number"
+        />
       </a-form-item>
       <a-form-item label="ອີເມວ" name="email" class="w-full">
-        <a-input placeholder="ກະລຸນາປ້ອນອີເມວ" class="h-12" v-model:value="userFormState.email" />
+        <a-input
+          placeholder="ກະລຸນາປ້ອນອີເມວ"
+          class="h-12"
+          v-model:value="userFormState.email"
+        />
       </a-form-item>
     </div>
 
@@ -72,7 +100,11 @@
           v-model:value="userFormState.password"
         />
       </a-form-item>
-      <a-form-item label="ຢືນຢັນລະຫັດຜ່ານ" name="password_confirmation" class="w-full">
+      <a-form-item
+        label="ຢືນຢັນລະຫັດຜ່ານ"
+        name="password_confirmation"
+        class="w-full"
+      >
         <a-input-password
           type="password"
           placeholder="ປ້ອນລະຫັດຜ່ານອີກຄັ້ງ"
@@ -84,7 +116,12 @@
 
     <!-- Role Selection -->
     <a-collapse v-model:activeKey="activeKey" class="mt-2">
-      <a-collapse-panel key="2" header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້" name="groups" class="w-full">
+      <a-collapse-panel
+        key="2"
+        header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້"
+        name="groups"
+        class="w-full"
+      >
         <div v-if="loadingRoles">Loading roles...</div>
         <a-checkbox-group
           v-else
@@ -104,7 +141,12 @@
     </a-collapse>
     <!-- Role Selection -->
     <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
-      <a-collapse-panel key="2" header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້" name="user_permission" class="w-full">
+      <a-collapse-panel
+        key="2"
+        header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້"
+        name="user_permission"
+        class="w-full"
+      >
         <div v-if="loadingRoles">Loading permission...</div>
         <a-checkbox-group
           v-else
@@ -122,11 +164,12 @@
         </a-checkbox-group>
       </a-collapse-panel>
     </a-collapse>
-
     <!-- Submit Buttons -->
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
-        <a-button type="primary" @click="handleOrderDetailsSubmit">ບັນທຶກ</a-button>
+        <a-button type="primary" @click="handleOrderDetailsSubmit"
+          >ບັນທຶກ</a-button
+        >
         &nbsp;
         <a-button danger @click="push({ name: 'user.list' })">ຍົກເລີກ</a-button>
       </a-form-item>
@@ -138,7 +181,6 @@
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { LineChartOutlined } from "@ant-design/icons-vue";
 import { ref, onMounted } from "vue";
-import DeleteOutlined from "@ant-design/icons-vue/DeleteOutlined";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 import { UserEntity } from "../entity/user.entity";
@@ -150,55 +192,58 @@ import { permissionsStore } from "@/modules/permissions/store/permissions.store"
 const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
-const uploadImg = ref<string>("");
 const imageErrorMessage = ref<string>("");
-const {create} = usersStore()
+const { create } = usersStore();
 const initialFormState: UserEntity = {
   id: "",
   first_name: "",
   last_name: "",
+  user_type: 0, // Assuming `user_type` is a number (e.g., 0 for default type)
   phone_number: "",
-  groups: [],
-  user_permissions: [],
-  avatar: "",
+  groups: [], // Empty array for groups of type number[]
+  user_permissions: [], // Empty array for user_permissions of type number[]
+  avatar: undefined, // Avatar should be `undefined` initially (assuming type is `File | undefined`)
   email: "",
   password: "",
+  password_confirmation: "",
 };
 const form = ref();
 const loading = ref(false);
 const userFormState = ref<UserEntity>({
   ...initialFormState,
 });
-let nextId = ref(1);
-
 const resetForm = () => {
-    userFormState.value = { ...initialFormState };
+  userFormState.value = { ...initialFormState };
 };
 const handleOrderDetailsSubmit = async () => {
   form.value
     .validate()
     .then(async () => {
-      console.log("validate สำเร็จ, เริ่มบันทึกข้อมูล");
-
       loading.value = true;
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (
+          userFormState.value.password ===
+          userFormState.value.password_confirmation
+        ) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        userFormState.value.id = nextId.value.toString();
-        nextId.value += 1;
+          await create(userFormState.value); // ตรวจสอบ response
 
-        const response = await create(userFormState.value); // ตรวจสอบ response
+          // console.log("บันทึกสำเร็จ", response);
 
-        console.log("บันทึกสำเร็จ", response);
-
-        notification.success({
-          message: "Save Success",
-          description: "ບັນທຶກສຳເລັດ",
-        });
-
-        resetForm();
-        loading.value = false;
-        push({ name: "user" });
+          notification.success({
+            message: "Save Success",
+            description: "ບັນທຶກສຳເລັດ",
+          });
+          resetForm();
+          loading.value = false;
+          push({ name: "user" });
+        } else {
+          notification.warn({
+            message: "warn",
+            description: "ຢືນຢັນລະຫັດຜ່ານບໍ່ຕົງກັນ",
+          });
+        }
       } catch (error) {
         console.log("เกิดข้อผิดพลาด", error);
 
@@ -214,15 +259,13 @@ const handleOrderDetailsSubmit = async () => {
     });
 };
 
-
-
 const roles = ref<RolesEntity[]>([]);
 const permissions = ref<RolesPermissionsEntity[]>([]);
 const loadingRoles = ref<boolean>(true);
 const loadingPermission = ref<boolean>(true);
 
 // Handle image upload
-function onUpload(avatar: File) {
+function onUpload(avatar: any) {
   const maxSizeMB = 5;
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
@@ -232,19 +275,16 @@ function onUpload(avatar: File) {
   }
 
   imageErrorMessage.value = "";
-  const reader = new FileReader();
-  reader.onload = () => {
-    uploadImg.value = reader.result as string;
-  };
-  reader.readAsDataURL(avatar);
+  const objectURL = URL.createObjectURL(avatar);
+  avatar.objectURL = objectURL;
+  userFormState.value.avatar = avatar;
 
   return false;
 }
 
 const clearImage = () => {
-  uploadImg.value = "";
+  userFormState.value.avatar = undefined;
 };
-
 
 // Fetch roles on mount
 onMounted(async () => {
@@ -264,7 +304,6 @@ onMounted(async () => {
   );
   loadingPermission.value = false;
 });
-
 
 const activeKey = ref(["1"]);
 const activeKeyPermission = ref(["1"]);
