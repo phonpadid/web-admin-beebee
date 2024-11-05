@@ -1,167 +1,3 @@
-// import { AxiosApi } from "@/common/configurations/axios.config";
-// import { injectable, inject } from "tsyringe";
-// import {
-//   IGPaginate,
-//   IGPaginated,
-// } from "@/common/interfaces/pagination.interface";
-// import { IResponse } from "@/common/interfaces/response.interface";
-// import { IUserInterface } from "../interface/user.interface";
-// import { UserEntity } from "../entity/user.entity";
-// import { GET_ROLES } from "@/common/utils/const";
-
-// @injectable()
-// export class UserRepository implements IUserInterface {
-//   constructor(@inject(AxiosApi) private _api: AxiosApi) {}
-
-//   async create(input: UserEntity): Promise<IResponse<UserEntity>> {
-//     const response = await this._api.axios({
-//       method: "post",
-//       url: "/accounts/users/",
-//       data: {
-//         name: input.name,
-//         email: input.email,
-//         password: input.password,
-//         password_confirmation: input.password_confirmation,
-//         roleId: input.roleId,
-//         permissionIds: input.permissionIds,
-//         profile: input.profile,
-//       },
-//     });
-
-//     return {
-//       data: response.data,
-//       message: "ເພີ່ມຂໍ້ມູນສຳເລັດແລ້ວ",
-//       status: "success",
-//     };
-//   }
-
-//   async update(input: UserEntity): Promise<IResponse<UserEntity>> {
-//     const response = await this._api.axios({
-//       method: "put",
-//       url: `/accounts/users/${input.id}`,
-//       data: {
-//         name: input.name,
-//         email: input.email,
-//         roleId: input.roleId,
-//         permissionIds: input.permissionIds,
-//         profile: input.profile,
-//       },
-//     });
-
-//     return {
-//       data: response.data,
-//       message: "ອັບເດດ ຂໍ້ມູນສຳເລັດເເລ້ວ",
-//       status: "success",
-//     };
-//   }
-
-//   async delete(id: UserEntity): Promise<IResponse<UserEntity>> {
-//     const response = await this._api.axios({
-//       method: "delete",
-//       url: `/admin/delete-user/${id}`,
-//     });
-
-//     return {
-//       data: response.data,
-//       message: "ລຶບຂໍ້ມູນ ສຳເລັດເເລ້ວ.",
-//       status: "success",
-//     };
-//   }
-
-//   async getAll(
-//     args: IGPaginate<Pick<UserEntity, "name" | "role">>
-//   ): Promise<IResponse<IGPaginated<UserEntity>>> {
-//     const response = await this._api.axios({
-//       url: "/accounts/users/",
-//       params: {
-//         page: args.page,
-//         per_page: args.limit,
-//         name: args.filter?.name,
-//         role: args.filter?.role,
-//       },
-//     });
-
-//     const { data, pagination } = response.data.data;
-
-//     return {
-//       data: { props: data, total: pagination.total },
-//       status: "success",
-//     };
-//   }
-
-//   async getOne(id: number): Promise<any> {
-//     const response = await this._api.axios({
-//       method: "get",
-//       url: "/admin/list-user/" + id,
-//     });
-
-//     return response.data;
-//   }
-
-//   async getUserProfile(): Promise<any> {
-//     // const roleUsers = localStorage.getItem("roles");
-//     let url = "";
-
-//     // if (
-//     //   (roleUsers && roleUsers.includes(GET_ROLES.ADMIN_OWNER)) ||
-//     //   (roleUsers && roleUsers.includes(GET_ROLES.USER_OWNER))
-//     // ) {
-//     //   url = `/owner/get-user-owner-profile`;
-//     // } else {
-//     //   url = `/admin/get-user-profile`;
-//     // }
-
-//     const response = await this._api.axios({
-//       method: "get",
-//       url: url,
-//     });
-
-//     return response.data;
-//   }
-
-//   async getAllRoles(): Promise<any> {
-//     const response = await this._api.axios({
-//       method: "get",
-//       url: "roles",
-//       params: {
-//         roles: [GET_ROLES.ADMIN, GET_ROLES.USER],
-//       },
-//     });
-
-//     return response.data;
-//   }
-
-//   async getAllPermissions(): Promise<any> {
-//     const response = await this._api.axios({
-//       method: "get",
-//       url: "permissions",
-//       params: {
-//         types: ["all", "admin"],
-//       },
-//     });
-
-//     return response.data;
-//   }
-
-//   async updateProfile(input: UserEntity): Promise<IResponse<UserEntity>> {
-//     const response = await this._api.axios({
-//       method: "put",
-//       url: `/admin/update-user-profile/${input.id}`,
-//       data: {
-//         name: input.name,
-//         email: input.email,
-//         profile: input.profile,
-//       },
-//     });
-
-//     return {
-//       data: response.data,
-//       message: "ອັບເດດ ຂໍ້ມູນສຳເລັດເເລ້ວ",
-//       status: "success",
-//     };
-//   }
-// }
-
 import { AxiosApi } from "@/common/configurations/axios.config";
 import {
   IGPaginate,
@@ -173,16 +9,18 @@ import { UserInterfaces } from "../interface/user.interface";
 import { inject, injectable } from "tsyringe";
 
 enum userType {
-  Admin = 'admin', Customer = 'customer', Restaurant = 'restaurant'
+  Admin = "admin",
+  Customer = "customer",
+  Restaurant = "restaurant",
 }
 @injectable()
 export class UserRepository implements UserInterfaces {
-  constructor(@inject(AxiosApi) private _api: AxiosApi) { }
+  constructor(@inject(AxiosApi) private _api: AxiosApi) {}
 
   async create(input: UserEntity): Promise<IResponse<UserEntity>> {
     // console.log('input:', input);
     const formData = new FormData();
-    if(input.first_name) {
+    if (input.first_name) {
       formData.append("first_name", input.first_name?.toString());
     }
     formData.append("last_name", input.last_name);
@@ -209,8 +47,8 @@ export class UserRepository implements UserInterfaces {
     if (input.avatar) {
       formData.append("avatar", input.avatar); // `avatar` should be a `File` or `Blob`
     }
-    console.log('is_active:', input.is_active);
-    
+    console.log("is_active:", input.is_active);
+
     // Send request with FormData
     const response = await this._api.axios({
       method: "post",
@@ -228,13 +66,12 @@ export class UserRepository implements UserInterfaces {
     };
   }
 
-
   async update(input: UserEntity, id: string): Promise<IResponse<UserEntity>> {
     const formData = new FormData();
-    if(input.id) {
+    if (input.id) {
       formData.append("id", input.id?.toString());
     }
-    if(input.first_name) {
+    if (input.first_name) {
       formData.append("first_name", input.first_name?.toString());
     }
     formData.append("last_name", input.last_name);
@@ -292,9 +129,9 @@ export class UserRepository implements UserInterfaces {
     };
   }
   async getOne(id: number): Promise<IResponse<UserEntity>> {
-    console.log('props:',);
+    console.log("props:");
     const props = await this._api.axios({
-      url: "/accounts/users/" + id
+      url: "/accounts/users/" + id,
     });
 
     return {
@@ -304,8 +141,8 @@ export class UserRepository implements UserInterfaces {
   }
   async remove(id: number): Promise<IResponse<void>> {
     const props = await this._api.axios({
-      method: 'delete',
-      url: "/accounts/users/" + id
+      method: "delete",
+      url: "/accounts/users/" + id,
     });
 
     return {

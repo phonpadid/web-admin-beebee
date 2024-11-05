@@ -1,138 +1,3 @@
-<script lang="ts" setup>
-import { rolesStore } from "@/modules/roles/store/role.store";
-import { LineChartOutlined } from "@ant-design/icons-vue";
-import { ref, onMounted } from "vue";
-import DeleteOutlined from "@ant-design/icons-vue/DeleteOutlined";
-import { RolesEntity } from "@/modules/roles/entity/role.entity";
-import { rolesPermissionsStore } from "@/modules/role_permissions/store/role.permissions.store";
-import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
-import { UserEntity } from "../entity/user.entity";
-import { usersStore } from "../store/index";
-import { notification } from "ant-design-vue";
-import { useRouter } from "vue-router";
-import { UserShcema } from "../schema/user.schema";
-
-const { push } = useRouter();
-const { state, getAll } = rolesStore();
-const { statePermission, getAllPermission } = rolesPermissionsStore();
-const uploadImg = ref<string>("");
-
-const imageErrorMessage = ref<string>("");
-const { create } = usersStore();
-const initialFormState: UserEntity = {
-  id: "",
-  first_name: "",
-  last_name: "",
-  status: "",
-  user_type: "",
-  phone_number: "",
-  groups: [],
-  user_permissions: [],
-  avatar: "",
-  email: "",
-  password: "",
-};
-const form = ref();
-const loading = ref(false);
-const userFormState = ref<UserEntity>({
-  ...initialFormState,
-});
-let nextId = ref(1);
-
-const resetForm = () => {
-  userFormState.value = { ...initialFormState };
-};
-const handleOrderDetailsSubmit = async () => {
-  console.log("tou:", userFormState);
-
-  form.value
-    .validate()
-    .then(async () => {
-      loading.value = true;
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        userFormState.value.id = nextId.value.toString();
-        nextId.value += 1;
-        await create(userFormState.value);
-        notification.success({
-          message: "Save Success",
-          description: "ບັນທຶກສຳເລັດ",
-        });
-        resetForm();
-        loading.value = false;
-        await push({ name: "order_details" });
-      } catch (success) {
-        notification.success({
-          message: "Success",
-          description: "ບັນທຶກສຳເລັດ",
-        });
-        await push({ name: "user" });
-      }
-    })
-    .catch((error: unknown) => {
-      console.log("error", error);
-    });
-};
-
-const roles = ref<RolesEntity[]>([]);
-const permissions = ref<RolesPermissionsEntity[]>([]);
-const loadingRoles = ref<boolean>(true);
-const loadingPermission = ref<boolean>(true);
-
-// Handle image upload
-function onUpload(avatar: File) {
-  const maxSizeMB = 5;
-  const maxSizeBytes = maxSizeMB * 1024 * 1024;
-
-  if (avatar.size > maxSizeBytes) {
-    imageErrorMessage.value = `ຂະໜາດຮູບຕ້ອງບໍ່ເກີນ ${maxSizeMB}MB`;
-    return false;
-  }
-
-  imageErrorMessage.value = "";
-  const reader = new FileReader();
-  reader.onload = () => {
-    uploadImg.value = reader.result as string;
-  };
-  reader.readAsDataURL(avatar);
-
-  return true;
-}
-
-const clearImage = () => {
-  uploadImg.value = "";
-};
-
-// User type options
-const userTypeOptions = [
-  { value: "Approved", label: "Approved" },
-  { value: "Pending", label: "Pending" },
-  { value: "Rejected", label: "Rejected" },
-];
-
-// Fetch roles on mount
-onMounted(async () => {
-  await getAll();
-  roles.value = state.data.props.map((role: RolesEntity) => ({
-    id: role.id,
-    name: role.name,
-  }));
-  loadingRoles.value = false;
-
-  await getAllPermission();
-  permissions.value = statePermission.data.props.map(
-    (per: RolesPermissionsEntity) => ({
-      id: per.id,
-      name: per.name,
-    })
-  );
-  loadingPermission.value = false;
-});
-
-const activeKey = ref(["1"]);
-const activeKeyPermission = ref(["2"]); 
-</script>
-
 <template>
   <div class="pb-4 flex justify-between">
     <p class="text-base font-bold text-blue-500">
@@ -144,13 +9,8 @@ const activeKeyPermission = ref(["2"]);
   <a-form
     layout="vertical"
     ref="form"
-<<<<<<< HEAD
-    :model="userFormState"
-    :rules="UserShcema"
-=======
     :rules="updateUserShcema"
     :model="userFormState"
->>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
     class="flex-col flex"
   >
     <!-- Upload section -->
@@ -216,11 +76,7 @@ const activeKeyPermission = ref(["2"]);
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-<<<<<<< HEAD
-      <a-form-item label="ເບີໂທ" name="phone_number" class="w-full">
-=======
       <a-form-item label="ເບິໂທ" name="phone_number" class="w-full">
->>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
         <a-input
           placeholder="ກະລຸນາປ້ອນເບີໂທ"
           class="h-12"
@@ -230,63 +86,14 @@ const activeKeyPermission = ref(["2"]);
       <a-form-item label="ອີເມວ" name="email" class="w-full">
         <a-input
           placeholder="ກະລຸນາປ້ອນອີເມວ"
-<<<<<<< HEAD
           class="h-12"
           v-model:value="userFormState.email"
-        />
-      </a-form-item>
-    </div>
-
-    <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ສະຖານະ" name="status" class="w-full">
-        <a-select
-          v-model:value="userFormState.status"
-          placeholder="ເລືອກສະຖານະຜູ້ໃຊ້"
-          :options="userTypeOptions"
-        />
-      </a-form-item>
-      <a-form-item label="ເລືອກປະເພດຜູ້ໃຊ້" name="user_type" class="w-full">
-        <a-select
-          v-model:value="userFormState.user_type"
-          placeholder="ເລືອກປະເພດຜູ້ໃຊ້"
-          :options="userTypeOptions"
-        />
-      </a-form-item>
-    </div>
-
-    <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ລະຫັດຜ່ານ" name="password" class="w-full">
-        <a-input-password
-          type="password"
-          placeholder="ປ້ອນລະຫັດຜ່ານ"
-          class="h-12"
-          v-model:value="userFormState.password"
-        />
-      </a-form-item>
-      <a-form-item
-        label="ຢືນຢັນລະຫັດຜ່ານ"
-        name="password_confirmation"
-        class="w-full"
-      >
-        <a-input-password
-          type="password"
-          placeholder="ປ້ອນລະຫັດຜ່ານອີກຄັ້ງ"
-          class="h-12"
-          v-model:value="userFormState.password_confirmation"
-=======
-          class="h-12"
-          v-model:value="userFormState.email"
->>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
         />
       </a-form-item>
     </div>
 
     <!-- Role Selection -->
-<<<<<<< HEAD
-    <a-collapse v-model:activeKey="activeKey">
-=======
     <a-collapse v-model:activeKey="activeKey" class="mt-2">
->>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
       <a-collapse-panel
         key="2"
         header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້"
@@ -312,11 +119,7 @@ const activeKeyPermission = ref(["2"]);
     </a-collapse>
 
     <!-- Role Selection -->
-<<<<<<< HEAD
-    <a-collapse v-model:activeKey="activeKeyPermission">
-=======
     <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
->>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
       <a-collapse-panel
         key="2"
         header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້"
@@ -372,11 +175,7 @@ const activeKeyPermission = ref(["2"]);
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
         <a-button type="primary" @click="handleOrderDetailsSubmit"
-<<<<<<< HEAD
-          >ບັນທຶກ</a-button
-=======
           >ແກ້ໄຂ</a-button
->>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
         >
         &nbsp;
         <a-button danger @click="push({ name: 'user.list' })">ຍົກເລີກ</a-button>
@@ -385,8 +184,6 @@ const activeKeyPermission = ref(["2"]);
   </a-form>
 </template>
 
-<<<<<<< HEAD
-=======
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { ref, onMounted, watch } from "vue";
@@ -543,7 +340,6 @@ watch(
 );
 </script>
 
->>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
 <style scoped>
 .ant-select-selection-search-input {
   height: 48px;
