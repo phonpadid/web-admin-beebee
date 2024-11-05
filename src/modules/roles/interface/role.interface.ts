@@ -13,4 +13,5 @@ export interface RoleInterfaces {
   getAll(
     args: IGPaginate<Pick<RolesEntity, RolesFilterType>>
   ): Promise<IResponse<IGPaginated<RolesEntity>>>;
+  remove(id: number): Promise<any>;
 }

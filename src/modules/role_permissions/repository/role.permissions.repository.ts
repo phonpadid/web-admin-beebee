@@ -54,7 +54,7 @@ export class RolesPermissionsRepository implements RolePermissionsInterfaces {
     args: IGPaginate<Pick<RolesPermissionsEntity, RolesPermissionsFilterType>>
   ): Promise<IResponse<IGPaginated<RolesPermissionsEntity>>> {
     const res = await this._api.axios({
-      url: "/accounts/permissions",
+      url: "/accounts/permissions/",
       params: {
         page: args.page,
         per_page: args.limit,
@@ -62,7 +62,7 @@ export class RolesPermissionsRepository implements RolePermissionsInterfaces {
     });
     const { results, count } = res.data;
     return {
-      data: { props: results, total: count.total },
+      data: { props: results, total: count },
       status: "success",
     };
   }

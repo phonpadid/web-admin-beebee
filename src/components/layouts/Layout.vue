@@ -4,7 +4,9 @@
             <SideBar/>
         </a-layout-sider>
         <a-layout>
-            <Navbar @toggle-sidebar="() => (collapsed = !collapsed)"/>
+            <div class="z-40 sticky min-w-full transition-all">
+                <Navbar @toggle-sidebar="() => (collapsed = !collapsed)"/>
+            </div>
             <a-breadcrumb :style="{ padding: '10px', background: '#fff', minHeight: '10px' }">
                 <p style="margin-left: 5px;"></p>
                 <a-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" :style="{ fontSize: '16', fontWeight: '500'}">

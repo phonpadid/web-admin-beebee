@@ -5,6 +5,7 @@ import { defineStore } from "pinia";
 import { container } from "tsyringe";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
+import { MeEntity } from "../entity/me.entity";
 
 export interface AuthState {
   data: UserEntity | null;
@@ -15,24 +16,23 @@ export interface AuthState {
 export const useAuthStore = defineStore("auth", () => {
   const router = useRouter();
   const authService = container.resolve(AuthService);
-  const state = reactive<AuthState>({
+  const stateGetMe = reactive<AuthState>({
     data: null,
     isLoading: false,
     errorMessage: "",
   });
 
-  const form = reactive<UserEntity>({
+  let form = reactive<UserEntity>({
     email: "",
     password: "",
   });
 
   async function login(item: any) {
-    state.isLoading = true;
+    stateGetMe.isLoading = true;
 
     try {
       const result = await authService.login(item);
-      console.log(result);
-
+      
       if (result.status === "success" && result.data) {
         localStorage.setItem("access", result.data.access);
         // localStorage.setItem("roles", JSON.stringify(result.data.roles));
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore("auth", () => {
         // );
         // localStorage.setItem("locale", "en");
 
-        state.errorMessage = "";
+        stateGetMe.errorMessage = "";
         router.push({ name: "admin_dashboard" });
 
         // const roleUsers = result.data.roles;
@@ -71,7 +71,7 @@ export const useAuthStore = defineStore("auth", () => {
         //   });
         // }
       } else {
-        state.errorMessage = result.message ? result.message : "";
+        stateGetMe.errorMessage = result.message ? result.message : "";
       }
     } catch (error: any) {
       let responseError = "";
@@ -84,9 +84,9 @@ export const useAuthStore = defineStore("auth", () => {
       } else {
         responseError = error.response.data.error;
       }
-      state.errorMessage = responseError;
+      stateGetMe.errorMessage = responseError;
     }
-    state.isLoading = false;
+    stateGetMe.isLoading = false;
   }
 
   async function logout(): Promise<void> {
@@ -98,16 +98,23 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   async function showMe() {
-    state.isLoading = true;
+    stateGetMe.isLoading = true;
     const results = await authService.showMe();
 
     if (results && results.data && results.status === "success") {
-      console.log('ab:');
-      
-      state.data = results.data;
-      state.isLoading = false;
+      stateGetMe.data = results.data;
+      stateGetMe.isLoading = false;
     }
     // console.log("Data from API:", state.data.props);
   }
-  return { state, form, login, logout, showMe };
+  async function changePassword(input: MeEntity) {
+    console.log('data:', input);
+    
+    return await authService.changePassowrd(input);
+  }
+
+  function clearFormUser() {
+    form = reactive<UserEntity>({ email: "", password: "" });
+  }
+  return { stateGetMe, form, login, logout, showMe, changePassword, clearFormUser };
 });

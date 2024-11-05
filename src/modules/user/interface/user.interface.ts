@@ -35,9 +35,11 @@ import { UserFilterType, UserEntity } from "../entity/user.entity";
 
 export interface UserInterfaces {
   create(input: UserEntity): Promise<any>;
-  update(input: UserEntity): Promise<any>;
+  update(input: UserEntity, id: string): Promise<any>;
 
   getAll(
     args: IGPaginate<Pick<UserEntity, UserFilterType>>
   ): Promise<IResponse<IGPaginated<UserEntity>>>;
+  getOne(id: number): Promise<any>;
+  remove(id: number): Promise<any>;
 }

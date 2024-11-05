@@ -1,64 +1,66 @@
 <template>
-  <a-layout-header style="background: #fff">
-    <menu-unfold-outlined
-      v-if="collapsed"
-      class="trigger"
-      @click="onCollapsed"
-      style="font-size: 20px; margin-left: -35px"
-    />
-    <menu-fold-outlined
-      v-else
-      class="trigger"
-      @click="onCollapsed"
-      style="margin-left: -35px; font-size: 20px"
-    />
-
-    <div class="header-action-container">
-      <a-badge count="2">
-        <a-avatar shape="square" size="large" class="navbar-btn">
-          <shopping-cart-outlined class="menu-icon" />
-        </a-avatar>
-      </a-badge>
-      <a-badge count="3">
-        <a-avatar shape="square" size="large" class="navbar-btn">
-          <comment-outlined class="menu-icon" />
-        </a-avatar>
-      </a-badge>
-      
-          <!-- <div @click="show_me" class="w-10 h-10 rounded-full -mr-4">
-            <img
-            v-if="state.data?.avatar"
-            :src="(state.data?.avatar)"
-            alt=""
-            class=" flex items-center justify-center"
-          />
-          <img
-            v-else
-            src="../../assets/profile.jpg"
-            alt=""
-            class="w-10 h-10 rounded-full flex items-center justify-center"
-          />
-          </div> -->
-          <ShowMeView/>
-      <!-- Logout with hover -->
-      <!-- <div class="logout-container" @mouseover="showLogout = true" @mouseleave="showLogout = false"> -->
-        <!-- <div
-          class="logout w-8 h-8 rounded-full bg-blue-200 hover:bg-blue-300 text-blue-500 flex items-center justify-center"
-        >
-          <LogoutOutlined />
-        </div> -->
+  <div class="  ">
+    <a-layout-header style="background: #fff">
+      <menu-unfold-outlined
+        v-if="collapsed"
+        class="trigger"
+        @click="onCollapsed"
+        style="font-size: 20px; margin-left: -35px"
+      />
+      <menu-fold-outlined
+        v-else
+        class="trigger"
+        @click="onCollapsed"
+        style="margin-left: -35px; font-size: 20px"
+      />
+  
+      <div class="header-action-container">
+        <a-badge count="2">
+          <a-avatar shape="square" size="large" class="navbar-btn">
+            <shopping-cart-outlined class="menu-icon" />
+          </a-avatar>
+        </a-badge>
+        <a-badge count="3">
+          <a-avatar shape="square" size="large" class="navbar-btn">
+            <comment-outlined class="menu-icon" />
+          </a-avatar>
+        </a-badge>
         
-        <!-- Hover content -->
-        <!-- <transition name="fade">
-          <div v-if="showLogout" class="logout-popup">
-            <template v-if="!confirmLogout">
-              <a-button @click="logout()">ອອກຈາກລະບົບ</a-button>
-            </template>
-          </div>
-        </transition> -->
-      <!-- </div> -->
-    </div>
-  </a-layout-header>
+            <!-- <div @click="show_me" class="w-10 h-10 rounded-full -mr-4">
+              <img
+              v-if="state.data?.avatar"
+              :src="(state.data?.avatar)"
+              alt=""
+              class=" flex items-center justify-center"
+            />
+            <img
+              v-else
+              src="../../assets/profile.jpg"
+              alt=""
+              class="w-10 h-10 rounded-full flex items-center justify-center"
+            />
+            </div> -->
+            <ShowMeView/>
+        <!-- Logout with hover -->
+        <!-- <div class="logout-container" @mouseover="showLogout = true" @mouseleave="showLogout = false"> -->
+          <!-- <div
+            class="logout w-8 h-8 rounded-full bg-blue-200 hover:bg-blue-300 text-blue-500 flex items-center justify-center"
+          >
+            <LogoutOutlined />
+          </div> -->
+          
+          <!-- Hover content -->
+          <!-- <transition name="fade">
+            <div v-if="showLogout" class="logout-popup">
+              <template v-if="!confirmLogout">
+                <a-button @click="logout()">ອອກຈາກລະບົບ</a-button>
+              </template>
+            </div>
+          </transition> -->
+        <!-- </div> -->
+      </div>
+    </a-layout-header>
+  </div>
 </template>
 
 <script lang="ts" setup>

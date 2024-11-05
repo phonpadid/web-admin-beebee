@@ -137,15 +137,20 @@ const activeKeyPermission = ref(["2"]);
   <div class="pb-4 flex justify-between">
     <p class="text-base font-bold text-blue-500">
       <line-chart-outlined />
-      ຟອມຜູ້ໃຊ້ລະບົບ
+      ອັບເດດຂໍ້ມູນ
     </p>
   </div>
 
   <a-form
     layout="vertical"
     ref="form"
+<<<<<<< HEAD
     :model="userFormState"
     :rules="UserShcema"
+=======
+    :rules="updateUserShcema"
+    :model="userFormState"
+>>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
     class="flex-col flex"
   >
     <!-- Upload section -->
@@ -154,8 +159,7 @@ const activeKeyPermission = ref(["2"]);
         v-model:value="userFormState.avatar"
         :showUploadList="false"
         accept=".png, .jpeg, .jpg"
-        :beforeUpload="onUpload"
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        :before-upload="onUpload"
       >
         <span v-if="imageErrorMessage" class="text-red-500">
           {{ imageErrorMessage }}
@@ -178,7 +182,8 @@ const activeKeyPermission = ref(["2"]);
         </div>
       </a-upload>
       <a-button
-        class="text-red-700 ml-2 hover:text-red-600"
+        v-if="userFormState.avatar"
+        class="text-red-700 ml-2 -top-3 hover:text-red-600"
         @click="clearImage"
       >
         <DeleteOutlined />
@@ -187,6 +192,13 @@ const activeKeyPermission = ref(["2"]);
 
     <!-- Input fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
+      <a-form-item hidden label="ຊື່" name="id" class="w-full">
+        <a-input
+          placeholder="ກະລຸນາປ້ອນຊື່"
+          class="h-12"
+          v-model:value="userFormState.id"
+        />
+      </a-form-item>
       <a-form-item label="ຊື່" name="first_name" class="w-full">
         <a-input
           placeholder="ກະລຸນາປ້ອນຊື່"
@@ -204,7 +216,11 @@ const activeKeyPermission = ref(["2"]);
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
+<<<<<<< HEAD
       <a-form-item label="ເບີໂທ" name="phone_number" class="w-full">
+=======
+      <a-form-item label="ເບິໂທ" name="phone_number" class="w-full">
+>>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
         <a-input
           placeholder="ກະລຸນາປ້ອນເບີໂທ"
           class="h-12"
@@ -214,6 +230,7 @@ const activeKeyPermission = ref(["2"]);
       <a-form-item label="ອີເມວ" name="email" class="w-full">
         <a-input
           placeholder="ກະລຸນາປ້ອນອີເມວ"
+<<<<<<< HEAD
           class="h-12"
           v-model:value="userFormState.email"
         />
@@ -256,12 +273,20 @@ const activeKeyPermission = ref(["2"]);
           placeholder="ປ້ອນລະຫັດຜ່ານອີກຄັ້ງ"
           class="h-12"
           v-model:value="userFormState.password_confirmation"
+=======
+          class="h-12"
+          v-model:value="userFormState.email"
+>>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
         />
       </a-form-item>
     </div>
 
     <!-- Role Selection -->
+<<<<<<< HEAD
     <a-collapse v-model:activeKey="activeKey">
+=======
+    <a-collapse v-model:activeKey="activeKey" class="mt-2">
+>>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
       <a-collapse-panel
         key="2"
         header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້"
@@ -285,8 +310,13 @@ const activeKeyPermission = ref(["2"]);
         </a-checkbox-group>
       </a-collapse-panel>
     </a-collapse>
+
     <!-- Role Selection -->
+<<<<<<< HEAD
     <a-collapse v-model:activeKey="activeKeyPermission">
+=======
+    <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
+>>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
       <a-collapse-panel
         key="2"
         header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້"
@@ -311,11 +341,42 @@ const activeKeyPermission = ref(["2"]);
       </a-collapse-panel>
     </a-collapse>
 
+    <div class="md:flex md:flex-row flex-col mt-4">
+      <a-form-item label="" name="is_superuser" class="md:w-[10rem]">
+        <a-checkbox
+          :checked="userFormState.is_superuser"
+          @change="userFormState.is_superuser = $event.target.checked"
+        >
+          super user
+        </a-checkbox>
+      </a-form-item>
+      <a-form-item label="" name="is_staff" class="md:w-[10rem]">
+        <a-checkbox
+          :checked="userFormState.is_staff"
+          @change="userFormState.is_staff = $event.target.checked"
+        >
+          ພະນັກງານ
+        </a-checkbox>
+      </a-form-item>
+      <a-form-item label="" name="is_active" class="md:w-[10rem]">
+        <a-checkbox
+          :checked="userFormState.is_active"
+          @change="userFormState.is_active = $event.target.checked"
+        >
+          ສະຖານະ
+        </a-checkbox>
+      </a-form-item>
+    </div>
+
     <!-- Submit Buttons -->
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
         <a-button type="primary" @click="handleOrderDetailsSubmit"
+<<<<<<< HEAD
           >ບັນທຶກ</a-button
+=======
+          >ແກ້ໄຂ</a-button
+>>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
         >
         &nbsp;
         <a-button danger @click="push({ name: 'user.list' })">ຍົກເລີກ</a-button>
@@ -324,28 +385,183 @@ const activeKeyPermission = ref(["2"]);
   </a-form>
 </template>
 
+<<<<<<< HEAD
+=======
+<script lang="ts" setup>
+import { rolesStore } from "@/modules/roles/store/role.store";
+import { ref, onMounted, watch } from "vue";
+import { RolesEntity } from "@/modules/roles/entity/role.entity";
+import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
+import { UserEntity } from "../entity/user.entity";
+import { usersStore } from "../store/index";
+import { notification } from "ant-design-vue";
+import { useRouter, useRoute } from "vue-router";
+import { permissionsStore } from "@/modules/permissions/store/permissions.store";
+import { DeleteOutlined } from "@ant-design/icons-vue";
+import { updateUserShcema } from "../schema/update-user.schema";
+const router = useRouter();
+const { push } = router;
+const { state, getAll } = rolesStore();
+const { statePermission, getAllPer } = permissionsStore();
+const uploadImg = ref<string | File | null>(null);
+
+const { update, stateGetOne, getOneUser } = usersStore();
+
+const initialFormState: UserEntity = {
+  id: "",
+  first_name: "",
+  last_name: "",
+  user_type: 0,
+  phone_number: "",
+  groups: [],
+  is_active: false,
+  is_superuser: false,
+  is_staff: false,
+  user_permissions: [],
+  avatar: undefined,
+  email: "",
+  password: "",
+};
+
+const form = ref();
+const userFormState = ref<UserEntity>({ ...initialFormState });
+
+const resetForm = () => {
+  userFormState.value = { ...initialFormState };
+  uploadImg.value = ""; // Reset uploaded image preview
+};
+
+const handleOrderDetailsSubmit = async () => {
+  form.value.validate().then(async () => {
+    try {
+      await update(userFormState.value, userFormState.value.id);
+      notification.success({
+        message: "Save Success",
+        description: "ແກ້ໄຂສຳເລັດ",
+      });
+      resetForm();
+      push({ name: "user" });
+    } catch (error) {
+      console.log("error:", error);
+
+      notification.error({
+        message: "error",
+        description: "ອັບເດດຜິດພາດ",
+      });
+    }
+  });
+};
+
+const roles = ref<RolesEntity[]>([]);
+const permissions = ref<RolesPermissionsEntity[]>([]);
+const loadingRoles = ref<boolean>(true);
+const loadingPermission = ref<boolean>(true);
+
+const activeKey = ref(["1"]);
+const activeKeyPermission = ref(["1"]);
+const { params } = useRoute();
+const Id = Number(params.id);
+
+const populateUserForm = async () => {
+  await getAll();
+  roles.value = state.data.props.map((role: RolesEntity) => ({
+    id: role.id,
+    name: role.name,
+  }));
+  loadingRoles.value = false;
+
+  await getAllPer();
+  permissions.value = statePermission.data.props.map(
+    (perm: RolesPermissionsEntity) => ({
+      id: perm.id,
+      name: perm.name,
+    })
+  );
+  loadingPermission.value = false;
+
+  await getOneUser(Id);
+  if (stateGetOne.data) {
+    const userData = stateGetOne.data;
+
+    userFormState.value = {
+      ...userData,
+      groups: Array.isArray(userData.groups)
+        ? userData.groups.map((role: RolesEntity) => role.id)
+        : userData.groups,
+      user_permissions: Array.isArray(userData.user_permissions)
+        ? userData.user_permissions.map(
+            (perm: RolesPermissionsEntity) => perm.id
+          )
+        : userData.user_permissions,
+    };
+
+    // Set avatar
+    uploadImg.value = userData.avatar || null;
+  }
+};
+
+const imageErrorMessage = ref<string>("");
+
+function onUpload(avatar: File) {
+  const maxSizeMB = 5;
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+  if (avatar.size > maxSizeBytes) {
+    imageErrorMessage.value = `ຂະໜາດຮູບຕ້ອງບໍ່ເກີນ ${maxSizeMB}MB`;
+    return false;
+  }
+
+  imageErrorMessage.value = "";
+  const objectURL = URL.createObjectURL(avatar);
+  uploadImg.value = objectURL; // Set the upload image preview
+  userFormState.value.avatar = avatar; // Store the avatar file
+
+  return false; // Prevent automatic upload
+}
+
+const clearImage = () => {
+  userFormState.value.avatar = undefined; // Reset the avatar in form state
+  uploadImg.value = ""; // Reset image preview
+};
+
+onMounted(() => {
+  populateUserForm();
+});
+
+// Watcher to ensure `user_permissions` updates correctly when data is fetched
+watch(
+  () => stateGetOne.data,
+  (newUser) => {
+    if (newUser) {
+      const userData = newUser;
+      userFormState.value.user_permissions = userData.user_permissions.map(
+        (perm: RolesPermissionsEntity) => perm.id
+      );
+    }
+  },
+  { immediate: true }
+);
+</script>
+
+>>>>>>> 51fb5a251ac2a5bad37eb41ed4c2c623c4294d8b
 <style scoped>
 .ant-select-selection-search-input {
-  /* Ensure the overall height is specified */
   height: 48px;
   width: 50%;
 }
 
-/* Ensure the selector itself is set to the desired height */
 .custom-select .ant-select-selector {
-  height: 48px !important; /* Force height to 48px */
-  line-height: 48px !important; /* Center text vertically */
-  display: flex; /* Use flexbox for alignment */
-  align-items: center; /* Center items vertically */
+  height: 48px !important;
+  line-height: 48px !important;
+  display: flex;
+  align-items: center;
 }
 
-/* Adjust padding inside the select */
 .custom-select .ant-select-selector .ant-select-selection-item {
-  padding: 0 12px; /* Adjust padding for text */
+  padding: 0 12px;
 }
 
-/* Ensure the dropdown menu has adequate height */
 .custom-select .ant-select-dropdown {
-  min-height: 200px; /* Adjust as needed */
+  min-height: 200px;
 }
 </style>
