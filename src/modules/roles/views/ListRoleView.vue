@@ -9,10 +9,12 @@ import { Icon } from "@iconify/vue";
 import { RolesEntity } from "../entity/role.entity";
 import { notification } from "ant-design-vue";
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
+import { useRouter } from "vue-router";
 const modalAdd = ref();
 const modalEdit = ref();
 const { getAll, setStateFilter, state, remove } = rolesStore();
 const {   getAllPer } = permissionsStore();
+const { push } = useRouter();
 const openModalAdd = () => {
   if (modalAdd.value) {
     modalAdd.value.open = true;
@@ -84,7 +86,7 @@ onMounted(async () => {
       <line-chart-outlined />
       ລາຍການRoles
     </p>
-    <a-button type="primary" @click="openModalAdd">ເພີມຂໍ້ມູນ</a-button>
+    <a-button type="primary" @click="push({name: 'addRole.index'})">ເພີມຂໍ້ມູນ</a-button>
   </a-flex>
   <a-divider style="margin-top: 10px" />
   <a-table
