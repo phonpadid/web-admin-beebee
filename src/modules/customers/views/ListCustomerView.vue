@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { customerStore } from "../store/index";
 import { LineChartOutlined } from "@ant-design/icons-vue";
 import { columns } from "./columns";
@@ -11,12 +11,14 @@ import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 const { push } = useRouter();
 import defaultAvatar from "@/assets/profile.jpg";
-const { getAllCustomer, stateCustomer, setStateFilter, remove } = customerStore();
-
+import { usersStore } from "@/modules/user/store";
+const { getAllCustomer, stateCustomer, setStateFilter } = customerStore();
+const { remove } = usersStore();
+//testor
 const confirm = async (record: CustomerEntity) => {
   console.log('deleteId:', record.customer_id);
   
-  await remove(Number(record.customer_id))
+  await remove(Number(record.id))
   notification.success({
     message: "Delete Success",
     description: "ລົບຂໍ້ມູນສຳເລັດ",
@@ -64,10 +66,18 @@ const popoverVisible = ref<Record<number, boolean>>({});
 const togglePopover = (id: number, isVisible: boolean) => {
   popoverVisible.value[id] = isVisible;
 };
+const props = defineProps<{ searchQuery: string }>();
+const filteredData = computed(() => {
+  if (!props.searchQuery) return stateCustomer.data.props;
 
-const testing = (data: CustomerEntity) => {
-  alert("id:" + data.customer_id);
-};
+  const query = props.searchQuery.toLowerCase();
+
+  return stateCustomer.data.props.filter((row) =>
+    // Only filter based on specific fields, such as 'first_name' and 'last_name'
+    String(row.first_name).toLowerCase().includes(query) || 
+    String(row.last_name).toLowerCase().includes(query)
+  );
+});
 </script>
 
 <template>
@@ -85,15 +95,15 @@ const testing = (data: CustomerEntity) => {
     :scroll="{ x: true }"
     class="whitespace-nowrap"
     :columns="columns"
-    :dataSource="stateCustomer.data.props"
+    :dataSource="filteredData"
     :pagination="paginationConfig"
     :loading="stateCustomer.isLoading"
-    :row-key="(record: any) => record.id"
+    :row-key="(record) => record.id"
   >
     <template #bodyCell="{ column, record }">
-      <template v-if="column.dataIndex === 'avatar'">
+      <template v-if="column.dataIndex === 'full_avatar_url'">
         <img
-        :src="record?.avatar || defaultAvatar"
+        :src="record?.full_avatar_url || defaultAvatar"
         alt="Profile Avatar"
         class="w-10 h-10 rounded-full"
       />
@@ -122,7 +132,9 @@ const testing = (data: CustomerEntity) => {
               </template>
             </ButtonCircle>
           </a-tooltip>
-          <ButtonCircle
+          <a-tooltip>
+            <template #title>ລົບ</template>
+            <ButtonCircle
             bgColor="bg-white hover:text-red-600"
             textColor="text-red-600"
           >
@@ -139,6 +151,8 @@ const testing = (data: CustomerEntity) => {
               </a-popconfirm>
             </template>
           </ButtonCircle>
+          </a-tooltip>
+          
         </div>
       </template>
     </template>

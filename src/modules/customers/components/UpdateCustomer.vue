@@ -14,9 +14,9 @@
     class="flex-col flex"
   >
     <!-- Upload section -->
-    <a-form-item class="flex items-center justify-start mb-10" name="avatar">
+    <a-form-item class="flex items-center justify-start mb-10" name="full_avatar_url">
       <a-upload
-        v-model:value="userFormState.avatar"
+        v-model:value="userFormState.full_avatar_url"
         :showUploadList="false"
         accept=".png, .jpeg, .jpg"
         :before-upload="onUpload"
@@ -42,14 +42,13 @@
         </div>
       </a-upload>
       <a-button
-        v-if="userFormState.avatar"
+        v-if="userFormState.full_avatar_url"
         class="text-red-700 ml-2 -top-3 hover:text-red-600"
         @click="clearImage"
       >
         <DeleteOutlined />
       </a-button>
     </a-form-item>
-
     <!-- Input fields -->
     <div class="md:flex md:flex-row flex-col gap-4 -mt-6">
       <a-form-item hidden label="ຊື່" name="id" class="w-full">
@@ -230,6 +229,7 @@ const initialFormState: CustomerEntity = {
   is_superuser: false,
   user_permissions: [],
   avatar: undefined,
+  full_avatar_url: undefined,
   email: "",
   password: "",
   created_at: "",
@@ -274,8 +274,6 @@ const activeKey = ref(["1"]);
 const activeKeyPermission = ref(["1"]);
 const { params } = useRoute();
 const Id = Number(params.id);
-console.log('id:', Id);
-
 const populateUserForm = async () => {
   await getAll();
   roles.value = state.data.props.map((role: RolesEntity) => ({
@@ -300,17 +298,17 @@ const populateUserForm = async () => {
     userFormState.value = {
       ...userData,
       groups: Array.isArray(userData.groups)
-        ? userData.groups.map((role: RolesEntity) => role.id)
+        ? userData.groups.map((role: any) => role.id)
         : userData.groups,
       user_permissions: Array.isArray(userData.user_permissions)
         ? userData.user_permissions.map(
-            (perm: RolesPermissionsEntity) => perm.id
+            (perm: any) => perm.id
           )
         : userData.user_permissions,
     };
 
     // Set avatar
-    uploadImg.value = userData.avatar || null;
+    uploadImg.value = userData.full_avatar_url || null;
   }
 };
 
@@ -328,13 +326,13 @@ function onUpload(avatar: File) {
   imageErrorMessage.value = "";
   const objectURL = URL.createObjectURL(avatar);
   uploadImg.value = objectURL; // Set the upload image preview
-  userFormState.value.avatar = avatar; // Store the avatar file
+  userFormState.value.full_avatar_url = avatar; // Store the avatar file
 
   return false; // Prevent automatic upload
 }
 
 const clearImage = () => {
-  userFormState.value.avatar = undefined; // Reset the avatar in form state
+  userFormState.value.full_avatar_url = undefined; // Reset the avatar in form state
   uploadImg.value = ""; // Reset image preview
 };
 
@@ -345,11 +343,11 @@ onMounted(() => {
 // Watcher to ensure `user_permissions` updates correctly when data is fetched
 watch(
   () => stateGetOne.data,
-  (newUser) => {
+  (newUser: any) => {
     if (newUser) {
       const userData = newUser;
       userFormState.value.user_permissions = userData.user_permissions.map(
-        (perm: RolesPermissionsEntity) => perm.id
+        (perm: any) => perm.id
       );
     }
   },

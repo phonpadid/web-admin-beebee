@@ -74,14 +74,18 @@ export const tenantsStore = defineStore("tenants-store", () => {
   async function create(input: TenantsEntity) {
     return await service.create(input);
   }
-  async function update(input: TenantsEntity) {
-    return await service.update(input);
+  async function update(input: TenantsEntity, id: number) {
+    return await service.update(input, id);
+  }
+  async function updateDomain(input: TenantsEntity, id: number) {
+    return await service.updateDomain(input, id);
   }
 
   return {
     getAll,
     create,
     update,
+    updateDomain,
     state,
     setStateFilter,
   };

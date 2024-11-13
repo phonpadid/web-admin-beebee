@@ -15,8 +15,11 @@ export class TenantsService {
   async create(input: TenantsEntity) {
     return await this._api.create(input);
   }
-  async update(input: TenantsEntity) {
-    return await this._api.update(input);
+  async update(input: TenantsEntity, id: number) {
+    return await this._api.update(input, id);
+  }
+  async updateDomain(input: TenantsEntity, id: number) {
+    return await this._api.updateDomain(input, id);
   }
 
   async getAll(

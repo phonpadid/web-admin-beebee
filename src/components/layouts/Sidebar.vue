@@ -1,6 +1,6 @@
 <template>
-  <div class="fixed z-40">
-    <div class="logo">
+  <div class=" transition-all sticky z-10 top-0">
+    <div class="logo ">
       <img
         src="https://img.freepik.com/free-vector/hand-drawn-international-beer-day-concept_23-2148575018.jpg?w=996&t=st=1715423916~exp=1715424516~hmac=fca663993514dfa599b25ab43627d15b6530742cdd77b0a60ed86e40e1122250"
       />
@@ -42,11 +42,11 @@
         <template #title>
           <span>
             <setting-outlined class="menu-icon" />
-            <span class="title">ຈັດການຂໍ້ມູນຫຼັກ</span>
+            <span class="title">ຈັດການຂໍ້ມູນຫຼັກ {{$t('messages.')}}</span>
           </span>
         </template>
         <a-menu-item key="8" class="menu" @click="goToRoute('user')">ຜູ້ໃຊ້</a-menu-item>
-        <a-menu-item key="9" class="menu" @click="goToRoute('roles')">ບົດບາດ</a-menu-item>
+        <a-menu-item key="9" class="menu" @click="goToRoute('roles.index')">ບົດບາດ</a-menu-item>
         <a-menu-item key="10" class="menu" @click="goToRoute('permissions')">ສິດທີ່</a-menu-item>
       </a-sub-menu>
     </a-menu>

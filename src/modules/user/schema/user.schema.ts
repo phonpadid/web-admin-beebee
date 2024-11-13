@@ -13,7 +13,7 @@ export const UserShcema: Record<string, Rule[]> = {
   ],
   password: [
     { required: true, message: "ກະລຸນາປ້ອນລະຫັດຜ່ານກ່ອນ", trigger: "change" },
-    { min: 6, message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 6 ຕົວຂື້ນໄປ", trigger: "change" },
+    { min: 8, message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 8 ຕົວຂື້ນໄປ", trigger: "change" },
     {
       pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
       message: "ລະຫັດຜ່ານຕ້ອງປະກອບດ້ວຍຕົວອັກສອນ ແລະ ຕົວເລກ ",
@@ -26,7 +26,7 @@ export const UserShcema: Record<string, Rule[]> = {
       message: "ກະລຸນາປ້ອນຢືນຢັນລະຫັດຜ່ານກ່ອນ",
       trigger: "blur",
     },
-    { min: 6, message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 6 ຕົວຂື້ນໄປ", trigger: "change" },
+    { min: 8, message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 8 ຕົວຂື້ນໄປ", trigger: "change" },
     {
       pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
       message: "ລະຫັດຜ່ານຕ້ອງປະກອບດ້ວຍຕົວອັກສອນ ແລະ ຕົວເລກ ",

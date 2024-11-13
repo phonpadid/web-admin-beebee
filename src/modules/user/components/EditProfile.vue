@@ -196,6 +196,7 @@ import { useRouter, useRoute } from "vue-router";
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 import { DeleteOutlined } from "@ant-design/icons-vue";
 import { updateUserShcema } from "../schema/update-user.schema";
+import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
 const router = useRouter();
 const { push } = router;
 const { state, getAll } = rolesStore();
@@ -208,7 +209,7 @@ const initialFormState: UserEntity = {
   id: "",
   first_name: "",
   last_name: "",
-  user_type: 0,
+  type: "",
   phone_number: "",
   groups: [],
   is_active: false,
@@ -269,7 +270,7 @@ const populateUserForm = async () => {
 
   await getAllPer();
   permissions.value = statePermission.data.props.map(
-    (perm: RolesPermissionsEntity) => ({
+    (perm: PermissionsEntity) => ({
       id: perm.id,
       name: perm.name,
     })
@@ -283,11 +284,11 @@ const populateUserForm = async () => {
     userFormState.value = {
       ...userData,
       groups: Array.isArray(userData.groups)
-        ? userData.groups.map((role: RolesEntity) => role.id)
+        ? userData.groups.map((role: any) => role.id)
         : userData.groups,
       user_permissions: Array.isArray(userData.user_permissions)
         ? userData.user_permissions.map(
-            (perm: RolesPermissionsEntity) => perm.id
+            (perm: any) => perm.id
           )
         : userData.user_permissions,
     };
@@ -328,11 +329,11 @@ onMounted(() => {
 // Watcher to ensure `user_permissions` updates correctly when data is fetched
 watch(
   () => stateGetOne.data,
-  (newUser) => {
+  (newUser: any) => {
     if (newUser) {
       const userData = newUser;
       userFormState.value.user_permissions = userData.user_permissions.map(
-        (perm: RolesPermissionsEntity) => perm.id
+        (perm: any) => perm.id
       );
     }
   },

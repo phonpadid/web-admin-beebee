@@ -133,7 +133,8 @@ export class CustomerRepository implements CustomerInterfaces {
       last_name: customer.user.last_name,
       email: customer.user.email,
       type: customer.type,
-      avatar: customer.avatar,
+      avatar: customer.user.avatar,
+      full_avatar_url: customer.user.full_avatar_url,
       created_at: customer.created_at
     }))
     // console.log('mapData:', customers);
@@ -155,7 +156,8 @@ export class CustomerRepository implements CustomerInterfaces {
       last_name: props.data.user.last_name,
       phone_number: props.data.user.phone_number,
       email: props.data.user.email,
-      avatar: props.data.user.avatar,
+      // avatar: props.data.user.full_avatar_url,
+      full_avatar_url: props.data.user.full_avatar_url,
       created_at: dayjs(props.data.user.created_at).format("MM-DD-YYYY HH:mm:ss"),
       updated_at: dayjs(props.data.user.updated_at).format("MM-DD-YYYY HH:mm:ss"),
       is_active: props.data.user.is_active,

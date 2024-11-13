@@ -8,18 +8,9 @@ import {
 } from "@/common/interfaces/pagination.interface";
 import { reactive } from "vue";
 import { RolesEntity, RolesFilterType } from "../entity/role.entity";
-// import { NotificationInstance } from "ant-design-vue/es/notification";
-// import { NotificationService } from "@/common/notification";
-// import { NOTIFICATION_PLACEMENT } from "@/common/utils/const";
-// import { useI18n } from "vue-i18n";
-// import { useRouter } from "vue-router";
 
 export const rolesStore = defineStore("roles-store", () => {
-  // const notificationApi = inject<NotificationInstance>("notificationApi");
   const service = container.resolve<RolesService>(RolesService);
-  // const notificationService = new NotificationService(i18n, notificationApi);
-  // const notificationService = new NotificationService(notificationApi);
-
   const state = reactive<IGState<IGPaginated<RolesEntity>>>({
     data: {
       props: [],
@@ -33,8 +24,8 @@ export const rolesStore = defineStore("roles-store", () => {
   const setStateFilter = reactive<
     IGPaginate<Pick<RolesEntity, RolesFilterType>>
   >({
-    page: 1,
-    limit: 10,
+    // page: 1,
+    limit: 10, 
     filter: {},
   });
 
@@ -56,8 +47,11 @@ export const rolesStore = defineStore("roles-store", () => {
   async function create(input: RolesEntity) {
     return await service.create(input);
   }
-  async function update(input: RolesEntity) {
-    return await service.update(input);
+  async function update(input: RolesEntity, id: string) {
+    return await service.update(input, id);
+  }
+  async function getDetail(id: number) {
+    return await service.getDetail(id);
   }
   async function remove(id: number) {
     return await service.remove(id);
@@ -69,6 +63,7 @@ export const rolesStore = defineStore("roles-store", () => {
     update,
     state,
     setStateFilter,
+    getDetail,
     remove
   };
 });

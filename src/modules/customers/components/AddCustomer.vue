@@ -293,7 +293,6 @@ function onUpload(avatar: any) {
   const objectURL = URL.createObjectURL(avatar);
   avatar.objectURL = objectURL;
   userFormState.value.avatar = avatar;
-
   return false;
 }
 

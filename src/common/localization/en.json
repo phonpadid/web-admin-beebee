@@ -3,6 +3,7 @@
         "success": "Success",
         "error": "Error",
         "btn_create": "Create",
-        "notification": "Notifications"
+        "notification": "Notifications",
+        "language": "language"
     }
 }
