@@ -1,5 +1,5 @@
 <template>
-  <div class="  ">
+  <div class=" ">
     <a-layout-header style="background: #fff">
       <menu-unfold-outlined
         v-if="collapsed"
@@ -25,39 +25,7 @@
             <comment-outlined class="menu-icon" />
           </a-avatar>
         </a-badge>
-        
-            <!-- <div @click="show_me" class="w-10 h-10 rounded-full -mr-4">
-              <img
-              v-if="state.data?.avatar"
-              :src="(state.data?.avatar)"
-              alt=""
-              class=" flex items-center justify-center"
-            />
-            <img
-              v-else
-              src="../../assets/profile.jpg"
-              alt=""
-              class="w-10 h-10 rounded-full flex items-center justify-center"
-            />
-            </div> -->
             <ShowMeView/>
-        <!-- Logout with hover -->
-        <!-- <div class="logout-container" @mouseover="showLogout = true" @mouseleave="showLogout = false"> -->
-          <!-- <div
-            class="logout w-8 h-8 rounded-full bg-blue-200 hover:bg-blue-300 text-blue-500 flex items-center justify-center"
-          >
-            <LogoutOutlined />
-          </div> -->
-          
-          <!-- Hover content -->
-          <!-- <transition name="fade">
-            <div v-if="showLogout" class="logout-popup">
-              <template v-if="!confirmLogout">
-                <a-button @click="logout()">ອອກຈາກລະບົບ</a-button>
-              </template>
-            </div>
-          </transition> -->
-        <!-- </div> -->
       </div>
     </a-layout-header>
   </div>
@@ -70,24 +38,17 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   CommentOutlined,
-  LogoutOutlined,
 } from "@ant-design/icons-vue";
 import { useAuthStore } from "@/modules/authentication/store/index";
 import ShowMeView from "@/modules/authentication/views/ShowMeView.vue";
 const collapsed = ref<boolean>(false);
-const showLogout = ref<boolean>(false); 
-const confirmLogout = ref<boolean>(false); // State to track confirmation prompt
-const { logout, state, showMe } = useAuthStore();
+const { showMe } = useAuthStore();
 const emit = defineEmits<{ (e: "toggleSidebar"): void }>();
 
 const onCollapsed = () => {
   collapsed.value = !collapsed.value;
   emit("toggleSidebar");
 };
-const show_me = () => {
-  console.log('data:', state.data);
-  
-}
 onMounted(async () => {
   await showMe();
 });

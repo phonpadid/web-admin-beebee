@@ -6,13 +6,13 @@ export interface UserEntity {
   first_name?: string;
   last_name: string;
   email: string;
-  user_type: number;
+  type?: string;
   is_active?: boolean;
   is_superuser?: boolean;
   is_staff?: boolean;
-  groups?: RolesEntity[];  // Allow groups to be a single number or an array of numbers
+  groups?: RolesEntity[] | string[] | any[];  // Allow groups to be a single number or an array of numbers
   phone_number: string;
-  user_permissions?: PermissionsEntity[]; // Allow user_permissions to be a single number or an array of numbers
+  user_permissions?: PermissionsEntity[] | string[] | any[]; // Allow user_permissions to be a single number or an array of numbers
   password?: string | undefined;
   password_confirmation?: string;
   avatar?: File;

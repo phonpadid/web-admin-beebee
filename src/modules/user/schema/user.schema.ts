@@ -18,8 +18,8 @@ export const UserShcema: Record<string, Rule[]> = {
   password: [
     { required: true, message: "ກະລຸນາປ້ອນລະຫັດຜ່ານກ່ອນ", trigger: "change" },
     {
-      min: 6,
-      message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 6 ຕົວຂື້ນໄປ",
+      min: 8,
+      message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 8 ຕົວຂື້ນໄປ",
       trigger: "change",
     },
     {
@@ -35,8 +35,8 @@ export const UserShcema: Record<string, Rule[]> = {
       trigger: "blur",
     },
     {
-      min: 6,
-      message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 6 ຕົວຂື້ນໄປ",
+      min: 8,
+      message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 8 ຕົວຂື້ນໄປ",
       trigger: "change",
     },
     {

@@ -15,8 +15,8 @@ export class RolesService {
   async create(input: RolesEntity) {
     return await this._api.create(input);
   }
-  async update(input: RolesEntity) {
-    return await this._api.update(input);
+  async update(input: RolesEntity, id: string) {
+    return await this._api.update(input, id);
   }
 
   async getAll(
@@ -25,6 +25,9 @@ export class RolesService {
     return await this._api.getAll(input);
   }
 
+  async getDetail(id: number) {
+    return await this._api.getDetail(id);
+  }
   async remove(id: number) {
     return await this._api.remove(id);
   }

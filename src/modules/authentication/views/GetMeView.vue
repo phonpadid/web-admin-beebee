@@ -171,7 +171,6 @@ import { ref, onMounted, watch } from "vue";
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { usersStore } from "@/modules/user/store/index";
 import { useAuthStore } from "../store/index";
-import { useRouter } from "vue-router";
 import { notification } from "ant-design-vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
@@ -186,7 +185,6 @@ const clearImage = () => {
   uploadImg.value = ""; // Reset image preview
 };
 
-const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
 const { update } = usersStore();
@@ -196,16 +194,15 @@ const userFormState = ref<UserEntity>({
   id: "",
   first_name: "",
   last_name: "",
-  user_type: 0,
+  type: "",
   phone_number: "",
-  groups: [],
+  groups: [], // Default to empty array
   is_active: false,
   is_superuser: false,
   is_staff: false,
-  user_permissions: [],
+  user_permissions: [], // Default to empty array
   avatar: undefined,
   email: "",
-  password: "",
 });
 const form = ref();
 const loadingRoles = ref<boolean>(true);
@@ -218,8 +215,8 @@ const handleOrderDetailsSubmit = async () => {
   form.value
     .validate()
     .then(async () => {
-      console.log('userId:', userFormState.value.id);
-      
+      console.log("userId:", userFormState.value.id);
+
       await update(userFormState.value, userFormState.value.id);
       notification.success({
         message: "Save Success",
@@ -227,12 +224,12 @@ const handleOrderDetailsSubmit = async () => {
       });
     })
     .catch((error: any) => {
-     if(error.status === 403) {
-      notification.warn({
-        message: "ເຕືອນ",
-        description: "ທ່ານບໍ່ມີສິດແກ້ໄຂ",
-      });
-     }
+      if (error.status === 403) {
+        notification.warn({
+          message: "ເຕືອນ",
+          description: "ທ່ານບໍ່ມີສິດແກ້ໄຂ",
+        });
+      }
     });
 };
 
@@ -241,20 +238,20 @@ const populateUserForm = async () => {
   try {
     // Fetch roles
     await getAll();
-    roles.value = state.data?.props?.map((role: RolesEntity) => ({
-      id: role.id,
-      name: role.name,
-    })) || [];
+    roles.value =
+      state.data?.props?.map((role: RolesEntity) => ({
+        id: role.id,
+        name: role.name,
+      })) || [];
     loadingRoles.value = false;
 
     // Fetch permissions
     await getAllPer();
-    permissions.value = statePermission.data?.props?.map(
-      (perm: RolesPermissionsEntity) => ({
+    permissions.value =
+      statePermission.data?.props?.map((perm: any) => ({
         id: perm.id,
         name: perm.name,
-      })
-    ) || [];
+      })) || [];
     loadingPermission.value = false;
 
     // Fetch user data
@@ -262,15 +259,15 @@ const populateUserForm = async () => {
       const userData = stateGetMe.data;
 
       userFormState.value = {
-        ...userData,
+        ...userData as any,
         groups: Array.isArray(userData.groups)
-          ? userData.groups.map((role: RolesEntity) => role.id)
-          : userData.groups,
+          ? userData.groups.map((role: any) => role.id)
+          : [],
         user_permissions: Array.isArray(userData.user_permissions)
           ? userData.user_permissions.map(
-              (perm: RolesPermissionsEntity) => perm.id
+              (perm: any) => perm.id
             )
-          : userData.user_permissions,
+          : [],
       };
 
       // Set avatar if available
@@ -280,7 +277,6 @@ const populateUserForm = async () => {
     console.error("Error populating user form:", error);
   }
 };
-
 
 // Watch for changes in stateGetMe and update userFormState
 watch(

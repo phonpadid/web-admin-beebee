@@ -18,12 +18,7 @@
     <a-form-item label=" " class="-mt-12" name="avatar">
       <div class="flex flex-col items-center sm:items-start gap-6">
         <a-image
-          :src="
-            typeof userFormState.avatar === 'object' &&
-            userFormState.avatar.objectURL
-              ? userFormState.avatar.objectURL
-              : '/src/assets/nodata.png'
-          "
+          :src="avatarPreviewURL || '/src/assets/nodata.png'"
           width="10rem"
           height="10rem"
           style="object-fit: contain"
@@ -63,7 +58,9 @@
           placeholder="ກະລຸນາປ້ອນຊື່"
           class="h-12"
           v-model:value="userFormState.first_name"
+          @input="clearData('first_name')"
         />
+        <span style="color: red">{{ msgErrors.first_name }}</span>
       </a-form-item>
       <a-form-item label="ນາມສະກຸນ" name="last_name" class="w-full">
         <a-input
@@ -80,14 +77,18 @@
           placeholder="ກະລຸນາປ້ອນເບີໂທ"
           class="h-12"
           v-model:value="userFormState.phone_number"
+           @input="clearData('phone_number')"
         />
+        <span style="color: red">{{ msgErrors.phone_number }}</span>
       </a-form-item>
       <a-form-item label="ອີເມວ" name="email" class="w-full">
         <a-input
           placeholder="ກະລຸນາປ້ອນອີເມວ"
           class="h-12"
           v-model:value="userFormState.email"
+          @input="clearData('email')"
         />
+        <span style="color: red">{{ msgErrors.email }}</span>
       </a-form-item>
     </div>
 
@@ -98,7 +99,9 @@
           placeholder="ປ້ອນລະຫັດຜ່ານ"
           class="h-12"
           v-model:value="userFormState.password"
+          @input="clearData('password')"
         />
+        <span style="color: red">{{ msgErrors.password }}</span>
       </a-form-item>
       <a-form-item
         label="ຢືນຢັນລະຫັດຜ່ານ"
@@ -180,7 +183,7 @@
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { LineChartOutlined } from "@ant-design/icons-vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 import { UserEntity } from "../entity/user.entity";
@@ -192,13 +195,15 @@ import { permissionsStore } from "@/modules/permissions/store/permissions.store"
 const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
+const avatarPreviewURL = ref<string | null>(null); 
 const imageErrorMessage = ref<string>("");
 const { create } = usersStore();
+const msgErrors = reactive<any>({});
 const initialFormState: UserEntity = {
   id: "",
   first_name: "",
   last_name: "",
-  user_type: 0, // Assuming `user_type` is a number (e.g., 0 for default type)
+  type: "", // Assuming `user_type` is a number (e.g., 0 for default type)
   phone_number: "",
   groups: [], // Empty array for groups of type number[]
   user_permissions: [], // Empty array for user_permissions of type number[]
@@ -238,25 +243,23 @@ const handleOrderDetailsSubmit = async () => {
           resetForm();
           loading.value = false;
           push({ name: "user" });
+          await getAll();
         } else {
           notification.warn({
             message: "warn",
             description: "ຢືນຢັນລະຫັດຜ່ານບໍ່ຕົງກັນ",
           });
         }
-      } catch (error) {
-        console.log("เกิดข้อผิดพลาด", error);
-
-        // notification.error({
-        //   message: "Failed",
-        //   description: "ຜິດຜາດ",
-        // });
-        loading.value = false;
+      } catch (error: any) {
+        if (error.response && error.response.data) {
+          // Backend validation error response structure
+          const apiErrors = error.response.data || {};
+          Object.keys(apiErrors).forEach((field) => {
+            msgErrors[field] = Array(apiErrors[field]) ? apiErrors[field][0] : '';
+          });
+        }
       }
     })
-    .catch((error: unknown) => {
-      console.log("error", error);
-    });
 };
 
 const roles = ref<RolesEntity[]>([]);
@@ -265,7 +268,7 @@ const loadingRoles = ref<boolean>(true);
 const loadingPermission = ref<boolean>(true);
 
 // Handle image upload
-function onUpload(avatar: any) {
+function onUpload(avatar: File) {
   const maxSizeMB = 5;
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
@@ -275,17 +278,27 @@ function onUpload(avatar: any) {
   }
 
   imageErrorMessage.value = "";
-  const objectURL = URL.createObjectURL(avatar);
-  avatar.objectURL = objectURL;
-  userFormState.value.avatar = avatar;
+
+  // Create the object URL and store it in avatarPreviewURL
+  if (avatarPreviewURL.value) {
+    URL.revokeObjectURL(avatarPreviewURL.value); // Revoke the previous object URL if it exists
+  }
+  avatarPreviewURL.value = URL.createObjectURL(avatar);
+  userFormState.value.avatar = avatar; // Store the File object itself without objectURL
 
   return false;
 }
 
 const clearImage = () => {
+  if (avatarPreviewURL.value) {
+    URL.revokeObjectURL(avatarPreviewURL.value); // Clean up the object URL to free memory
+    avatarPreviewURL.value = null;
+  }
   userFormState.value.avatar = undefined;
 };
-
+const clearData = (key: string) => {
+  msgErrors[key] = '';
+}
 // Fetch roles on mount
 onMounted(async () => {
   await getAll();

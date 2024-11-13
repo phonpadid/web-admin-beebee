@@ -8,7 +8,8 @@ import { TenantsEntity, TenantsFilterType } from "../entity/tenants.entity";
 
 export interface TenantsInterfaces {
   create(input: TenantsEntity): Promise<any>;
-  update(input: TenantsEntity): Promise<any>;
+  update(input: TenantsEntity, id: number): Promise<any>;
+  updateDomain(input: TenantsEntity, id: number): Promise<any>;
 
   getAll(
     args: IGPaginate<Pick<TenantsEntity, TenantsFilterType>>

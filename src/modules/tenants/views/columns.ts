@@ -1,19 +1,19 @@
 export const columns = [
   {
     title: "ຊື່ໂດເມນ",
-    dataIndex: "domain",
+    dataIndex: ["domain", "domain_url"],
   },
   {
     title: "ຊື່",
-    dataIndex: ["tenant", "name"], 
+    dataIndex:  "name", 
   },
   {
     title: "ຊື່ໂຄງສ້າງ",
-    dataIndex: ["tenant", "schema_name"], 
+    dataIndex:  "schema_name", 
   },
   {
     title: "ສ້າງເມື່ອ",
-    dataIndex: ["tenant", "created_on"], 
+    dataIndex:  "created_on", 
   },
   {
     title: "",

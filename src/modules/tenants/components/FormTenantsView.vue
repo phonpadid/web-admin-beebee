@@ -7,7 +7,7 @@ import { tenantsStore } from "../store/tenants.store";
 import { notification } from "ant-design-vue";
 import { TenantsEntity } from "../entity/tenants.entity";
 
-const { create, update } = tenantsStore();
+const { create, update, getAll } = tenantsStore();
 
 const open = ref<boolean>(false);
 const item = ref<TenantsEntity | null>(null);
@@ -21,11 +21,13 @@ const FormStateTenants: TenantsEntity = {
   name: "",
   schema_name: "",
   domain: "",
+  // domain: {id: "", domain_url: "", is_primary: false}
 };
 
 const tenantsFormState = ref<TenantsEntity>({
   ...FormStateTenants,
 });
+
 
 const handleSubmit = async () => {
   try {
@@ -36,30 +38,32 @@ const handleSubmit = async () => {
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
     if (isEditMode.value) {
-      await update(tenantsFormState.value);
+      
+      await update(tenantsFormState.value, Number(tenantsFormState.value.id));
+      // await updateDomain(tenantsFormState.value, Number(tenantsFormState.value.id))
       notification.success({
         message: "Update Success",
         description: "ອັບເດດສຳເລັດ",
       });
+      open.value = false;
+      await getAll()
     } else {
-      tenantsFormState.value.id = nextId.value.toString();
-      nextId.value += 1;
       await create(tenantsFormState.value);
       notification.success({
         message: "Save Success",
         description: "ບັນທຶກສຳເລັດ",
       });
+      open.value = false;
+      await getAll()
     }
 
     resetForm();
   } catch (error) {
-    notification.error({
-      message: "Error",
-      description: "ເກີດຂໍ້ຜິດພາດ",
-    });
+    console.log('error!!:', error);
+    open.value = true;
   } finally {
     loading.value = false;
-    open.value = false;
+    // open.value = false;
   }
 };
 
@@ -68,15 +72,14 @@ const resetForm = () => {
   isEditMode.value = false;
 };
 
-let nextId = ref(1);
-
 const editIcon = ref<string>("material-symbols-light:table-rows");
 defineExpose({ open, item, isEditMode });
 
-watch(item, (newItem) => {
+watch(item, (newItem : any) => {
   if (newItem) {
     tenantsFormState.value = {
       ...newItem,
+      domain: newItem.domain.domain_url
     };
     isEditMode.value = true;
     open.value = true;
@@ -97,22 +100,22 @@ watch(item, (newItem) => {
       :model="tenantsFormState"
     >
       <a-form-item class="form-item-centered" label="ຊື່" name="name">
-        <a-input v-model:value="tenantsFormState.name" />
+        <a-input placeholder="ປ້ອນຊື່" v-model:value="tenantsFormState.name" />
       </a-form-item>
       <a-form-item
         class="form-item-centered"
         label="ຊືໂຄ້ງສ້າງ"
         name="schema_name"
       >
-        <a-input v-model:value="tenantsFormState.schema_name" />
+        <a-input placeholder="ປ້ອນຊື່ໂຄງສ້າງ" v-model:value="tenantsFormState.schema_name" />
       </a-form-item>
       <a-form-item class="form-item-centered" label="ໂດເມນ" name="domain">
-        <a-input v-model:value="tenantsFormState.domain" />
+        <a-input placeholder="ປ້ອນຊື່ໂດເມນ" v-model:value="tenantsFormState.domain" />
       </a-form-item>
     </a-form>
     <template #footer>
       <button-default
-        :disabled="loading"
+        :disabled="loading || isEditMode"
         :isLoading="loading"
         bgColor="bg-black w-full flex justify-center font-bold"
         textColor="text-white"

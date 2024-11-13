@@ -3,6 +3,7 @@ import { inject, injectable } from "tsyringe";
 import { LoginUseCase } from "../use-cases/login.use-case";
 import { AuthRepository } from "../repository/auth.repository";
 import { IAuthRepository } from "../interface/auth.interface";
+import { MeEntity } from "../entity/me.entity";
 
 @injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
     return await this._authReposioty.showMe()
   }
 
-  async changePassowrd(input: UserEntity) {
+  async changePassowrd(input: MeEntity) {
     return await this._authReposioty.changePassword(input);
   }
 }

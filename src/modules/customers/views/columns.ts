@@ -1,7 +1,7 @@
 export const columns = [
   {
     title: "ໂປຣຟາຍ",
-    dataIndex: "avatar",
+    dataIndex: "full_avatar_url",
   },
   {
     title: "ຊື່",

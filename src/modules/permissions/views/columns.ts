@@ -1,5 +1,12 @@
 export const columns = [
   {
+    title: "ລຳດັບ.",
+    dataIndex: "index",
+    key: "index",
+    width: 10,
+    customRender: ({ index }: { index: number }) => index + 1,
+  },
+  {
     title: "ຊື່",
     dataIndex: "name",
   },
@@ -7,12 +14,5 @@ export const columns = [
     title: "ລະຫັດຊື່",
     dataIndex: "codename",
   },
-  {
-    title: "ປະເພດເນື້ອຫາ",
-    dataIndex: "content_type",
-  },
-  {
-    title: "",
-    dataIndex: "actions",
-  },
+  
 ];

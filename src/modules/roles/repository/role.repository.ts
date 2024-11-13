@@ -28,10 +28,11 @@ export class RolesRepository implements RoleInterfaces {
       status: "success",
     };
   }
-  async update(input: RolesEntity): Promise<IResponse<RolesEntity>> {
+  async update(input: RolesEntity, id: string): Promise<IResponse<RolesEntity>> {
+    
     const res = await this._api.axios({
       method: "put",
-      url: `accounts/groups/${input.id}/`,
+      url: `accounts/groups/${id}/`,
       data: {
         name: input.name,
         permissions: input.permissions
@@ -46,17 +47,30 @@ export class RolesRepository implements RoleInterfaces {
   async getAll(
     args: IGPaginate<Pick<RolesEntity, RolesFilterType>>
   ): Promise<IResponse<IGPaginated<RolesEntity>>> {
+    console.log('touPage:',args.page);
     
     const res = await this._api.axios({
-      url: "/accounts/groups",
+      url: "/accounts/groups/",
       params: {
         page: args.page,
-        per_page: args.limit,
+        page_size: args.limit,
       },
     });
     const { results, count } = res.data;
     return {
-      data: { props: results, total: count.total },
+      data: { props: results, total: count },
+      status: "success",
+    };
+  }
+  
+  async getDetail(id: number): Promise<IResponse<RolesEntity>> {
+    
+    const res = await this._api.axios({
+      url: `/accounts/groups/${id}/`
+    });
+    
+    return {
+      data: res.data,
       status: "success",
     };
   }

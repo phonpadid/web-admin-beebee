@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { tenantsStore } from "../store/tenants.store";
 import { LineChartOutlined } from "@ant-design/icons-vue";
 import ModalTenantsView from "../components/FormTenantsView.vue";
@@ -21,7 +21,11 @@ const openModalAdd = () => {
     modalAdd.value.item = null;
   }
 };
-
+const testing = (record: TenantsEntity) => {
+  console.log('myData:');
+  
+  alert ('id:'+ record.id )
+}
 const openModalEdit = (record: TenantsEntity) => {
   const foundRecord = state.data.props.find((data) => data.id === record.id);
   if (foundRecord && modalEdit.value) {
@@ -42,8 +46,8 @@ const confirm = (id: string) => {
 };
 
 const cancel = () => {
-  notification.success({
-    message: "Cancel Delete Success",
+  notification.error({
+    message: "Cancel Delete",
     description: "ຍົກເລີກການລຶບ",
   });
 };
@@ -72,6 +76,18 @@ onMounted(async () => {
   paginationConfig.value.total = state.data.total;
   console.log("data", state.data.props);
 });
+const props = defineProps<{ searchQuery: string }>();
+const filteredData = computed(() => {
+  if (!props.searchQuery) return state.data.props;
+
+  const query = props.searchQuery.toLowerCase();
+
+  return state.data.props.filter((row) =>
+    // Only filter based on specific fields, such as 'first_name' and 'last_name'
+    String(row.name).toLowerCase().includes(query) || 
+    String(row.domain).toLowerCase().includes(query)
+  );
+});
 </script>
 
 <template>
@@ -87,7 +103,7 @@ onMounted(async () => {
     :scroll="{ x: true }"
     class="whitespace-nowrap"
     :columns="columns"
-    :dataSource="state.data.props"
+    :dataSource="filteredData"
     :pagination="paginationConfig"
     :loading="state.isLoading"
     :row-key="(record: any) => record.id"
@@ -100,16 +116,18 @@ onMounted(async () => {
             <ButtonCircle
               bgColor="bg-white "
               textColor="text-blue-700"
-              @click="() => openModalEdit(record)"
+              @click="()=> openModalEdit(record)"
             >
               <template #icon>
                 <Icon icon="solar-pen-bold" width="18" />
               </template>
             </ButtonCircle>
           </a-tooltip>
-          <ButtonCircle
+          <a-tooltip>
+            <template #title>ລົບ</template>
+            <ButtonCircle
             bgColor="bg-white hover:text-red-600"
-            textColor="text-red-600"
+            textColor="text-red-600" 
           >
             <template #icon>
               <a-popconfirm
@@ -119,11 +137,14 @@ onMounted(async () => {
                 @confirm="confirm(record.id)"
                 @cancel="cancel"
                 class="text-red-600"
+                :disabled="record.schema_name === 'public'"
               >
                 <Icon icon="solar-trash-bin-2-bold" width="18" />
               </a-popconfirm>
             </template>
           </ButtonCircle>
+          </a-tooltip>
+          
         </div>
       </template>
     </template>

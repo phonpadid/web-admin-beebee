@@ -17,8 +17,6 @@ export class AuthRepository implements IAuthRepository {
         password: input.password,
       },
     });
-    console.log('tou:', response.data);
-    
     return {
       data: response.data,
       message: "ເຂົ້າສູ່ລະບົບສຳເລັດແລ້ວ",

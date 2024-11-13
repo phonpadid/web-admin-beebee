@@ -6,6 +6,7 @@ import { container } from "tsyringe";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { MeEntity } from "../entity/me.entity";
+import { message } from "ant-design-vue";
 
 export interface AuthState {
   data: UserEntity | null;
@@ -28,49 +29,27 @@ export const useAuthStore = defineStore("auth", () => {
   });
 
   async function login(item: any) {
-    stateGetMe.isLoading = true;
-
+    
     try {
+      stateGetMe.isLoading = true;
       const result = await authService.login(item);
-      
       if (result.status === "success" && result.data) {
         localStorage.setItem("access", result.data.access);
-        // localStorage.setItem("roles", JSON.stringify(result.data.roles));
-        // localStorage.setItem(
-        //   "permissions",
-        //   JSON.stringify(result.data.permissions)
-        // );
+        localStorage.setItem("roles", JSON.stringify(result.data.roles));
+        localStorage.setItem(
+          "permissions",
+          JSON.stringify(result.data.permissions)
+        );
         // localStorage.setItem("locale", "en");
 
-        stateGetMe.errorMessage = "";
+        message.success({
+          content: "ຍີນດີຕ້ອນຮັບເຂົ້າສູ່ລະບົບ.",
+          duration: 3,
+        });
         router.push({ name: "admin_dashboard" });
-
-        // const roleUsers = result.data.roles;
-
-        // if (
-        //   roleUsers.includes(GET_ROLES.SUPER_ADMIN) ||
-        //   roleUsers.includes(GET_ROLES.ADMIN) ||
-        //   roleUsers.includes(GET_ROLES.USER)
-        // ) {
-        //   router.push({ name: "admin.dashboard" });
-        //   router.afterEach(() => {
-        //     window.location.reload();
-        //   });
-        // } else if (
-        //   roleUsers.includes(GET_ROLES.ADMIN_RESTAURANT) ||
-        //   roleUsers.includes(GET_ROLES.USER_RESTAURANT)
-        // ) {
-        //   router.push({ name: "restaurants" });
-        //   router.afterEach(() => {
-        //     window.location.reload();
-        //   });
-        // } else {
-        //   router.push({ name: "restaurants" });
-        //   router.afterEach(() => {
-        //     window.location.reload();
-        //   });
-        // }
+        clearFormUser()
       } else {
+        console.log('errMessage:', );
         stateGetMe.errorMessage = result.message ? result.message : "";
       }
     } catch (error: any) {
@@ -79,8 +58,13 @@ export const useAuthStore = defineStore("auth", () => {
         responseError = Object.keys(error.response.data.errors)
           .map((key) => `${key}: ${error.response.data.errors[key].join(", ")}`)
           .join("; ");
-      } else if (error.response.status === 401) {
-        responseError = "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ.";
+      } else if (error.status === 401) {
+        stateGetMe.errorMessage = "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ.";
+        stateGetMe.isLoading = false;
+        message.error({
+          content: "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ.",
+          duration: 3,
+        });
       } else {
         responseError = error.response.data.error;
       }
@@ -108,7 +92,6 @@ export const useAuthStore = defineStore("auth", () => {
     // console.log("Data from API:", state.data.props);
   }
   async function changePassword(input: MeEntity) {
-    console.log('data:', input);
     
     return await authService.changePassowrd(input);
   }

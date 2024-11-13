@@ -84,27 +84,6 @@ export const usersStore = defineStore("user-store", () => {
     }
     // console.log("Data from API:", state.data.props);
   }
-  // async function getAll() {
-  //   state.isLoading = true;
-  //   const results = await service.getAll({
-  //     page: setStateFilter.page,
-  //     limit: setStateFilter.limit,
-  //     filter: setStateFilter.filter,
-  //   });
-
-  //   if (results && results.data && results.status === "success") {
-  //     state.data.props = results.data.props.map((item) => ({
-  //       ...item,
-  //       name: item.tenant.name, // ดึงข้อมูลจาก tenant
-  //       schema_name: item.tenant.schema_name, // ดึงข้อมูลจาก tenant
-  //       created_on: item.tenant.created_on, // ดึงข้อมูลจาก tenant
-  //     }));
-  //     state.data.total = results.data.total;
-  //     state.isLoading = false;
-  //   }
-  // console.log("Data from API:", state.data.props);
-  // }
-
   async function create(input: UserEntity) {
     return await service.create(input);
   }
