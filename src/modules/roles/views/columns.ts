@@ -1,6 +1,6 @@
-export const columns = [
+export const columns = (t: any) => [
   {
-    title: "ຊື່",
+    title: t("messages.role.name"),
     dataIndex: "name",
   },
   {

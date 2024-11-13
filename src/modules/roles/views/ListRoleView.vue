@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { rolesStore } from "../store/role.store";
 import { useRouter } from "vue-router";
 import { notification } from "ant-design-vue";
@@ -7,6 +7,11 @@ import ButtonCircle from "@/components/Button/ButtonCircle.vue";
 import { Icon } from "@iconify/vue";
 import { RolesEntity } from "../entity/role.entity";
 import { columns } from "./columns";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+const getColumns = computed(() => columns(t));
+
 // Receive searchQuery as a prop
 const props = defineProps<{ searchQuery: string }>();
 
@@ -71,10 +76,11 @@ const filteredData = computed(() => {
 <template>
   <a-flex justify="space-between" :align="'flex-start'">
     <p class="text-base font-bold text-blue-500">
-      <line-chart-outlined /> ລາຍການRoles
+      <line-chart-outlined /> 
+      {{ $t('messages.role.item')  }}
     </p>
     <a-button type="primary" @click="push({ name: 'addRole.index' })">
-      ເພີມຂໍ້ມູນ
+      ເພີມຂໍ້ມູນ 
     </a-button>
   </a-flex>
   <a-divider style="margin-top: 10px" />
@@ -83,11 +89,11 @@ const filteredData = computed(() => {
   <a-table
     :scroll="{ x: true }"
     class="whitespace-nowrap"
-    :columns="columns"
+    :columns="getColumns"
     :dataSource="filteredData"
     :pagination="paginationConfig"
     :loading="state.isLoading"
-    :row-key="(record) => record.id"
+    :row-key="(record: any) => record.id"
   >
   <template #bodyCell="{ column, record }">
     <template v-if="column.dataIndex === 'actions'">

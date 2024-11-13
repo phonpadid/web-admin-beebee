@@ -63,11 +63,13 @@ import SideBar from "./Sidebar.vue";
 import Navbar from "./Navbar.vue";
 import Footer from "./Footer.vue";
 import { RouteLocationNormalizedLoaded, onBeforeRouteUpdate, useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 // Router and layout state
 const route = useRoute();
+const { t } = useI18n();
 const collapsed = ref<boolean>(false);
-const breadcrumbItems = ref<Array<string>>([]);
+// const breadcrumbItems = ref<Array<string>>([]);
 const searchQuery = ref<string>("");
 // const inputSearchData = ref<string>("");
 
@@ -75,28 +77,14 @@ const isDataTableView = computed(() => {
   // Change 'data-table-route' to your actual route name or path for the data table page
   return route.name === 'roles.index' || route.name === 'user' || route.name === 'permissions' || route.name === 'customers' || route.name === 'tenants'
 });
-// Breadcrumbs function
-function getBreadcrumbItems(to: RouteLocationNormalizedLoaded) {
-  breadcrumbItems.value = [];
-  to.matched.forEach((matched, idx) => {
-    if (idx !== 0) {
-      const labels = matched.meta.label as string[];
-      labels.map((item) => {
-        console.log('itemddF:', item);
-        // inputSearchData.value = item
-        breadcrumbItems.value.push(item as string);
-        searchQuery.value = "";
-      });
-    }
-  });
-}
 
-onBeforeRouteUpdate((to: any) => {
-  getBreadcrumbItems(to);
-});
-
-onMounted(() => {
-  getBreadcrumbItems(route);
+const breadcrumbItems = computed(() => {
+  return route.matched
+    .filter((_, idx) => idx !== 0)  // Skip the root path
+    .flatMap((matched) => {
+      const labels = matched.meta.label as string[] | undefined;
+      return labels ? labels.map((item) => t(item)) : [];
+    });
 });
 
 // Search function to update searchQuery

@@ -42,7 +42,7 @@
         <template #title>
           <span>
             <setting-outlined class="menu-icon" />
-            <span class="title">ຈັດການຂໍ້ມູນຫຼັກ {{$t('messages.')}}</span>
+            <span class="title">ຈັດການຂໍ້ມູນຫຼັກ</span>
           </span>
         </template>
         <a-menu-item key="8" class="menu" @click="goToRoute('user')">ຜູ້ໃຊ້</a-menu-item>

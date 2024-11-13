@@ -13,18 +13,20 @@ const openDrawer = ref(false);
 const openModalChangePassword = ref(false);
 
 // Localization and language setup
-const { t: $t, locale } = useI18n();
+const { t, locale } = useI18n();
 const languages = ref([
   { name: "English", value: "en" },
-  { name: "Lao", value: "lo" },
+  { name: "Lao", value: "la" },
 ]);
 
 // Update language
 const changeLanguage = (event: Event) => {
   locale.value = (event.target as HTMLSelectElement).value;
+  localStorage.setItem("locale", locale.value);
+  
   notification.info({
-    message: $t("language.changed"),
-    description: `${$t("language.selected")}: ${languages.value.find(lang => lang.value === locale.value)?.name}`,
+    message: t("messages.language.changed"),
+    description: `${t("messages.language.selected")}: ${languages.value.find(lang => lang.value === locale.value)?.name}`,
   });
 };
 

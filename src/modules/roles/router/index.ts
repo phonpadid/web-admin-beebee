@@ -6,7 +6,7 @@ export const rolesRoute: RouteRecordRaw[] = [
     name: "roles.index",
     component: () => import("../views/ListRoleView.vue"),
     meta: {
-      label: ["ຈັດການRoles"],
+      label: ["messages.role.item"],
     },
   },
   {
@@ -14,7 +14,7 @@ export const rolesRoute: RouteRecordRaw[] = [
     name: "addRole.index",
     component: () => import("../components/AddRole.vue"),
     meta: {
-      label: ["ຟອມRoles"],
+      label: ["messages.role.form.add"],
     },
   },
   {
@@ -22,7 +22,7 @@ export const rolesRoute: RouteRecordRaw[] = [
     name: "editRoles.index",
     component: () => import("../components/EditRole.vue"),
     meta: {
-      label: ["ຟອມRoles"],
+      label: ["messages.role.form.edit"],
     },
   },
 ];
