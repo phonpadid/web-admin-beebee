@@ -2,7 +2,7 @@
 import { ref, watch, defineExpose, onMounted } from "vue";
 import ButtonDefault from "@/components/Button/ButtonDefault.vue";
 import { Icon } from "@iconify/vue";
-import { RolesShcema } from "../schema/role.schema";
+import { RolesSchema } from "../schema/role.schema";
 import { rolesStore } from "../store/role.store";
 import { notification } from "ant-design-vue";
 import { RolesEntity } from "../entity/role.entity";
@@ -119,7 +119,7 @@ onMounted(async () => {
     <a-form
       layout="vertical"
       ref="form"
-      :rules="RolesShcema"
+      :rules="RolesSchema"
       :model="rolesFormState"
     >
       <a-form-item class="form-item-centered" label="ຊື່" name="name">

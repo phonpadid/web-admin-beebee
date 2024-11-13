@@ -1,5 +1,5 @@
 import type { Rule } from "ant-design-vue/es/form";
 
 export const RolesSchema: Record<string, Rule[]> = {
-  // name: [{ required: true, message: "ກະລຸນາປ້ອນຊື່ກ່ອນ", trigger: "change" }],
+  name: [{ required: true, message: "ກະລຸນາປ້ອນຊື່ກ່ອນ", trigger: "change" }],
 };

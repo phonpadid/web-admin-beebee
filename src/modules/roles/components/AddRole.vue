@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, defineExpose, onMounted , computed, reactive } from "vue";
+import { ref, watch, onMounted , computed } from "vue";
 import { LineChartOutlined } from "@ant-design/icons-vue";
-// import { RolesSchema } from "../schema/role.schema";
+import { RolesSchema } from "../schema/role.schema";
 import { rolesStore } from "../store/role.store";
 import { notification } from "ant-design-vue";
 import { RolesEntity } from "../entity/role.entity";
@@ -37,14 +37,11 @@ const filterPermission = computed(() =>
 
 // Watch filtered permissions and log changes for debugging
 watch(filterPermission, (newValue) => {
-  console.log('Filtered permissions:', newValue);
+  // console.log('Filtered permissions:', newValue);
 });
 
 const rolesFormState = ref<RolesEntity>({ ...FormStateRoles });
 const permissions = ref<PermissionsEntity[]>([]);
-  const RolesSchema = reactive<any>({
-  // name: [{ required: true, message: "ກະລຸນາປ້ອນຊື່ກ່ອນ", trigger: "change" }],
-});
 
 const handleSubmit = async () => {
   form.value
@@ -52,8 +49,8 @@ const handleSubmit = async () => {
     .then(async () => {
       loading.value = true;
       try {
-        console.log('Input:', rolesFormState.value);
-          await create(rolesFormState.value);
+        // console.log('Input:', rolesFormState.value);
+        await create(rolesFormState.value);
         notification.success({
           message: "Save Success",
           description: "ບັນທຶກສຳເລັດ",
@@ -62,20 +59,6 @@ const handleSubmit = async () => {
         open.value = false;
         await getAll();
       } catch (error: any) {
-        RolesSchema.name = [
-            {
-              required: true,
-              message: 'dfgdfgd',
-              trigger: "change",
-            },
-          ];
-
-        // notification.error({
-        //   message: "Error",
-        //   description: "ບັນທຶກຜິດພາດ",
-        // });
-        console.log('error:', error.response.data);
-        
         resetForm();
       } finally {
         loading.value = false;
@@ -102,9 +85,9 @@ const fetchPermissions = async () => {
     // Set `permissions` to only the filtered permissions
     permissions.value = filterPermission.value;
     
-    console.log("Filtered permissions after fetch:", permissions.value);
+    // console.log("Filtered permissions after fetch:", permissions.value);
   } catch (error) {
-    console.error("Error loading permissions:", error);
+    // console.error("Error loading permissions:", error);
   } finally {
     loadingPermissions.value = false;
   }
@@ -133,7 +116,7 @@ onMounted(async () => {
       :model="rolesFormState"
     >
       <a-form-item class="form-item-centered" label="ຊື່ບົດບາດ" name="name">
-        <a-input v-model:value="rolesFormState.name" placeholder="ປ້ອນຊື່ບົດບາດ" />
+        <a-input v-model:value="rolesFormState.name" placeholder="ປ້ອນຊື່ບົດບາດ" @input="clearData('name')" />
       </a-form-item>
 
       <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
