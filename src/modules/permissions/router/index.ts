@@ -6,7 +6,7 @@ export const permissionsRoute: RouteRecordRaw[] = [
     name: "permissions",
     component: () => import("../views/ListPemissionView.vue"),
     meta: {
-      label: ["ຈັດການPermissions"],
+      label: ["permissions.label"],
     },
   },
 ];

@@ -3,19 +3,183 @@
         "success": "Success",
         "error": "Error",
         "btn_create": "Create",
+        "placeholer": {
+            "search": "Search data"
+        },
         "notification": "Notifications",
         "language": {
             "changed": "Language",
-            "selected": "Selected"
+            "selected": "Selected",
+            "en": "English",
+            "lo": "Lao"
         },
         "role": {
             "manage": "Manage Role",
-            "item": "Item",
+            "item": "Item role",
+            "add_role": "add data",
+            "delete": "Delete",
             "form": {
                 "add": "Form Add Role",
                 "edit": "Form Edit Role"
             },
-            "name": "Name"
+            "name": "Name",
+            "add": "add data",
+            "edit": "Edit",
+            "more": "More",
+            "created_at": "Created at",
+            "updated_at": "updated at"
+        },
+        "menu_sidebar": {
+            "home": "Home",
+            "customer": "Customer",
+            "tenants": "Manage tenants",
+            "manage_user": "Manage information",
+            "user": "Users",
+            "role": "Roles",
+            "permission": "Permissions"
         }
-    }
+    },
+    "home_page": "Home Page",
+    "customers": {
+        "label": "Manage customers",
+        "label_add": "Add customers",
+        "form_customer": "Form customers",
+        "label_list": "Item data customers",
+        "add": "add data",
+        "edit": "Edit",
+        "delete": "Delete",
+        "table_field": {
+            "choose_profile": "Choose profile",
+            "phone_number": "Phone Number",
+            "password": "Password",
+            "confirm_password": "Confirm password",
+            "get_roles": "Assign roles to users",
+            "get_permissions": "Assign permissions to users",
+            "choose_customer" : {
+                "label": "Select customer type",
+                "general": "General customers",
+                "vip": "VIP customers"
+            },
+            "avatar": "avatar",
+            "fname": "First name",
+            "lname": "Last name",
+            "email": "Email address",
+            "type": "Customer type",
+            "created_at": "Created at",
+            "more": "More",
+            "btn": {
+                "remove": "Remove",
+                "save": "Save",
+                "cancel": "Cancel"
+            }
+        }
+    },
+    "tenants": {
+        "label": "Manage tenants",
+        "label_list": "Item data tenants",
+        "add": "add data",
+        "form_add": "Form add data",
+        "form_edit": "Form update data",
+        "edit": "Edit",
+        "delete": "Delete",
+        "table_field": {
+            "domain": "domain",
+            "name": "name",
+            "schema_name": "schema name",
+            "created_at": "Created at",
+            "more": "More"
+        }
+    },
+    "users": {
+        "label": "Manage users",
+        "label_list": "Item data users",
+        "add": "add data",
+        "edit": "Edit",
+        "delete": "Delete",
+        "table_field": {
+            "avatar": "avatar",
+            "fname": "First name",
+            "lname": "Last name",
+            "email": "Email address",
+            "created_at": "Created at",
+            "updated_at": "updated at",
+            "more": "More"
+        }
+    },
+    "permissions": {
+        "label": "Manage permissions",
+        "label_list": "Item data permissions",
+        "table_field": {
+            "id": "ID",
+            "name": "Name",
+            "code_name": "Code name"
+        }
+    },
+    "setting": {
+        "hover": "setting",
+        "title_setting": "General settings",
+        "change_password": "Change password",
+        "logout": {
+            "title": "Logout",
+            "ask": {
+                "messages": "Do you want to log out?",
+                "okay": "Ok",
+                "cancel": "Cancel"
+            }
+        }
+    },
+    "popconfirm": {
+        "delete": {
+            "messages": "Are you sure to delete?",
+            "okay": "Ok",
+            "cancel": "Cancel"
+        },
+        "message_cancel": {
+            "title": "Cancel success",
+            "messages": "Cancel delete"
+        },
+        "message_success": {
+            "title": "Deleted",
+            "messages": "Delete successfully"
+        }
+    },
+    "placeholder": {
+        "user": {
+            "fname": "Enter the first name",
+            "lname": "Enter the last name",
+            "email": "Enter the email address",
+            "phone_number": "Enter the phone number",
+            "password": "Enter the password",
+            "confirm_password": "Enter the confirm password"
+        },
+        "tenants": {
+            "name": "Enter a name",
+            "schema_name": "Enter a schema name",
+            "domain": "Enter a domain name"
+        }
+    },
+    "validation": {
+        "user": {
+            "fname": "Please enter a first name",
+            "lname": "Please enter a last name",
+            "email": "Please enter a email address",
+            "style_email": "Must be in the form of an email ",
+            "phone_number": "Please enter a phone number",
+            "length_pass": "The password must be 8 characters or more",
+            "pattern": "Password must contain letters and numbers",
+            "password": "Please enter password",
+            "confirm_password": "Please enter confirm password"
+        },
+        "tenants" : {
+            "name": "Please enter a name",
+            "schema_name": "Please enter a schema name",
+            "domain_name": "Please enter a domain name"
+        }
+    },
+    "pagination": {
+        "items_per_page": " / page"
+      },
+      "preview": "Preview",
+      
+    "copyright": "Ant Design ©2024 Development by Aiy PAO Team"
 }

@@ -1,17 +1,17 @@
-export const columns = [
+export const columns = (t: any) => [
   {
-    title: "ລຳດັບ.",
+    title: t("permissions.table_field.id"),
     dataIndex: "index",
     key: "index",
     width: 10,
     customRender: ({ index }: { index: number }) => index + 1,
   },
   {
-    title: "ຊື່",
+    title: t("permissions.table_field.name"),
     dataIndex: "name",
   },
   {
-    title: "ລະຫັດຊື່",
+    title: t("permissions.table_field.code_name"),
     dataIndex: "codename",
   },
   

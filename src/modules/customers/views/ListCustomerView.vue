@@ -12,16 +12,20 @@ import { useRouter } from "vue-router";
 const { push } = useRouter();
 import defaultAvatar from "@/assets/profile.jpg";
 import { usersStore } from "@/modules/user/store";
+import { useI18n } from "vue-i18n";
 const { getAllCustomer, stateCustomer, setStateFilter } = customerStore();
 const { remove } = usersStore();
+const { t } = useI18n();
+const getColumns = computed(() => columns(t));
+// const getColumns = computed(() => columns(t));
 //testor
 const confirm = async (record: CustomerEntity) => {
-  console.log('deleteId:', record.customer_id);
-  
-  await remove(Number(record.id))
+  // console.log('deleteId:', record.customer_id);
+
+  await remove(Number(record.id));
   notification.success({
-    message: "Delete Success",
-    description: "ລົບຂໍ້ມູນສຳເລັດ",
+    message: t("popconfirm.message_success.title"),
+    description: t("popconfirm.message_success.messages"),
   });
   togglePopover(Number(record.customer_id), false);
   await getAllCustomer();
@@ -29,17 +33,20 @@ const confirm = async (record: CustomerEntity) => {
 
 const cancel = () => {
   notification.error({
-    message: "Cancel",
-    description: "ຍົກເລີກການລຶບ",
+    message: t("popconfirm.message_cancel.title"),
+    description: t("popconfirm.message_cancel.messages"),
   });
 };
-
+const paginationLocale = computed(() => ({
+  items_per_page: t("pagination.items_per_page"),
+}));
 const paginationConfig = ref({
   total: stateCustomer.data.total,
   pageSize: setStateFilter.limit,
   current: setStateFilter.page,
   showSizeChanger: true,
   pageSizeOptions: ["10", "20", "50", "100"],
+  locale: paginationLocale,
   onChange: handlePageChange,
 });
 
@@ -58,7 +65,7 @@ const getOne = (record: CustomerEntity) => {
 onMounted(async () => {
   await getAllCustomer();
   paginationConfig.value.total = stateCustomer.data.total;
-  console.log("data", stateCustomer.data.props);
+  // console.log("data", stateCustomer.data.props);
 });
 
 const popoverVisible = ref<Record<number, boolean>>({});
@@ -72,10 +79,11 @@ const filteredData = computed(() => {
 
   const query = props.searchQuery.toLowerCase();
 
-  return stateCustomer.data.props.filter((row) =>
-    // Only filter based on specific fields, such as 'first_name' and 'last_name'
-    String(row.first_name).toLowerCase().includes(query) || 
-    String(row.last_name).toLowerCase().includes(query)
+  return stateCustomer.data.props.filter(
+    (row) =>
+      // Only filter based on specific fields, such as 'first_name' and 'last_name'
+      String(row.first_name).toLowerCase().includes(query) ||
+      String(row.last_name).toLowerCase().includes(query)
   );
 });
 </script>
@@ -84,29 +92,35 @@ const filteredData = computed(() => {
   <a-flex justify="space-between" :align="'flex-start'">
     <p class="text-base font-bold text-blue-500">
       <line-chart-outlined />
-      ລາຍການຂໍ້ມູນລູກຄ້າ
+      {{ $t("customers.label_list") }}
     </p>
-    <a-button type="primary" @click="push({ name: 'addCustomer.index' })"
-      >ເພີ່ມຂໍ້ມູນ</a-button
-    >
+    <a-button type="primary" @click="push({ name: 'addCustomer.index' })">
+      {{ $t("customers.add") }}
+    </a-button>
   </a-flex>
   <a-divider style="margin-top: 10px" />
   <a-table
     :scroll="{ x: true }"
     class="whitespace-nowrap"
-    :columns="columns"
+    :columns="getColumns"
     :dataSource="filteredData"
     :pagination="paginationConfig"
     :loading="stateCustomer.isLoading"
-    :row-key="(record) => record.id"
+    :row-key="(record: any) => record.id"
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'full_avatar_url'">
-        <img
-        :src="record?.full_avatar_url || defaultAvatar"
-        alt="Profile Avatar"
-        class="w-10 h-10 rounded-full"
-      />
+        <a-image
+          :src="record?.full_avatar_url || defaultAvatar"
+          alt="Profile Avatar"
+          width="3rem"
+          height="3rem"
+          class="rounded-full"
+        >
+        <template #previewMask>
+          <span class="text-[10px]">{{ $t('preview') }}</span>
+        </template>
+      </a-image>
       </template>
       <template v-if="column.dataIndex === 'created_at'">
         <span>{{
@@ -121,7 +135,7 @@ const filteredData = computed(() => {
       <template v-if="column.dataIndex === 'actions'">
         <div class="flex items-center justify-center gap-2">
           <a-tooltip>
-            <template #title>ແກ້ໄຂ້</template>
+            <template #title>{{ $t("customers.edit") }}</template>
             <ButtonCircle
               bgColor="bg-white "
               textColor="text-blue-700"
@@ -133,26 +147,25 @@ const filteredData = computed(() => {
             </ButtonCircle>
           </a-tooltip>
           <a-tooltip>
-            <template #title>ລົບ</template>
+            <template #title>{{ $t("customers.delete") }}</template>
             <ButtonCircle
-            bgColor="bg-white hover:text-red-600"
-            textColor="text-red-600"
-          >
-            <template #icon>
-              <a-popconfirm
-                title="ເຈົ້າເເນ່ໃຈທີ່ຈະລຶບຂໍ້ມູນນີ້ ຫຼື ບໍ?"
-                ok-text="ເເມ່ນ"
-                cancel-text="ບໍ່ເເມ່ນ"
-                @confirm="confirm(record)"
-                @cancel="cancel"
-                class="text-red-600"
-              >
-                <Icon icon="solar-trash-bin-2-bold" width="18" />
-              </a-popconfirm>
-            </template>
-          </ButtonCircle>
+              bgColor="bg-white hover:text-red-600"
+              textColor="text-red-600"
+            >
+              <template #icon>
+                <a-popconfirm
+                  :title="$t('popconfirm.delete.messages')"
+                  :ok-text="$t('popconfirm.delete.okay')"
+                  :cancel-text="$t('popconfirm.delete.cancel')"
+                  @confirm="confirm(record)"
+                  @cancel="cancel"
+                  class="text-red-600"
+                >
+                  <Icon icon="solar-trash-bin-2-bold" width="18" />
+                </a-popconfirm>
+              </template>
+            </ButtonCircle>
           </a-tooltip>
-          
         </div>
       </template>
     </template>

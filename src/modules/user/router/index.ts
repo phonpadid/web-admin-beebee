@@ -9,7 +9,7 @@ export const userRoute: RouteRecordRaw[] = [
     name: "user",
     component: () => import("../views/ListUserView.vue"),
     meta: {
-      label: ["ຈັດການຜູ້ໃຊ້"],
+      label: ["users.label"],
       // requiredRoles: [GET_ROLES.ADMIN, GET_ROLES.SUPER_ADMIN, GET_ROLES.USER],
     },
     // beforeEnter: roleGuard,

@@ -14,7 +14,7 @@ const { create, getAll } = rolesStore();
 const { getAllPer, statePermission } = permissionsStore();
 
 // Form and UI states
-const activeKeyPermission = ref(["1"]);
+const activeKeyPermission = ref(["2"]);
 const loadingPermissions = ref(false);
 const form = ref();
 const { push } = useRouter()
@@ -92,7 +92,6 @@ onMounted(async () => {
     <a-form
       layout="vertical"
       ref="form"
-      class=" md:w-[40rem]"
       :rules="RolesSchema"
       :model="rolesFormState"
     >

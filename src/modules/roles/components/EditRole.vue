@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from "vue";
+import { LineChartOutlined } from "@ant-design/icons-vue";
 import { RolesSchema } from "../schema/role.schema";
 import { rolesStore } from "../store/role.store";
 import { notification } from "ant-design-vue";
@@ -10,7 +11,7 @@ import { useRoute, useRouter } from "vue-router";
 
 const { update, getDetail, getAll } = rolesStore();
 const { getAllPer, statePermission } = permissionsStore();
-const activeKeyPermission = ref(["1"]);
+const activeKeyPermission = ref(["2"]);
 const loading = ref(false);
 const loadingPermissions = ref(false);
 const { params } = useRoute();
@@ -110,7 +111,6 @@ const clearData = (key: string) => {
     <a-form
       layout="vertical"
       ref="form"
-      class="md:w-[40rem]"
       :rules="RolesSchema"
       :model="rolesFormState"
     >

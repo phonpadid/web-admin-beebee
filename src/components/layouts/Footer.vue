@@ -1,5 +1,5 @@
 <template>
     <a-layout-footer style="text-align: center">
-        Ant Design ©2024 Created by PAO VANG
+        {{ $t("copyright") }}
     </a-layout-footer>
 </template>

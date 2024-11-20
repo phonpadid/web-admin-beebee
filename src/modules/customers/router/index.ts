@@ -9,7 +9,7 @@ export const customersRoute: RouteRecordRaw[] = [
     name: "customers",
     component: () => import("../views/ListCustomerView.vue"),
     meta: {
-      label: ["ຈັດການລູກຄ້າ"],
+      label: ["customers.label"],
       // requiredRoles: [GET_ROLES.ADMIN, GET_ROLES.SUPER_ADMIN, GET_ROLES.USER],
     },
     // beforeEnter: roleGuard,
@@ -24,7 +24,7 @@ export const customersRoute: RouteRecordRaw[] = [
     path: "addCustomer",
     name: "addCustomer.index",
     component: () => import("../components/AddCustomer.vue"),
-    meta: {label: ['ເພີ່ມຂໍ້ມູນລູກຄ້າ']}
+    meta: {label: ['customers.label_add']}
   },
   {
     path: "getMe",

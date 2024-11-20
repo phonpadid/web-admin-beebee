@@ -1,15 +1,18 @@
 <template>
   <div class="pb-4 flex justify-between">
-    <p class="text-base flex font-bold text-blue-500 items-center gap-2 justify-center">
+    <p
+      class="text-base flex font-bold text-blue-500 items-center gap-2 justify-center"
+    >
       <line-chart-outlined />
-      ຟອມລູກຄ້າ
+      {{ $t("customers.form_customer") }}
     </p>
   </div>
 
   <a-form
     layout="vertical"
     ref="form"
-    :rules="UserShcema"
+    :rules="schema"
+    :key="schemaKey"
     :model="userFormState"
     class="flex-col flex"
   >
@@ -17,7 +20,7 @@
 
     <a-form-item label=" " class="-mt-12" name="avatar">
       <div class="flex flex-col items-center sm:items-start gap-6">
-        <a-image
+        <a-image v-if="userFormState.avatar"
           :src="
             typeof userFormState.avatar === 'object' &&
             userFormState.avatar.objectURL
@@ -27,7 +30,20 @@
           width="10rem"
           height="10rem"
           style="object-fit: contain"
+        >
+        <template #previewMask>
+          <span>{{ $t('preview') }}</span>
+        </template>
+      </a-image>
+        <img v-else
+          src="/src/assets/nodata.png"
+          width="200rem"
+          height="200rem"
+          class="my-4"
+          style="object-fit: contain"
+          alt="" srcset=""
         />
+        <!-- <img src="" alt="" srcset=""> -->
         <a-alert
           v-if="imageErrorMessage"
           :message="imageErrorMessage"
@@ -45,29 +61,37 @@
         multiple
         :before-upload="onUpload"
       >
-        <a-button> ເລືອກຮູບພາບ </a-button>
+        <a-button> {{ $t("customers.table_field.choose_profile") }} </a-button>
       </a-upload>
       <a-button
         @click="clearImage"
         v-if="userFormState.avatar"
         class="ml-4 text-red-600"
       >
-        ລົບຮູບ
+        {{ $t("customers.table_field.btn.remove") }}
       </a-button>
     </a-form-item>
 
     <!-- Input fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ຊື່" name="first_name" class="w-full">
+      <a-form-item
+        :label="$t('customers.table_field.fname')"
+        name="first_name"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນຊື່"
+          :placeholder="placeholders.firstName"
           class="h-12"
           v-model:value="userFormState.first_name"
         />
       </a-form-item>
-      <a-form-item label="ນາມສະກຸນ" name="last_name" class="w-full">
+      <a-form-item
+        :label="$t('customers.table_field.lname')"
+        name="last_name"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນນາມສະກຸນ"
+         :placeholder="placeholders.lastName"
           class="h-12"
           v-model:value="userFormState.last_name"
         />
@@ -75,16 +99,24 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ເບີໂທ" name="phone_number" class="w-full">
+      <a-form-item
+        :label="$t('customers.table_field.phone_number')"
+        name="phone_number"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນເບີໂທ"
+          :placeholder="placeholders.phoneNumber"
           class="h-12"
           v-model:value="userFormState.phone_number"
         />
       </a-form-item>
-      <a-form-item label="ອີເມວ" name="email" class="w-full">
+      <a-form-item
+        :label="$t('customers.table_field.email')"
+        name="email"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນອີເມວ"
+           :placeholder="placeholders.email"
           class="h-12"
           v-model:value="userFormState.email"
         />
@@ -92,22 +124,26 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ລະຫັດຜ່ານ" name="password" class="w-full">
+      <a-form-item
+        :label="$t('customers.table_field.password')"
+        name="password"
+        class="w-full"
+      >
         <a-input-password
           type="password"
-          placeholder="ປ້ອນລະຫັດຜ່ານ"
+          :placeholder="placeholders.password"
           class="h-12"
           v-model:value="userFormState.password"
         />
       </a-form-item>
       <a-form-item
-        label="ຢືນຢັນລະຫັດຜ່ານ"
+        :label="$t('customers.table_field.confirm_password')"
         name="password_confirmation"
         class="w-full"
       >
         <a-input-password
           type="password"
-          placeholder="ປ້ອນລະຫັດຜ່ານອີກຄັ້ງ"
+          :placeholder="placeholders.confirmPassword"
           class="h-12"
           v-model:value="userFormState.password_confirmation"
         />
@@ -118,7 +154,7 @@
     <a-collapse v-model:activeKey="activeKey" class="mt-2">
       <a-collapse-panel
         key="2"
-        header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້"
+        :header="$t('customers.table_field.get_roles')"
         name="groups"
         class="w-full"
       >
@@ -143,7 +179,7 @@
     <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
       <a-collapse-panel
         key="2"
-        header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້"
+        :header="$t('customers.table_field.get_permissions')"
         name="user_permission"
         class="w-full"
       >
@@ -165,20 +201,30 @@
       </a-collapse-panel>
     </a-collapse>
 
-    <a-form-item label="ເລືອກປະເພດລູກຄ້າ" name="type" class="mt-6">
+    <a-form-item
+      :label="$t('customers.table_field.choose_customer.label')"
+      name="type"
+      class="mt-6"
+    >
       <a-radio-group v-model:value="userFormState.type">
-        <a-radio value="general">ລູກຄ້າທົ່ວໄປ</a-radio>
-        <a-radio value="vip">ລູກຄ້າ VIP</a-radio>
+        <a-radio value="general">
+          {{ $t("customers.table_field.choose_customer.general") }}
+        </a-radio>
+        <a-radio value="vip">{{
+          $t("customers.table_field.choose_customer.vip")
+        }}</a-radio>
       </a-radio-group>
     </a-form-item>
     <!-- Submit Buttons -->
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
-        <a-button type="primary" @click="handleOrderDetailsSubmit"
-          >ບັນທຶກ</a-button
-        >
+        <a-button type="primary" @click="handleOrderDetailsSubmit">
+          {{ $t("customers.table_field.btn.save") }}
+        </a-button>
         &nbsp;
-        <a-button danger @click="push({ name: 'customers' })">ຍົກເລີກ</a-button>
+        <a-button danger @click="push({ name: 'customers' })">{{
+          $t("customers.table_field.btn.cancel")
+        }}</a-button>
       </a-form-item>
     </div>
   </a-form>
@@ -188,15 +234,18 @@
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { LineChartOutlined } from "@ant-design/icons-vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 import { CustomerEntity } from "../entity/customer.entity";
 import { customerStore } from "../store/index";
 import { notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
-import { UserShcema } from "../schema/user.schema";
+import { useCustomerSchema } from "../schema/user.schema";
+const {schema, schemaKey} = useCustomerSchema();
+
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
+import { useI18n } from "vue-i18n";
 const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
@@ -216,6 +265,16 @@ const initialFormState: CustomerEntity = {
   password: "",
   password_confirmation: "",
 };
+// Define computed properties for translated placeholders
+const { t } = useI18n();
+const placeholders = computed(() => ({
+  firstName: t("placeholder.user.fname"),
+  lastName: t("placeholder.user.lname"),
+  phoneNumber: t("placeholder.user.phone_number"),
+  email: t("placeholder.user.email"),
+  password: t("placeholder.user.password"),
+  confirmPassword: t("placeholder.user.confirm_password"),
+}));
 const form = ref();
 const loading = ref(false);
 const userFormState = ref<CustomerEntity>({
@@ -319,8 +378,8 @@ onMounted(async () => {
   loadingPermission.value = false;
 });
 
-const activeKey = ref(["1"]);
-const activeKeyPermission = ref(["1"]);
+const activeKey = ref(["2"]);
+const activeKeyPermission = ref(["2"]);
 </script>
 <style scoped>
 .ant-select-selection-search-input {
@@ -345,5 +404,33 @@ const activeKeyPermission = ref(["1"]);
 /* Ensure the dropdown menu has adequate height */
 .custom-select .ant-select-dropdown {
   min-height: 200px; /* Adjust as needed */
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+  width: 10rem;
+  height: 10rem;
+}
+
+.image-container .hover-message {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Dark overlay */
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  display: flex; /* Center the text */
+}
+
+.image-container:hover .hover-message {
+  display: flex; /* Show hover message */
 }
 </style>

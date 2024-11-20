@@ -4,15 +4,15 @@ export const columns = (t: any) => [
     dataIndex: "name",
   },
   {
-    title: "ເວລາສ້າງ",
+    title: t("messages.role.created_at"),
     dataIndex: "created_at",
   },
   {
-    title: "ເວລາອັບເດດ",
+    title: t("messages.role.updated_at"),
     dataIndex: "updated_at",
   },
   {
-    title: "",
+    title: t("messages.role.more"),
     dataIndex: "actions",
   },
 ];

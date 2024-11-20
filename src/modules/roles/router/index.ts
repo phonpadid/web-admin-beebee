@@ -6,7 +6,7 @@ export const rolesRoute: RouteRecordRaw[] = [
     name: "roles.index",
     component: () => import("../views/ListRoleView.vue"),
     meta: {
-      label: ["messages.role.item"],
+      label: ["messages.role.manage"],
     },
   },
   {

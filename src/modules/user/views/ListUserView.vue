@@ -10,8 +10,7 @@ import { notification } from "ant-design-vue";
 import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 const { push } = useRouter();
-const modalEdit = ref();
-import defaultAvatar from "@/assets/profile.jpg";
+import { useI18n } from "vue-i18n";
 const { getAllUser, stateUser, setStateFilter, remove } = usersStore();
 
 const props = defineProps<{ searchQuery: string }>();
@@ -20,28 +19,19 @@ const filteredData = computed(() => {
 
   const query = props.searchQuery.toLowerCase();
 
-  return stateUser.data.props.filter((row) =>
-    // Only filter based on specific fields, such as 'first_name' and 'last_name'
-    String(row.first_name).toLowerCase().includes(query) ||
-    String(row.last_name).toLowerCase().includes(query)
+  return stateUser.data.props.filter(
+    (row) =>
+      // Only filter based on specific fields, such as 'first_name' and 'last_name'
+      String(row.first_name).toLowerCase().includes(query) ||
+      String(row.last_name).toLowerCase().includes(query)
   );
 });
-const openModalEdit = (record: UserEntity) => {
-  const foundRecord = stateUser.data.props.find(
-    (data) => data.id === record.id
-  );
-  if (foundRecord && modalEdit.value) {
-    modalEdit.value.item = foundRecord;
-    modalEdit.value.isEditMode = true;
-    modalEdit.value.open = true;
-  }
-};
 
 const confirm = async (id: string) => {
-  await remove(Number(id))
+  await remove(Number(id));
   notification.success({
-    message: "Delete Success",
-    description: "ລົບຂໍ້ມູນສຳເລັດ",
+    message: t("popconfirm.message_success.title"),
+    description: t("popconfirm.message_success.messages"),
   });
   togglePopover(Number(id), false);
   await getAllUser();
@@ -49,17 +39,21 @@ const confirm = async (id: string) => {
 
 const cancel = () => {
   notification.error({
-    message: "Cancel Delete",
-    description: "ຍົກເລີກການລຶບ",
+    message: t("popconfirm.message_cancel.title"),
+    description: t("popconfirm.message_cancel.messages"),
   });
 };
 
+const paginationLocale = computed(() => ({
+  items_per_page: t("pagination.items_per_page"),
+}));
 const paginationConfig = ref({
   total: stateUser.data.total,
   pageSize: setStateFilter.limit,
   current: setStateFilter.page,
   showSizeChanger: true,
   pageSizeOptions: ["10", "20", "50", "100"],
+  locale: paginationLocale,
   onChange: handlePageChange,
 });
 
@@ -79,7 +73,7 @@ const getOne = (record: UserEntity) => {
 onMounted(async () => {
   await getAllUser();
   paginationConfig.value.total = stateUser.data.total;
-  console.log("data", stateUser.data.props);
+  // console.log("data", stateUser.data.props);
 });
 
 const popoverVisible = ref<Record<number, boolean>>({});
@@ -87,23 +81,25 @@ const popoverVisible = ref<Record<number, boolean>>({});
 const togglePopover = (id: number, isVisible: boolean) => {
   popoverVisible.value[id] = isVisible;
 };
+const { t } = useI18n();
+const getColumns = computed(() => columns(t));
 </script>
 
 <template>
   <a-flex justify="space-between" :align="'flex-start'">
     <p class="text-base font-bold text-blue-500">
       <line-chart-outlined />
-      ລາຍການຜູ້ໃຊ້ລະບົບ
+      {{ $t("users.label_list") }}
     </p>
-    <a-button type="primary" @click="push({ name: 'addUser.index' })"
-      >ເພີ່ມຂໍ້ມູນ</a-button
-    >
+    <a-button type="primary" @click="push({ name: 'addUser.index' })">{{
+      $t("users.add")
+    }}</a-button>
   </a-flex>
   <a-divider style="margin-top: 10px" />
   <a-table
     :scroll="{ x: true }"
     class="whitespace-nowrap"
-    :columns="columns"
+    :columns="getColumns"
     :dataSource="filteredData"
     :pagination="paginationConfig"
     :loading="stateUser.isLoading"
@@ -111,11 +107,26 @@ const togglePopover = (id: number, isVisible: boolean) => {
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'avatar'">
+        <a-image
+          v-if="record.avatar"
+          :src="record?.avatar"
+          alt="Profile Avatar"
+          width="3rem"
+          height="3rem"
+          class="rounded-full"
+        >
+          <template #previewMask>
+            <span class="text-[10px]">{{ $t("preview") }}</span>
+          </template>
+        </a-image>
         <img
-        :src="record?.avatar || defaultAvatar"
-        alt="Profile Avatar"
-        class="w-10 h-10 rounded-full"
-      />
+          v-else
+          src="/src/assets/profile.jpg"
+          alt="Profile Avatar"
+          width="55rem"
+          height="55rem"
+          class="rounded-full -ml-1"
+        />
       </template>
       <template v-if="column.dataIndex === 'created_at'">
         <span>{{
@@ -130,7 +141,7 @@ const togglePopover = (id: number, isVisible: boolean) => {
       <template v-if="column.dataIndex === 'actions'">
         <div class="flex items-center justify-center gap-2">
           <a-tooltip>
-            <template #title>ແກ້ໄຂ້</template>
+            <template #title> {{ $t("users.edit") }} </template>
             <ButtonCircle
               bgColor="bg-white "
               textColor="text-blue-700"
@@ -142,26 +153,25 @@ const togglePopover = (id: number, isVisible: boolean) => {
             </ButtonCircle>
           </a-tooltip>
           <a-tooltip>
-            <template #title>ລົບ</template>
+            <template #title>{{ $t("users.delete") }}</template>
             <ButtonCircle
-            bgColor="bg-white hover:text-red-600"
-            textColor="text-red-600"
-          >
-            <template #icon>
-              <a-popconfirm
-                title="ເຈົ້າເເນ່ໃຈທີ່ຈະລຶບຂໍ້ມູນນີ້ ຫຼື ບໍ?"
-                ok-text="ເເມ່ນ"
-                cancel-text="ບໍ່ເເມ່ນ"
-                @confirm="confirm(record.id)"
-                @cancel="cancel"
-                class="text-red-600"
-              >
-                <Icon icon="solar-trash-bin-2-bold" width="18" />
-              </a-popconfirm>
-            </template>
-          </ButtonCircle>
+              bgColor="bg-white hover:text-red-600"
+              textColor="text-red-600"
+            >
+              <template #icon>
+                <a-popconfirm
+                  :title="$t('popconfirm.delete.messages')"
+                  :ok-text="$t('popconfirm.delete.okay')"
+                  :cancel-text="$t('popconfirm.delete.cancel')"
+                  @confirm="confirm(record.id)"
+                  @cancel="cancel"
+                  class="text-red-600"
+                >
+                  <Icon icon="solar-trash-bin-2-bold" width="18" />
+                </a-popconfirm>
+              </template>
+            </ButtonCircle>
           </a-tooltip>
-          
         </div>
       </template>
     </template>

@@ -13,7 +13,7 @@ const openDrawer = ref(false);
 const openModalChangePassword = ref(false);
 
 // Localization and language setup
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 const languages = ref([
   { name: "English", value: "en" },
   { name: "Lao", value: "la" },
@@ -24,10 +24,10 @@ const changeLanguage = (event: Event) => {
   locale.value = (event.target as HTMLSelectElement).value;
   localStorage.setItem("locale", locale.value);
   
-  notification.info({
-    message: t("messages.language.changed"),
-    description: `${t("messages.language.selected")}: ${languages.value.find(lang => lang.value === locale.value)?.name}`,
-  });
+  // notification.info({
+  //   message: t("messages.language.changed"),
+  //   description: `${t("messages.language.selected")}: ${languages.value.find(lang => lang.value === locale.value)?.name}`,
+  // });
 };
 
 const showDrawer = () => {
@@ -80,7 +80,7 @@ const avatarUrl = computed(() => {
   <div class="setting">
     <a-tooltip placement="bottom">
       <template #title>
-        <span class="custom-tooltip-text text-[12px]">ຕັ້ງຄ່າ</span>
+        <span class="custom-tooltip-text text-[12px]">{{ $t('setting.hover') }} </span>
       </template>
       <span class="md:text-lg text-[12px] font-bold text-slate-700" @click="showDrawer">
         <div class="w-10 h-10 rounded-full">
@@ -94,7 +94,7 @@ const avatarUrl = computed(() => {
     </a-tooltip>
   </div>
 
-  <a-drawer v-model:open="openDrawer" title="ການຕັ້ງຄ່າທົ່ວໄປ" :width="300" placement="right">
+  <a-drawer v-model:open="openDrawer" :title="$t('setting.title_setting')" :width="300" placement="right">
     <div class="-mt-4 px-2 py-2 shadow-md h-full bg-slate-100 rounded-md">
       <div @click="navigateToProfile" class="flex items-center gap-2 py-1 px-1 ring-1 ring-slate-200 cursor-pointer hover:bg-slate-200 rounded-md">
         <img
@@ -116,20 +116,20 @@ const avatarUrl = computed(() => {
       </div>
 
       <button @click="openModal" class="mt-4 h-[50px] w-full flex items-center gap-2 ring-1 ring-slate-200 hover:bg-slate-200 shadow-md py-1 px-3 cursor-pointer rounded-md text-slate-500 text-[14px]">
-        ປ່ຽນລະຫັດຜ່ານ
+        {{ $t("setting.change_password") }}
       </button>
       <ModalChangePassword 
       v-model:openModalChangePassword="openModalChangePassword"
        hidden
       />
       <a-popconfirm 
-      title="ທ່ານຕ້ອງການອອກຈາກລະບົບ ຫຼື ບໍ?" 
-      ok-text="ເເມ່ນ" cancel-text="ຍົກເລີກ" 
+      :title="$t('setting.logout.ask.messages')" 
+      :ok-text="$t('setting.logout.ask.okay')" :cancel-text="$t('setting.logout.ask.cancel')" 
       placement="bottom"
       @confirm="confirmLogout" 
       @cancel="cancelLogout">
         <button class="mt-4 h-[50px] w-full flex items-center gap-2 ring-1 ring-slate-200 hover:bg-slate-200 shadow-md py-1 px-3 cursor-pointer rounded-md text-slate-500 text-[14px]">
-          ອອກຈາກລະບົບ
+          {{ $t("setting.logout.title") }}
         </button>
       </a-popconfirm>
     </div>

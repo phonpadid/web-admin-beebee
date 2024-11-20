@@ -9,7 +9,8 @@
   <a-form
     layout="vertical"
     ref="form"
-    :rules="updateUserShcema"
+    :rules="schema"
+    :key="schemaKey"
     :model="userFormState"
     class="flex-col flex"
   >
@@ -50,24 +51,25 @@
       </a-button>
     </a-form-item>
     <!-- Input fields -->
-    <div class="md:flex md:flex-row flex-col gap-4 -mt-6">
-      <a-form-item hidden label="ຊື່" name="id" class="w-full">
+    <div class="md:flex md:flex-row flex-col gap-4">
+      <a-form-item
+        :label="$t('customers.table_field.fname')"
+        name="first_name"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນຊື່"
-          class="h-12"
-          v-model:value="userFormState.id"
-        />
-      </a-form-item>
-      <a-form-item label="ຊື່" name="first_name" class="w-full">
-        <a-input
-          placeholder="ກະລຸນາປ້ອນຊື່"
+          :placeholder="placeholders.firstName"
           class="h-12"
           v-model:value="userFormState.first_name"
         />
       </a-form-item>
-      <a-form-item label="ນາມສະກຸນ" name="last_name" class="w-full">
+      <a-form-item
+        :label="$t('customers.table_field.lname')"
+        name="last_name"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນນາມສະກຸນ"
+         :placeholder="placeholders.lastName"
           class="h-12"
           v-model:value="userFormState.last_name"
         />
@@ -75,16 +77,24 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ເບິໂທ" name="phone_number" class="w-full">
+      <a-form-item
+        :label="$t('customers.table_field.phone_number')"
+        name="phone_number"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນເບີໂທ"
+          :placeholder="placeholders.phoneNumber"
           class="h-12"
           v-model:value="userFormState.phone_number"
         />
       </a-form-item>
-      <a-form-item label="ອີເມວ" name="email" class="w-full">
+      <a-form-item
+        :label="$t('customers.table_field.email')"
+        name="email"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນອີເມວ"
+           :placeholder="placeholders.email"
           class="h-12"
           v-model:value="userFormState.email"
         />
@@ -187,10 +197,12 @@
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
         <a-button type="primary" @click="handleOrderDetailsSubmit"
-          >ແກ້ໄຂ</a-button
+          >{{ $t("customers.edit") }} </a-button
         >
         &nbsp;
-        <a-button danger @click="push({ name: 'customers' })">ຍົກເລີກ</a-button>
+        <a-button danger @click="push({ name: 'customers' })">{{
+          $t("customers.table_field.btn.cancel")
+        }}</a-button>
       </a-form-item>
     </div>
   </a-form>
@@ -198,7 +210,7 @@
 
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 
@@ -206,9 +218,11 @@ import { notification } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 import { DeleteOutlined } from "@ant-design/icons-vue";
-import { updateUserShcema } from "../schema/update-user.schema";
+import { useUpdateCustomerSchema } from "../schema/update-user.schema";
+const  {schema, schemaKey} = useUpdateCustomerSchema()
 import { customerStore } from "../store/index";
 import { CustomerEntity } from "../entity/customer.entity";
+import { useI18n } from "vue-i18n";
 const router = useRouter();
 const { push } = router;
 const { state, getAll } = rolesStore();
@@ -216,7 +230,13 @@ const { statePermission, getAllPer } = permissionsStore();
 const uploadImg = ref<string | File | null>(null);
 
 const { update, stateGetOne, getOneCustomer } = customerStore();
-
+const { t } = useI18n();
+const placeholders = computed(() => ({
+  firstName: t("placeholder.user.fname"),
+  lastName: t("placeholder.user.lname"),
+  phoneNumber: t("placeholder.user.phone_number"),
+  email: t("placeholder.user.email"),
+}));
 const initialFormState: CustomerEntity = {
   customer_id: "",
   id: "",
@@ -270,8 +290,8 @@ const permissions = ref<RolesPermissionsEntity[]>([]);
 const loadingRoles = ref<boolean>(true);
 const loadingPermission = ref<boolean>(true);
 
-const activeKey = ref(["1"]);
-const activeKeyPermission = ref(["1"]);
+const activeKey = ref(["2"]);
+const activeKeyPermission = ref(["2"]);
 const { params } = useRoute();
 const Id = Number(params.id);
 const populateUserForm = async () => {

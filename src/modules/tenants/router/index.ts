@@ -6,7 +6,7 @@ export const tenantsRoute: RouteRecordRaw[] = [
     name: "tenants",
     component: () => import("../views/ListTenantsView.vue"),
     meta: {
-      label: ["ຈັດການການສ້າງຮ້ານ"],
+      label: ["tenants.label"],
     },
   },
 ];

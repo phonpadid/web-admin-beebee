@@ -1,22 +1,23 @@
-export const columns = [
+export const columns = (t: any) => [
   {
-    title: "ຊື່ໂດເມນ",
+    title: t("tenants.table_field.domain"),
     dataIndex: ["domain", "domain_url"],
   },
   {
-    title: "ຊື່",
+    title: t("tenants.table_field.name"),
     dataIndex:  "name", 
   },
   {
-    title: "ຊື່ໂຄງສ້າງ",
+    title: t("tenants.table_field.schema_name"),
     dataIndex:  "schema_name", 
   },
   {
-    title: "ສ້າງເມື່ອ",
+    title: t("tenants.table_field.created_at"),
     dataIndex:  "created_on", 
   },
   {
-    title: "",
+    title: t("tenants.table_field.more"),
     dataIndex: "actions",
+    align: "center"
   },
 ];

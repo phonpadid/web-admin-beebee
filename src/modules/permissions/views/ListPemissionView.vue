@@ -3,13 +3,18 @@ import { computed, onMounted, ref } from "vue";
 import { permissionsStore } from "../store/permissions.store";
 import { LineChartOutlined } from "@ant-design/icons-vue";
 import { columns } from "./columns";
+import { useI18n } from "vue-i18n";
 const { getAllPer, statePermission, setStateFilter } = permissionsStore();
+const paginationLocale = computed(() => ({
+  items_per_page: t("pagination.items_per_page"),
+}));
 const paginationConfig = ref({
   total: statePermission.data.total,
   pageSize: setStateFilter.limit,
   current: setStateFilter.page,
   showSizeChanger: true,
   pageSizeOptions: ["10", "20", "50", "100"],
+  locale: paginationLocale,
   onChange: handlePageChange,
 });
 
@@ -40,20 +45,23 @@ const filteredData = computed(() => {
     String(row.name).toLowerCase().includes(query)
   );
 });
+
+const {t} = useI18n()
+const translateField = computed(() => columns(t))
 </script>
 
 <template>
   <a-flex justify="space-between" :align="'flex-start'">
     <p class="text-base font-bold text-blue-500">
       <line-chart-outlined />
-      ລາຍການPermissions
+      {{ $t("permissions.label_list") }}
     </p>
   </a-flex>
   <a-divider style="margin-top: 10px" />
   <a-table
     :scroll="{ x: true }"
     class="whitespace-nowrap"
-    :columns="columns"
+    :columns="translateField"
     :dataSource="filteredData"
     :pagination="paginationConfig"
     :loading="statePermission.isLoading"

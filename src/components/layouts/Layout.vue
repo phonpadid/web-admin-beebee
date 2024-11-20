@@ -30,16 +30,15 @@
           >
             {{ item }}
 
-             <!-- Global search input -->
-          <a-input-search 
-          v-if="isDataTableView"
-          v-model:value="searchQuery"
-          placeholder="ຄົ້ນຫາຂໍ້ມູນ..."
-          style="width: 200px; margin-left: 50px; margin-top: -6px"
-          @search="onSearch"
-        />
+            <!-- Global search input -->
+            <a-input-search 
+              v-if="isDataTableView"
+              v-model:value="searchQuery"
+              :placeholder="searchPlaceholder"
+              style="width: 200px; margin-left: 50px; margin-top: -6px"
+              @search="onSearch"
+            />
           </a-breadcrumb-item>
-         
         </a-breadcrumb>
       </div>
 
@@ -58,34 +57,35 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import SideBar from "./Sidebar.vue";
 import Navbar from "./Navbar.vue";
 import Footer from "./Footer.vue";
-import { RouteLocationNormalizedLoaded, onBeforeRouteUpdate, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 
 // Router and layout state
 const route = useRoute();
 const { t } = useI18n();
 const collapsed = ref<boolean>(false);
-// const breadcrumbItems = ref<Array<string>>([]);
 const searchQuery = ref<string>("");
-// const inputSearchData = ref<string>("");
 
 const isDataTableView = computed(() => {
-  // Change 'data-table-route' to your actual route name or path for the data table page
-  return route.name === 'roles.index' || route.name === 'user' || route.name === 'permissions' || route.name === 'customers' || route.name === 'tenants'
+  return route.name === 'roles.index' || route.name === 'user' || route.name === 'permissions' || route.name === 'customers' || route.name === 'tenants';
 });
 
 const breadcrumbItems = computed(() => {
   return route.matched
     .filter((_, idx) => idx !== 0)  // Skip the root path
     .flatMap((matched) => {
+      searchQuery.value = '';
       const labels = matched.meta.label as string[] | undefined;
       return labels ? labels.map((item) => t(item)) : [];
     });
 });
+
+// Computed property for translating placeholder
+const searchPlaceholder = computed(() => t("messages.placeholer.search"));
 
 // Search function to update searchQuery
 function onSearch(value: string) {

@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import ButtonDefault from "@/components/Button/ButtonDefault.vue";
 import { Icon } from "@iconify/vue";
-import { TenantsShcema } from "../schema/tenants.schema";
+import { useTenantSchema } from "../schema/tenants.schema";
 import { tenantsStore } from "../store/tenants.store";
 import { notification } from "ant-design-vue";
 import { TenantsEntity } from "../entity/tenants.entity";
+import { useI18n } from "vue-i18n";
 
+const {schema, schemaKey} = useTenantSchema()
 const { create, update, getAll } = tenantsStore();
 
 const open = ref<boolean>(false);
@@ -85,32 +87,40 @@ watch(item, (newItem : any) => {
     open.value = true;
   }
 });
+// Define computed properties for translated placeholders
+const { t } = useI18n();
+const placeholders = computed(() => ({
+  name: t("placeholder.tenants.name"),
+  schema_name: t("placeholder.tenants.schema_name"),
+  domain_name: t("placeholder.tenants.domain"),
+}));
 </script>
 
 <template>
   <a-modal v-model:open="open" title="">
     <div class="flex text-xl font-bold">
       <Icon :icon="editIcon" class="mr-2 mt-1 bg-gray-200 rounded-md" />
-      <p>{{ isEditMode ? "ແກ້ໄຂ" : "ເພີມ" }}</p>
+      <p>{{ isEditMode ? $t('tenants.form_edit') : $t('tenants.form_add') }}</p>
     </div>
     <a-form
       layout="vertical"
       ref="form"
-      :rules="TenantsShcema"
+      :rules="schema"
+      :key="schemaKey"
       :model="tenantsFormState"
     >
-      <a-form-item class="form-item-centered" label="ຊື່" name="name">
-        <a-input placeholder="ປ້ອນຊື່" v-model:value="tenantsFormState.name" />
+      <a-form-item class="form-item-centered" :label="$t('tenants.table_field.name')" name="name">
+        <a-input :placeholder="placeholders.name" v-model:value="tenantsFormState.name" />
       </a-form-item>
       <a-form-item
         class="form-item-centered"
-        label="ຊືໂຄ້ງສ້າງ"
+        :label="$t('tenants.table_field.schema_name')"
         name="schema_name"
       >
-        <a-input placeholder="ປ້ອນຊື່ໂຄງສ້າງ" v-model:value="tenantsFormState.schema_name" />
+        <a-input :placeholder="placeholders.schema_name" v-model:value="tenantsFormState.schema_name" />
       </a-form-item>
-      <a-form-item class="form-item-centered" label="ໂດເມນ" name="domain">
-        <a-input placeholder="ປ້ອນຊື່ໂດເມນ" v-model:value="tenantsFormState.domain" />
+      <a-form-item class="form-item-centered" :label="$t('tenants.table_field.domain')" name="domain">
+        <a-input :placeholder="placeholders.domain_name" v-model:value="tenantsFormState.domain" />
       </a-form-item>
     </a-form>
     <template #footer>
@@ -122,7 +132,7 @@ watch(item, (newItem : any) => {
         @click="handleSubmit"
       >
         <template #text>
-          <span v-if="!loading">{{ isEditMode ? "ອັບເດດ" : "ເພີມ" }}</span>
+          <span v-if="!loading">{{ isEditMode ? $t('tenants.edit') : $t('tenants.add') }}</span>
         </template>
       </button-default>
     </template>

@@ -18,10 +18,25 @@
     <a-form-item label=" " class="-mt-12" name="avatar">
       <div class="flex flex-col items-center sm:items-start gap-6">
         <a-image
-          :src="avatarPreviewURL || '/src/assets/nodata.png'"
+          v-if="avatarPreviewURL"
+          :src="avatarPreviewURL"
           width="10rem"
           height="10rem"
           style="object-fit: contain"
+        >
+          <template #previewMask>
+            <span>{{ $t("preview") }}</span>
+          </template>
+        </a-image>
+        <img
+          v-else
+          src="/src/assets/nodata.png"
+          width="200rem"
+          height="200rem"
+          class="my-4"
+          style="object-fit: contain"
+          alt=""
+          srcset=""
         />
         <a-alert
           v-if="imageErrorMessage"
@@ -77,7 +92,7 @@
           placeholder="ກະລຸນາປ້ອນເບີໂທ"
           class="h-12"
           v-model:value="userFormState.phone_number"
-           @input="clearData('phone_number')"
+          @input="clearData('phone_number')"
         />
         <span style="color: red">{{ msgErrors.phone_number }}</span>
       </a-form-item>
@@ -195,7 +210,7 @@ import { permissionsStore } from "@/modules/permissions/store/permissions.store"
 const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
-const avatarPreviewURL = ref<string | null>(null); 
+const avatarPreviewURL = ref<string | null>(null);
 const imageErrorMessage = ref<string>("");
 const { create } = usersStore();
 const msgErrors = reactive<any>({});
@@ -221,45 +236,43 @@ const resetForm = () => {
   userFormState.value = { ...initialFormState };
 };
 const handleOrderDetailsSubmit = async () => {
-  form.value
-    .validate()
-    .then(async () => {
-      loading.value = true;
-      try {
-        if (
-          userFormState.value.password ===
-          userFormState.value.password_confirmation
-        ) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+  form.value.validate().then(async () => {
+    loading.value = true;
+    try {
+      if (
+        userFormState.value.password ===
+        userFormState.value.password_confirmation
+      ) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-          await create(userFormState.value); // ตรวจสอบ response
+        await create(userFormState.value); // ตรวจสอบ response
 
-          // console.log("บันทึกสำเร็จ", response);
+        // console.log("บันทึกสำเร็จ", response);
 
-          notification.success({
-            message: "Save Success",
-            description: "ບັນທຶກສຳເລັດ",
-          });
-          resetForm();
-          loading.value = false;
-          push({ name: "user" });
-          await getAll();
-        } else {
-          notification.warn({
-            message: "warn",
-            description: "ຢືນຢັນລະຫັດຜ່ານບໍ່ຕົງກັນ",
-          });
-        }
-      } catch (error: any) {
-        if (error.response && error.response.data) {
-          // Backend validation error response structure
-          const apiErrors = error.response.data || {};
-          Object.keys(apiErrors).forEach((field) => {
-            msgErrors[field] = Array(apiErrors[field]) ? apiErrors[field][0] : '';
-          });
-        }
+        notification.success({
+          message: "Save Success",
+          description: "ບັນທຶກສຳເລັດ",
+        });
+        resetForm();
+        loading.value = false;
+        push({ name: "user" });
+        await getAll();
+      } else {
+        notification.warn({
+          message: "warn",
+          description: "ຢືນຢັນລະຫັດຜ່ານບໍ່ຕົງກັນ",
+        });
       }
-    })
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        // Backend validation error response structure
+        const apiErrors = error.response.data || {};
+        Object.keys(apiErrors).forEach((field) => {
+          msgErrors[field] = Array(apiErrors[field]) ? apiErrors[field][0] : "";
+        });
+      }
+    }
+  });
 };
 
 const roles = ref<RolesEntity[]>([]);
@@ -297,8 +310,8 @@ const clearImage = () => {
   userFormState.value.avatar = undefined;
 };
 const clearData = (key: string) => {
-  msgErrors[key] = '';
-}
+  msgErrors[key] = "";
+};
 // Fetch roles on mount
 onMounted(async () => {
   await getAll();
