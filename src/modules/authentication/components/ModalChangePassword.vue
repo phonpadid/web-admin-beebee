@@ -61,19 +61,18 @@ const handleOrderSubmit = async () => {
         submitted.value = true;
         await changePassword(changePasswordFormState.value);
         notification.success({
-          message: t('messages.success'),
-          description: t('change_password.message.success'),
+          message: t("messages.success"),
+          description: t("change_password.message.success"),
         });
         loading.value = false;
         push({ name: "getMe.index" });
         closeModal();
-      }else {
+      } else {
         notification.error({
-          message: t('messages.error'),
-          description: t('validation.change_password.password_no_match'),
+          message: t("messages.error"),
+          description: t("validation.change_password.password_no_match"),
         });
         loading.value = false;
-
       }
     } catch (error: any) {
       loading.value = false;
@@ -111,64 +110,80 @@ const clearData = (key: string) => {
       @close="closeModal"
       :maskClosable="false"
       width="480px"
-      title="ປ່ຽນລະຫັດຜ່ານຂອງທ່ານ"
+      :title="$t('change_password.title')"
     >
       <div>
         <p class="text-slate-600 ml-6">
-          ໃຫ້ທ່ານປ້ອນລະຫັດເກົ່າຂອງທ່ານເພື່ອຢືນຢັນທີ່ຈະປ່ຽນລະຫັດຜ່ານເກົ່າ
+          {{ $t("change_password.description") }}
         </p>
       </div>
       <a-form
         layout="vertical"
         ref="form"
-        :rules="ChangePasswordSchema"
+        :rules="schema"
+        :key="schemaKey"
         :model="changePasswordFormState"
       >
         <a-form-item
           class="form-item-centered"
-          label="ລະຫັດຜ່ານເກົ່າຂອງທ່ານ"
+          :label="$t('change_password.old_password')"
           name="old_password"
         >
           <a-input-password
-            placeholder="ໃສ່ລະຫັດຜ່ານເກົ່າຂອງທ່ານ"
+            :placeholder="placeholders.old_password"
             v-model:value="changePasswordFormState.old_password"
+            @input="clearData('old_password')"
+            :class="{ 'ring-1 ring-red-500 mb-1': msgErrors.old_password }"
           />
+          <span v-if="msgErrors.old_password" class="text-red-500">{{
+            $t("validation.change_password.incorrect_password")
+          }}</span>
         </a-form-item>
         <a-form-item
           class="form-item-centered"
-          label="ສ້າງລະຫັດຜ່ານໃໝ່"
+          :label="$t('change_password.new_password')"
           name="new_password"
         >
           <a-input-password
-            placeholder="ໃສ່ລະຫັດຜ່ານໃໝ່ຂອງທ່ານ"
+            :placeholder="placeholders.new_password"
             v-model:value="changePasswordFormState.new_password"
           />
         </a-form-item>
         <a-form-item
           class="form-item-centered"
-          label="ຢືນຢັນລະຫັດຜ່ານໃໝ່"
+          :label="$t('change_password.confirm_password')"
           name="confirm_password"
         >
           <a-input-password
-            placeholder="ຢືນຢັນລະຫັດຜ່ານ"
+            :placeholder="placeholders.confirm_password"
             v-model:value="changePasswordFormState.confirm_password"
           />
+          <!-- <span class="text-red-500" v-if="submitted && isPasswordMismatch()">
+            {{ $t("validation.change_password.password_no_match") }}
+          </span> -->
         </a-form-item>
-        <a-button
-          key="submit"
-          class="w-full"
-          type="primary"
-          :loading="loading"
-          @click="handleOrderSubmit"
-          :disabled="isDisabled"
-          >ປ່ຽນລະຫັດຜ່ານ</a-button
-        >
-        <a-button key="back" class="w-full mt-2" @click="closeModal"
-          >ຍົກເລີກ</a-button
-        >
       </a-form>
       <template #footer>
-        <ButtonDefault @click="closeModal">Close</ButtonDefault>
+        <!-- <ButtonDefault :isLoading="loading" @click="closeModal" class="block"
+          >Close</ButtonDefault
+        > -->
+        <div class="mb-10 flex-col flex items-center justify-center">
+          <a-button
+            key="submit"
+            class="w-full"
+            type="primary"
+            :isLoading="loading"
+            @click="handleOrderSubmit"
+            :disabled="isDisabled"
+            >{{ $t("change_password.btn") }}
+          </a-button>
+          <a-button
+            key="back"
+            class="w-full mt-4 -left-1 text-red-600"
+            @click="closeModal"
+            >{{ $t("users.cancel") }}
+          </a-button>
+        </div>
       </template>
     </a-modal>
   </div>
