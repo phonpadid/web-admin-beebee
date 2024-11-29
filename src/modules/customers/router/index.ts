@@ -16,13 +16,13 @@ export const customersRoute: RouteRecordRaw[] = [
   },
   {
     path: "customer_edit/:id",
-    name: "customer_edit.index",
+    name: "customer_edit",
     component: () => import("../components/UpdateCustomer.vue"),
-    meta: {label: ['ລາຍລະອຽດຜູ້ໃຊ້']}
+    meta: {label: ['customers.label']}
   },
   {
     path: "addCustomer",
-    name: "addCustomer.index",
+    name: "addCustomer",
     component: () => import("../components/AddCustomer.vue"),
     meta: {label: ['customers.label_add']}
   },
@@ -30,7 +30,7 @@ export const customersRoute: RouteRecordRaw[] = [
     path: "getMe",
     name: "getMe.index",
     component: () => import("../../authentication/views/GetMeView.vue"),
-    meta: {label: ["ໂປຣຟາຍຂອງຂ້ອຍ"]},
+    meta: {label: ["me.label"]},
   },
   
 ];

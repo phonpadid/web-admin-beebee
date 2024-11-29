@@ -5,30 +5,11 @@ import { useAuthStore } from "../store/index";
 import { useRouter } from "vue-router";
 import ModalChangePassword from "../components/ModalChangePassword.vue";
 import defaultAvatar from "@/assets/profile.jpg";
-import { useI18n } from "vue-i18n";
 
 const router = useRouter();
 const { logout, stateGetMe, showMe } = useAuthStore();
 const openDrawer = ref(false);
 const openModalChangePassword = ref(false);
-
-// Localization and language setup
-const { locale } = useI18n();
-const languages = ref([
-  { name: "English", value: "en" },
-  { name: "Lao", value: "la" },
-]);
-
-// Update language
-const changeLanguage = (event: Event) => {
-  locale.value = (event.target as HTMLSelectElement).value;
-  localStorage.setItem("locale", locale.value);
-  
-  // notification.info({
-  //   message: t("messages.language.changed"),
-  //   description: `${t("messages.language.selected")}: ${languages.value.find(lang => lang.value === locale.value)?.name}`,
-  // });
-};
 
 const showDrawer = () => {
   openDrawer.value = true;
@@ -106,14 +87,14 @@ const avatarUrl = computed(() => {
       </div>
 
       <!-- Language Selection Dropdown -->
-      <div class="select-language mt-4 h-[50px] w-full flex items-center gap-2 ring-1 ring-slate-200 hover:bg-slate-200 shadow-md py-1 px-3 rounded-md text-slate-500 text-[14px]">
+      <!-- <div class="select-language mt-4 h-[50px] w-full flex items-center gap-2 ring-1 ring-slate-200 hover:bg-slate-200 shadow-md py-1 px-3 rounded-md text-slate-500 text-[14px]">
         <label for="language-select" class="text-slate-500">{{ $t('language') }}:</label>
         <select id="language-select" v-model="locale" @change="changeLanguage" class="flex-1 bg-transparent outline-none">
           <option v-for="lang in languages" :key="lang.value" :value="lang.value">
             {{ lang.name }}
           </option>
         </select>
-      </div>
+      </div> -->
 
       <button @click="openModal" class="mt-4 h-[50px] w-full flex items-center gap-2 ring-1 ring-slate-200 hover:bg-slate-200 shadow-md py-1 px-3 cursor-pointer rounded-md text-slate-500 text-[14px]">
         {{ $t("setting.change_password") }}

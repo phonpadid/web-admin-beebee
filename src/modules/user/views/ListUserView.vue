@@ -83,6 +83,12 @@ const togglePopover = (id: number, isVisible: boolean) => {
 };
 const { t } = useI18n();
 const getColumns = computed(() => columns(t));
+
+const getInitials = (record: UserEntity): string => {
+  if (!record) return "";
+  const firstName = record.first_name?.charAt(0) || "";
+  return `${firstName}`.toUpperCase();
+};
 </script>
 
 <template>
@@ -119,14 +125,13 @@ const getColumns = computed(() => columns(t));
             <span class="text-[10px]">{{ $t("preview") }}</span>
           </template>
         </a-image>
-        <img
-          v-else
-          src="/src/assets/profile.jpg"
-          alt="Profile Avatar"
-          width="55rem"
-          height="55rem"
-          class="rounded-full -ml-1"
-        />
+        <template v-else>
+          <div
+            class="w-[3rem] h-[3rem] flex items-center justify-center rounded-full bg-gray-300 text-white font-bold"
+          >
+            {{ getInitials(record) }}
+          </div>
+        </template>
       </template>
       <template v-if="column.dataIndex === 'created_at'">
         <span>{{

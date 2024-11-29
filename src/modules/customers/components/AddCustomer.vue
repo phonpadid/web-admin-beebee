@@ -1,6 +1,7 @@
 <template>
   <div class="pb-4 flex justify-between">
     <p
+      @click="push({ name: 'customers' })"
       class="text-base flex font-bold text-blue-500 items-center gap-2 justify-center"
     >
       <line-chart-outlined />
@@ -20,7 +21,8 @@
 
     <a-form-item label=" " class="-mt-12" name="avatar">
       <div class="flex flex-col items-center sm:items-start gap-6">
-        <a-image v-if="userFormState.avatar"
+        <a-image
+          v-if="userFormState.avatar"
           :src="
             typeof userFormState.avatar === 'object' &&
             userFormState.avatar.objectURL
@@ -31,17 +33,19 @@
           height="10rem"
           style="object-fit: contain"
         >
-        <template #previewMask>
-          <span>{{ $t('preview') }}</span>
-        </template>
-      </a-image>
-        <img v-else
+          <template #previewMask>
+            <span>{{ $t("preview") }}</span>
+          </template>
+        </a-image>
+        <img
+          v-else
           src="/src/assets/nodata.png"
           width="200rem"
           height="200rem"
           class="my-4"
           style="object-fit: contain"
-          alt="" srcset=""
+          alt=""
+          srcset=""
         />
         <!-- <img src="" alt="" srcset=""> -->
         <a-alert
@@ -61,19 +65,31 @@
         multiple
         :before-upload="onUpload"
       >
-        <a-button> {{ $t("customers.table_field.choose_profile") }} </a-button>
+        <a-tooltip>
+          <template #title>{{
+            $t("customers.table_field.choose_profile")
+          }}</template>
+          <a-button class="flex items-center">
+            <!-- {{ $t("customers.table_field.choose_profile") }} -->
+            <CameraOutlined :style="{ fontSize: '18px', color: '#08c' }" />
+          </a-button>
+        </a-tooltip>
       </a-upload>
-      <a-button
-        @click="clearImage"
-        v-if="userFormState.avatar"
-        class="ml-4 text-red-600"
-      >
-        {{ $t("customers.table_field.btn.remove") }}
-      </a-button>
+      <a-tooltip v-if="userFormState.avatar">
+        <template #title>{{ $t("customers.table_field.btn.remove") }}</template>
+        <a-button
+          @click="clearImage"
+          v-if="userFormState.avatar"
+          class="ml-[4rem] flex items-center -top-8 text-red-600"
+        >
+          <DeleteOutlined :style="{ fontSize: '18px' }" />
+          <!-- {{ $t("customers.table_field.btn.remove") }} -->
+        </a-button>
+      </a-tooltip>
     </a-form-item>
 
     <!-- Input fields -->
-    <div class="md:flex md:flex-row flex-col gap-4">
+    <div class="md:flex md:flex-row flex-col gap-4 -mt-4">
       <a-form-item
         :label="$t('customers.table_field.fname')"
         name="first_name"
@@ -83,7 +99,16 @@
           :placeholder="placeholders.firstName"
           class="h-12"
           v-model:value="userFormState.first_name"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.errors && (userFormState.first_name.length) > 149,
+          }"
         />
+        <span
+          v-if="msgErrors.errors && (userFormState.first_name.length) > 149"
+          class="text-red-500"
+          >{{$t('validation.user.length_name')}}
+        </span>
       </a-form-item>
       <a-form-item
         :label="$t('customers.table_field.lname')"
@@ -91,10 +116,19 @@
         class="w-full"
       >
         <a-input
-         :placeholder="placeholders.lastName"
+          :placeholder="placeholders.lastName"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.errors && userFormState.last_name.length > 149,
+          }"
           v-model:value="userFormState.last_name"
         />
+        <span
+          v-if="msgErrors.errors && userFormState.last_name.length > 149"
+          class="text-red-500"
+          >{{$t('validation.user.length_name')}}
+        </span>
       </a-form-item>
     </div>
 
@@ -108,7 +142,16 @@
           :placeholder="placeholders.phoneNumber"
           class="h-12"
           v-model:value="userFormState.phone_number"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.errors && userFormState.phone_number.length > 11,
+          }"
         />
+        <span
+          v-if="msgErrors.errors && userFormState.phone_number.length > 11"
+          class="text-red-500"
+          >{{$t('validation.user.length_phone')}}
+        </span>
       </a-form-item>
       <a-form-item
         :label="$t('customers.table_field.email')"
@@ -116,10 +159,25 @@
         class="w-full"
       >
         <a-input
-           :placeholder="placeholders.email"
+          :placeholder="placeholders.email"
           class="h-12"
           v-model:value="userFormState.email"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.errors && userFormState.email.length > 254 || 
+              msgErrors.errors === 'U',
+          }"
         />
+        <span
+          v-if="msgErrors.errors && userFormState.email.length >254 "
+          class="text-red-500"
+          >{{$t('validation.user.email_length')}}
+        </span>
+        <span
+          v-else-if="msgErrors.errors && msgErrors.errors === 'U'"
+          class="text-red-500"
+          >{{$t('validation.user.email_exits')}}
+        </span>
       </a-form-item>
     </div>
 
@@ -228,24 +286,26 @@
       </a-form-item>
     </div>
   </a-form>
-  <LeftCircleOutlined />
 </template>
 
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
-import { LineChartOutlined } from "@ant-design/icons-vue";
-import { ref, onMounted, computed } from "vue";
+import {
+  LineChartOutlined,
+  CameraOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons-vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
-import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 import { CustomerEntity } from "../entity/customer.entity";
 import { customerStore } from "../store/index";
 import { notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
 import { useCustomerSchema } from "../schema/user.schema";
-const {schema, schemaKey} = useCustomerSchema();
-
+const { schema, schemaKey } = useCustomerSchema();
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 import { useI18n } from "vue-i18n";
+import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
 const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
@@ -283,6 +343,7 @@ const userFormState = ref<CustomerEntity>({
 const resetForm = () => {
   userFormState.value = { ...initialFormState };
 };
+const msgErrors = reactive<any>({});
 const handleOrderDetailsSubmit = async () => {
   form.value
     .validate()
@@ -295,36 +356,30 @@ const handleOrderDetailsSubmit = async () => {
         ) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
 
-          await create(userFormState.value); // ตรวจสอบ response
-
-          // console.log("บันทึกสำเร็จ", response);
+          await create(userFormState.value);
 
           notification.success({
-            message: "Save Success",
-            description: "ບັນທຶກສຳເລັດ",
+            message: t("messages.success"),
+            description: t("messages.description"),
           });
           resetForm();
           loading.value = false;
           push({ name: "customers" });
         } else {
           notification.warn({
-            message: "warn",
-            description: "ຢືນຢັນລະຫັດຜ່ານບໍ່ຕົງກັນ",
+            message: t("messages.error"),
+            description: t("messages.create_failed"),
           });
         }
       } catch (error: any) {
-        if (error.status === 400) {
-          notification.error({
-            message: "ເຕືອນ",
-            description: "ອີເມວນີ້ມີໃນລະບົບແລ້ວ.",
+        if (error.response && error.response.data) {
+          // Backend validation error response structure
+          const apiErrors = error.response.data || {};
+          Object.keys(apiErrors).forEach((field) => {
+            msgErrors[field] = Array(apiErrors[field])
+              ? apiErrors[field][0]
+              : "";
           });
-          loading.value = false;
-        } else {
-          notification.error({
-            message: "Failed",
-            description: "ຜິດຜາດ",
-          });
-          loading.value = false;
         }
       }
     })
@@ -334,7 +389,7 @@ const handleOrderDetailsSubmit = async () => {
 };
 
 const roles = ref<RolesEntity[]>([]);
-const permissions = ref<RolesPermissionsEntity[]>([]);
+const permissions = ref<PermissionsEntity[]>([]);
 const loadingRoles = ref<boolean>(true);
 const loadingPermission = ref<boolean>(true);
 
@@ -370,7 +425,7 @@ onMounted(async () => {
 
   await getAllPer();
   permissions.value = statePermission.data.props.map(
-    (per: RolesPermissionsEntity) => ({
+    (per: PermissionsEntity) => ({
       id: per.id,
       name: per.name,
     })

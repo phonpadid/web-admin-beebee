@@ -5,7 +5,7 @@ import { RolesEntity } from "@/modules/roles/entity/role.entity";
 export interface CustomerEntity {
   customer_id: string;
   id: string;
-  first_name?: string;
+  first_name: string;
   last_name: string;
   email: string;
   is_active?: boolean;

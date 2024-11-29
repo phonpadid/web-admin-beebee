@@ -23,11 +23,11 @@ export class AxiosApi {
 
         // ດຶງ access token ຈາກ localStorage
         const accessToken = localStorage.getItem("access");
-        if (!accessToken) {
-          console.log("Token not found in localStorage");
-        } else {
-          console.log("Token found:", accessToken);
-        }
+        // if (!accessToken) {
+        //   console.log("Token not found in localStorage");
+        // } else {
+        //   console.log("Token found:", accessToken);
+        // }
 
         // ກວດສອບການໝົດອາຍຸຂອງ user token ຫາກຈຳເປັນ
         if (user && Date.now() >= user.exp_in) {

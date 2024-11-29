@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, computed } from "vue";
 import { LineChartOutlined } from "@ant-design/icons-vue";
-import { RolesSchema } from "../schema/role.schema";
+import { useRoleSchema } from "../schema/role.schema";
 import { rolesStore } from "../store/role.store";
 import { notification } from "ant-design-vue";
 import { RolesEntity } from "../entity/role.entity";
 import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
+const { schema, schemaKey } = useRoleSchema();
 const { update, getDetail, getAll } = rolesStore();
 const { getAllPer, statePermission } = permissionsStore();
 const activeKeyPermission = ref(["2"]);
@@ -35,8 +37,8 @@ const handleSubmit = async () => {
       try {
         await update(rolesFormState.value, rolesFormState.value.id);
         notification.success({
-          message: "Update Success",
-          description: "ອັບເດດສຳເລັດ",
+          message: t("messages.success"),
+          description: t("messages.update"),
         });
         push({ name: "roles.index" });
         await getAll();
@@ -45,7 +47,9 @@ const handleSubmit = async () => {
         if (error.response && error.response.data) {
           const apiErrors = error.response.data || {};
           Object.keys(apiErrors).forEach((field) => {
-            msgErrors[field] = Array.isArray(apiErrors[field]) ? apiErrors[field][0] : '';
+            msgErrors[field] = Array.isArray(apiErrors[field])
+              ? apiErrors[field][0]
+              : "";
           });
         }
       } finally {
@@ -68,7 +72,9 @@ const fetchRoleDetails = async () => {
     if (roleData) {
       rolesFormState.value = {
         ...roleData.data,
-        permissions: roleData.data.permissions.map((perm: PermissionsEntity) => perm.id),
+        permissions: roleData.data.permissions.map(
+          (perm: PermissionsEntity) => perm.id
+        ),
       };
     }
   } catch (error) {
@@ -96,8 +102,12 @@ onMounted(async () => {
 });
 
 const clearData = (key: string) => {
-  msgErrors[key] = '';
+  msgErrors[key] = "";
 };
+const { t } = useI18n();
+const placeholders = computed(() => ({
+  name: t("placeholder.role.name"),
+}));
 </script>
 
 <template>
@@ -105,24 +115,44 @@ const clearData = (key: string) => {
     <div class="pb-4 flex justify-between">
       <p class="text-base font-bold text-blue-500">
         <line-chart-outlined />
-        ຟອມຜູ້ບົດບາດ
+        {{ $t("messages.role.form_edit") }}
       </p>
     </div>
     <a-form
       layout="vertical"
       ref="form"
-      :rules="RolesSchema"
+      :rules="schema"
+      :key="schemaKey"
       :model="rolesFormState"
     >
-      <a-form-item class="form-item-centered" label="ຊື່ບົດບາດ" name="name">
-        <a-input v-model:value="rolesFormState.name" placeholder="ປ້ອນຊື່ບົດບາດ" @input="clearData('name')" class="h-[3rem]"/>
-        <span style="color: red">{{ msgErrors.name }}</span>
+      <a-form-item
+        class="form-item-centered"
+        :label="$t('messages.role.name')"
+        name="name"
+      >
+        <a-input
+          v-model:value="rolesFormState.name"
+          :placeholder="placeholders.name"
+          @input="clearData('name')"
+          class="h-[3rem]"
+          :class="{ 'ring-1 ring-red-500 mb-1': msgErrors.name }"
+        />
+        <span
+          v-if="msgErrors.name && msgErrors.name.length >= 50"
+          style="color: red"
+          >{{ $t("messages.more_then") }}</span
+        >
+        <span
+          v-else-if="msgErrors.name && msgErrors.name.length < 40"
+          style="color: red"
+          >{{ $t("messages.exist_name") }}</span
+        >
       </a-form-item>
 
       <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
         <a-collapse-panel
           key="2"
-          header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້"
+          :header="$t('messages.role.form.get_permissions')"
           name="permissions"
           class="w-full"
         >
@@ -146,9 +176,13 @@ const clearData = (key: string) => {
 
       <div class="md:flex md:flex-row flex-col gap-4">
         <a-form-item class="flex items-center mt-4 justify-center">
-          <a-button type="primary" @click="handleSubmit">ບັນທຶກ</a-button>
+          <a-button type="primary" @click="handleSubmit"
+            >{{ $t("messages.role.edit") }}
+          </a-button>
           &nbsp;
-          <a-button danger>ຍົກເລີກ</a-button>
+          <a-button @click="push({ name: 'roles.index' })" danger>{{
+            $t("messages.role.btn.cancel")
+          }}</a-button>
         </a-form-item>
       </div>
     </a-form>

@@ -2,14 +2,14 @@
   <div class="pb-4 flex justify-between">
     <p class="text-base font-bold text-blue-500">
       <line-chart-outlined />
-      ຟອມຜູ້ໃຊ້ລະບົບ
+      {{ $t("users.form_update") }}
     </p>
   </div>
 
   <a-form
     layout="vertical"
     ref="form"
-    :rules="UserShcema"
+    :rules="schema" :key="schemaKey"
     :model="userFormState"
     class="flex-col flex"
   >
@@ -55,31 +55,31 @@
         multiple
         :before-upload="onUpload"
       >
-        <a-button> ເລືອກຮູບພາບ </a-button>
+        <a-button> {{ $t("customers.table_field.choose_profile") }} </a-button>
       </a-upload>
       <a-button
         @click="clearImage"
         v-if="userFormState.avatar"
         class="ml-4 text-red-600"
       >
-        ລົບຮູບ
+      {{ $t("customers.table_field.btn.remove") }}
       </a-button>
     </a-form-item>
 
     <!-- Input fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ຊື່" name="first_name" class="w-full">
+      <a-form-item :label="$t('users.table_field.fname')" name="first_name" class="w-full">
         <a-input
-          placeholder="ກະລຸນາປ້ອນຊື່"
+          :placeholder="placeholders.firstName"
           class="h-12"
           v-model:value="userFormState.first_name"
           @input="clearData('first_name')"
         />
         <span style="color: red">{{ msgErrors.first_name }}</span>
       </a-form-item>
-      <a-form-item label="ນາມສະກຸນ" name="last_name" class="w-full">
+      <a-form-item :label="$t('users.table_field.lname')" name="last_name" class="w-full">
         <a-input
-          placeholder="ກະລຸນາປ້ອນນາມສະກຸນ"
+          :placeholder="placeholders.lastName"
           class="h-12"
           v-model:value="userFormState.last_name"
         />
@@ -87,18 +87,18 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ເບີໂທ" name="phone_number" class="w-full">
+      <a-form-item :label="$t('users.table_field.phone_number')" name="phone_number" class="w-full">
         <a-input
-          placeholder="ກະລຸນາປ້ອນເບີໂທ"
+          :placeholder="placeholders.phoneNumber"
           class="h-12"
           v-model:value="userFormState.phone_number"
           @input="clearData('phone_number')"
         />
         <span style="color: red">{{ msgErrors.phone_number }}</span>
       </a-form-item>
-      <a-form-item label="ອີເມວ" name="email" class="w-full">
+      <a-form-item :label="$t('users.table_field.email')" name="email" class="w-full">
         <a-input
-          placeholder="ກະລຸນາປ້ອນອີເມວ"
+          :placeholder="placeholders.email"
           class="h-12"
           v-model:value="userFormState.email"
           @input="clearData('email')"
@@ -108,10 +108,10 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ລະຫັດຜ່ານ" name="password" class="w-full">
+      <a-form-item :label="$t('users.table_field.password')" name="password" class="w-full">
         <a-input-password
           type="password"
-          placeholder="ປ້ອນລະຫັດຜ່ານ"
+          :placeholder="placeholders.password"
           class="h-12"
           v-model:value="userFormState.password"
           @input="clearData('password')"
@@ -119,13 +119,13 @@
         <span style="color: red">{{ msgErrors.password }}</span>
       </a-form-item>
       <a-form-item
-        label="ຢືນຢັນລະຫັດຜ່ານ"
+        :label="$t('users.table_field.confirm_password')"
         name="password_confirmation"
         class="w-full"
       >
         <a-input-password
           type="password"
-          placeholder="ປ້ອນລະຫັດຜ່ານອີກຄັ້ງ"
+          :placeholder="placeholders.confirmPassword"
           class="h-12"
           v-model:value="userFormState.password_confirmation"
         />
@@ -136,7 +136,7 @@
     <a-collapse v-model:activeKey="activeKey" class="mt-2">
       <a-collapse-panel
         key="2"
-        header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້"
+        :header="$t('users.table_field.get_roles')"
         name="groups"
         class="w-full"
       >
@@ -161,7 +161,7 @@
     <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
       <a-collapse-panel
         key="2"
-        header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້"
+        :header="$t('users.table_field.get_permissions')"
         name="user_permission"
         class="w-full"
       >
@@ -186,10 +186,10 @@
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
         <a-button type="primary" @click="handleOrderDetailsSubmit"
-          >ບັນທຶກ</a-button
+          >{{$t("users.save")}}</a-button
         >
         &nbsp;
-        <a-button danger @click="push({ name: 'user.list' })">ຍົກເລີກ</a-button>
+        <a-button danger @click="push({ name: 'user.list' })">{{$t("users.cancel")}}</a-button>
       </a-form-item>
     </div>
   </a-form>
@@ -198,15 +198,17 @@
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { LineChartOutlined } from "@ant-design/icons-vue";
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, computed } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
-import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 import { UserEntity } from "../entity/user.entity";
 import { usersStore } from "../store/index";
 import { notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
-import { UserShcema } from "../schema/user.schema";
+import { useUserSchema } from "../schema/user.schema";
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
+import { useI18n } from "vue-i18n";
+import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
+const {schema, schemaKey} = useUserSchema()
 const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
@@ -227,6 +229,17 @@ const initialFormState: UserEntity = {
   password: "",
   password_confirmation: "",
 };
+
+//translate placeholder
+const { t } = useI18n();
+const placeholders = computed(() => ({
+  firstName: t("placeholder.user.fname"),
+  lastName: t("placeholder.user.lname"),
+  phoneNumber: t("placeholder.user.phone_number"),
+  email: t("placeholder.user.email"),
+  password: t("placeholder.user.password"),
+  confirmPassword: t("placeholder.user.confirm_password"),
+}));
 const form = ref();
 const loading = ref(false);
 const userFormState = ref<UserEntity>({
@@ -250,8 +263,8 @@ const handleOrderDetailsSubmit = async () => {
         // console.log("บันทึกสำเร็จ", response);
 
         notification.success({
-          message: "Save Success",
-          description: "ບັນທຶກສຳເລັດ",
+          message: t('messages.success'),
+          description: t('messages.description'),
         });
         resetForm();
         loading.value = false;
@@ -259,8 +272,8 @@ const handleOrderDetailsSubmit = async () => {
         await getAll();
       } else {
         notification.warn({
-          message: "warn",
-          description: "ຢືນຢັນລະຫັດຜ່ານບໍ່ຕົງກັນ",
+          message: t('messages.error'),
+          description: t('validation.change_password.password_no_match'),
         });
       }
     } catch (error: any) {
@@ -276,7 +289,7 @@ const handleOrderDetailsSubmit = async () => {
 };
 
 const roles = ref<RolesEntity[]>([]);
-const permissions = ref<RolesPermissionsEntity[]>([]);
+const permissions = ref<PermissionsEntity[]>([]);
 const loadingRoles = ref<boolean>(true);
 const loadingPermission = ref<boolean>(true);
 
@@ -323,7 +336,7 @@ onMounted(async () => {
 
   await getAllPer();
   permissions.value = statePermission.data.props.map(
-    (per: RolesPermissionsEntity) => ({
+    (per: PermissionsEntity) => ({
       id: per.id,
       name: per.name,
     })
@@ -331,8 +344,8 @@ onMounted(async () => {
   loadingPermission.value = false;
 });
 
-const activeKey = ref(["1"]);
-const activeKeyPermission = ref(["1"]);
+const activeKey = ref(["2"]);
+const activeKeyPermission = ref(["2"]);
 </script>
 <style scoped>
 .ant-select-selection-search-input {

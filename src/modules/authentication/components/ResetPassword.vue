@@ -1,48 +1,48 @@
 <script setup lang="ts">
-import { useAuthStore } from "../store/index";
-import { message } from "ant-design-vue";
+// import { useAuthStore } from "../store/index";
+// import { message } from "ant-design-vue";
 import { ref } from "vue";
 import { loginSchema } from "../schema/login.schema";
 import { useRouter } from "vue-router";
 const { push } = useRouter();
-const { stateGetMe, login } = useAuthStore();
+// const { stateGetMe, login } = useAuthStore();
 
 const form = ref({
   email: "",
   password: "",
 });
 
-const validateForm = () => {
-  if (!form.value.email || !form.value.password) {
-    message.error("ກວດສອບອີເມວ ຫຼື ລະຫັດຜ່ານກ່ອນ.", 3);
-    return false;
-  }
-  if (!/\S+@\S+\.\S+/.test(form.value.email)) {
-    message.error("ອີເມວບໍ່ຖືກຕ້ອງ", 3);
-    return false;
-  }
-  return true;
-};
+// const validateForm = () => {
+//   if (!form.value.email || !form.value.password) {
+//     message.error("ກວດສອບອີເມວ ຫຼື ລະຫັດຜ່ານກ່ອນ.", 3);
+//     return false;
+//   }
+//   if (!/\S+@\S+\.\S+/.test(form.value.email)) {
+//     message.error("ອີເມວບໍ່ຖືກຕ້ອງ", 3);
+//     return false;
+//   }
+//   return true;
+// };
 
-const loginUser = async () => {
-  if (!validateForm()) return;
+// const loginUser = async () => {
+//   if (!validateForm()) return;
 
-  await login(form.value);
+//   await login(form.value);
 
-  if (stateGetMe.errorMessage) {
-    message.error({
-      content: stateGetMe.errorMessage,
-      duration: 3,
-    });
-  } else {
-    message.success({
-      content: "ຍີນດີຕ້ອນຮັບເຂົ້າສູ່ລະບົບ.",
-      duration: 3,
-    });
-    form.value.email = "";
-    form.value.password = "";
-  }
-};
+//   if (stateGetMe.errorMessage) {
+//     message.error({
+//       content: stateGetMe.errorMessage,
+//       duration: 3,
+//     });
+//   } else {
+//     message.success({
+//       content: "ຍີນດີຕ້ອນຮັບເຂົ້າສູ່ລະບົບ.",
+//       duration: 3,
+//     });
+//     form.value.email = "";
+//     form.value.password = "";
+//   }
+// };
 </script>
 
 <template>

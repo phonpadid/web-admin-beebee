@@ -10,7 +10,6 @@ import { notification } from "ant-design-vue";
 import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 const { push } = useRouter();
-import defaultAvatar from "@/assets/profile.jpg";
 import { usersStore } from "@/modules/user/store";
 import { useI18n } from "vue-i18n";
 const { getAllCustomer, stateCustomer, setStateFilter } = customerStore();
@@ -60,7 +59,7 @@ async function handlePageChange(page: number, pageSize: number) {
   await getAllCustomer();
 }
 const getOne = (record: CustomerEntity) => {
-  push({ name: "customer_edit.index", params: { id: record.customer_id } });
+  push({ name: "customer_edit", params: { id: record.customer_id } });
 };
 onMounted(async () => {
   await getAllCustomer();
@@ -86,6 +85,22 @@ const filteredData = computed(() => {
       String(row.last_name).toLowerCase().includes(query)
   );
 });
+
+const getInitials = (record: CustomerEntity): string => {
+  if (!record) return "";
+  const firstName = record.first_name?.charAt(0) || "";
+  return `${firstName}`.toUpperCase();
+};
+//set color to customer type
+type CustomerType = "vip" | "general";
+
+const customerTypeColors: { [key in CustomerType]: string } = {
+  vip: "text-red-500 bg-red-100",
+  general: "text-blue-500 bg-blue-100",
+};
+function getCustomerTypeColor(type: string): string {
+  return customerTypeColors[type as CustomerType] || "text-gray-500 bg-gray-100";
+}
 </script>
 
 <template>
@@ -94,7 +109,7 @@ const filteredData = computed(() => {
       <line-chart-outlined />
       {{ $t("customers.label_list") }}
     </p>
-    <a-button type="primary" @click="push({ name: 'addCustomer.index' })">
+    <a-button type="primary" @click="push({ name: 'addCustomer' })">
       {{ $t("customers.add") }}
     </a-button>
   </a-flex>
@@ -110,17 +125,33 @@ const filteredData = computed(() => {
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'full_avatar_url'">
-        <a-image
-          :src="record?.full_avatar_url || defaultAvatar"
-          alt="Profile Avatar"
-          width="3rem"
-          height="3rem"
-          class="rounded-full"
-        >
-        <template #previewMask>
-          <span class="text-[10px]">{{ $t('preview') }}</span>
+        <template v-if="record?.full_avatar_url">
+          <a-image
+            :src="record.full_avatar_url"
+            alt="Profile Avatar"
+            width="3rem"
+            height="3rem"
+            class="rounded-full"
+          >
+            <template #previewMask>
+              <span class="text-[10px]">{{ $t('preview') }}</span>
+            </template>
+          </a-image>
         </template>
-      </a-image>
+        <template v-else>
+          <div
+            class="w-[3rem] h-[3rem] flex items-center justify-center rounded-full bg-gray-300 text-white font-bold"
+          >
+            {{ getInitials(record) }}
+          </div>
+        </template>
+      </template>
+      <template v-if="column.dataIndex === 'type'">
+        <span
+          :class="`px-2 py-1 rounded ${getCustomerTypeColor(record.type)}`"
+        >
+          {{ $t(`customers.table_field.choose_customer.${record.type}`) || record.type }}
+        </span>
       </template>
       <template v-if="column.dataIndex === 'created_at'">
         <span>{{

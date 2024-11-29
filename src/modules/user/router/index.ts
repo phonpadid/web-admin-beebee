@@ -18,19 +18,19 @@ export const userRoute: RouteRecordRaw[] = [
     path: "editProfile/:id",
     name: "editProfile",
     component: () => import("../components/EditProfile.vue"),
-    meta: {label: ['ລາຍລະອຽດຜູ້ໃຊ້']}
+    meta: {label: ['users.detail_user']}
   },
   {
     path: "addUser",
     name: "addUser.index",
     component: () => import("../components/AddUser.vue"),
-    meta: {label: ['ເພີ່ມຂໍ້ມູນຜູ້ໃຊ້']}
+    meta: {label: ['users.add_user']}
   },
   {
     path: "getMe",
     name: "getMe.index",
     component: () => import("../../authentication/views/GetMeView.vue"),
-    meta: {label: ["ໂປຣຟາຍຂອງຂ້ອຍ"]},
+    meta: {label: ["me.label"]},
   },
   
 ];

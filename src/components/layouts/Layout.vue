@@ -1,6 +1,6 @@
 <template>
   <a-layout style="min-height: 100vh; overflow: hidden">
-    <!-- Sidebar (a-layout-sider) -->
+    <!-- Sidebar -->
     <a-layout-sider
       v-model:collapsed="collapsed"
       :trigger="null"
@@ -32,7 +32,7 @@
 
             <!-- Global search input -->
             <a-input-search 
-              v-if="isDataTableView"
+              v-if="isSearchableRoute"
               v-model:value="searchQuery"
               :placeholder="searchPlaceholder"
               style="width: 200px; margin-left: 50px; margin-top: -6px"
@@ -46,8 +46,8 @@
       <a-layout-content
         :style="{ margin: '10px 10px', padding: '24px', background: '#fff', minHeight: '280px', overflow: 'auto' }"
       >
-        <!-- Pass searchQuery to the table in router-view -->
-        <router-view :search-query="searchQuery" />
+        <!-- Pass searchQuery only when needed -->
+        <router-view :search-query="isSearchableRoute ? searchQuery : null" />
       </a-layout-content>
 
       <!-- Footer -->
@@ -58,10 +58,10 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 import SideBar from "./Sidebar.vue";
 import Navbar from "./Navbar.vue";
 import Footer from "./Footer.vue";
-import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 
 // Router and layout state
@@ -70,15 +70,20 @@ const { t } = useI18n();
 const collapsed = ref<boolean>(false);
 const searchQuery = ref<string>("");
 
-const isDataTableView = computed(() => {
-  return route.name === 'roles.index' || route.name === 'user' || route.name === 'permissions' || route.name === 'customers' || route.name === 'tenants';
+// Check if the current route requires a search query
+const isSearchableRoute = computed(() => {
+  return route.name === 'roles.index' || 
+         route.name === 'user' ||
+         route.name === 'permissions' ||
+         route.name === 'customers' ||
+         route.name === 'tenants';
 });
 
+// Breadcrumbs items (skips the root path)
 const breadcrumbItems = computed(() => {
   return route.matched
-    .filter((_, idx) => idx !== 0)  // Skip the root path
+    .filter((_, idx) => idx !== 0) // Skip the root path
     .flatMap((matched) => {
-      searchQuery.value = '';
       const labels = matched.meta.label as string[] | undefined;
       return labels ? labels.map((item) => t(item)) : [];
     });

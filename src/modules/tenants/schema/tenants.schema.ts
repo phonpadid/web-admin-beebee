@@ -9,7 +9,6 @@ export const useTenantSchema = () => {
   const schema = computed<Record<string, Rule[]>>(() => ({
     name: [{ required: true, message: t("validation.tenants.name") }],
     schema_name: [{ required: true, message: t("validation.tenants.schema_name") }],
-    groups: [{ required: true, message: t("validation") }],
     domain: [
       { required: true, message: t("validation.tenants.domain_name"), trigger: "blur" },
     ]

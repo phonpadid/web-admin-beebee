@@ -47,8 +47,6 @@ export class RolesRepository implements RoleInterfaces {
   async getAll(
     args: IGPaginate<Pick<RolesEntity, RolesFilterType>>
   ): Promise<IResponse<IGPaginated<RolesEntity>>> {
-    console.log('touPage:',args.page);
-    
     const res = await this._api.axios({
       url: "/accounts/groups/",
       params: {

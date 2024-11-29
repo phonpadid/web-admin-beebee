@@ -8,9 +8,8 @@ export const useCustomerSchema = () => {
 
   // Schema definition as a computed property
   const schema = computed<Record<string, Rule[]>>(() => ({
-    first_name: [{ required: true, message: t("validation.user.fname"), trigger: "blur"  }],
-    last_name: [{ required: true, message: t("validation.user.lname"), trigger: "blur"  }],
-    groups: [{ required: true, message: t("validation") }],
+    first_name: [{ required: true, message: t("validation.user.fname"), trigger: "blur" }],
+    last_name: [{ required: true, message: t("validation.user.lname"), trigger: "blur" }],
     phone_number: [
       { required: true, message: t("validation.user.phone_number"), trigger: "blur" },
     ],
