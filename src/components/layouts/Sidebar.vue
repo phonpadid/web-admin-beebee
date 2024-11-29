@@ -1,9 +1,7 @@
 <template>
   <div class=" transition-all sticky z-10 top-0">
-    <div class="logo ">
-      <img
-        src="https://img.freepik.com/free-vector/hand-drawn-international-beer-day-concept_23-2148575018.jpg?w=996&t=st=1715423916~exp=1715424516~hmac=fca663993514dfa599b25ab43627d15b6530742cdd77b0a60ed86e40e1122250"
-      />
+    <div class="logo">
+      <img :src="logo" alt="">
     </div>
     <a-menu
       v-model:selectedKeys="selectedKeys"
@@ -44,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import logo from '@/../public/logo_beer.jpg'
 import { ref, watchEffect } from "vue";
 import {
   HomeOutlined,
@@ -85,11 +84,13 @@ const goToRoute = async (routeName: string) => {
   height: 100px;
   background: rgba(255, 255, 255, 0.2);
   img {
-    width: 4rem;
-    height: 4rem;
+    width: 10rem;
+    height: 10rem;
     margin-right: 0.8rem;
     margin-left: 0.25rem;
     object-fit: contain;
+    top: 0;
+    margin-top: -1rem;
     border-radius: 5px;
   }
 }

@@ -1,26 +1,32 @@
 <script setup lang="ts">
 import { useAuthStore } from "../store/index";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { loginSchema } from "../schema/login.schema";
 import { useRouter } from "vue-router";
 const { push } = useRouter();
-const { stateGetMe, login, form } = useAuthStore();
+const { login, form, clearFormUser} = useAuthStore();
 const loading = ref(false);
 const formRef = ref();
-
+const msgErrors = reactive<any>({});
 const loginUser = async () => {
   formRef.value
     .validate()
     .then(async () => {
-      
       loading.value = true;
-      await login(form);
-      console.log('message:', stateGetMe);
-        // formRef.value.resetFields();
-        // clearFormUser();
-    }).catch((errror: unknown) => {
-      console.log('errr', errror);
-      
+      try {
+        await login(form);
+        formRef.value.resetFields();
+        clearFormUser();
+      } catch (error: any) {
+        if (error.response && error.response.data) {
+          const apiErrors = error.response.data || {};
+          Object.keys(apiErrors).forEach((field) => {
+            msgErrors[field] = Array.isArray(apiErrors[field])
+              ? apiErrors[field][0] // Take the first error message
+              : apiErrors[field];
+          });
+        }
+      }
     })
     .finally(() => {
       loading.value = false;
@@ -48,6 +54,11 @@ const loginUser = async () => {
         </h2>
       </div>
       <div class="p-4">
+        <div :class="{'mb-4 w-full ring-1 ring-red-500 py-2': msgErrors.errors}">
+          <span v-if="msgErrors.errors" class="text-[12px] text-red-500 px-1"
+            >ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ ກະລຸນາກວດສອບຄືນໃໝ່</span
+          >
+        </div>
         <a-form
           name="basic"
           ref="formRef"
@@ -60,6 +71,7 @@ const loginUser = async () => {
             <a-input
               v-model:value="form.email"
               placeholder="ປ້ອນອີເມວຂອງທ່ານ"
+              :class="{ 'ring-1 ring-red-500': msgErrors.errors }"
             />
           </a-form-item>
           <a-form-item name="password">
@@ -67,6 +79,7 @@ const loginUser = async () => {
             <a-input-password
               v-model:value="form.password"
               placeholder="********"
+              :class="{ 'ring-1 ring-red-500': msgErrors.errors }"
             />
           </a-form-item>
           <span
@@ -77,6 +90,7 @@ const loginUser = async () => {
           <a-form-item class="mt-6">
             <a-button
               type="primary"
+              :isLoading="loading"
               @click="loginUser"
               html-type="submit"
               class="w-full btn"

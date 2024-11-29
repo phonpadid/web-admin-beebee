@@ -30,7 +30,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   async function login(item: any) {
     
-    try {
+    // try {
       stateGetMe.isLoading = true;
       const result = await authService.login(item);
       if (result.status === "success" && result.data) {
@@ -52,24 +52,17 @@ export const useAuthStore = defineStore("auth", () => {
         console.log('errMessage:', );
         stateGetMe.errorMessage = result.message ? result.message : "";
       }
-    } catch (error: any) {
-      let responseError = "";
-      if (error.response.status === 422) {
-        responseError = Object.keys(error.response.data.errors)
-          .map((key) => `${key}: ${error.response.data.errors[key].join(", ")}`)
-          .join("; ");
-      } else if (error.status === 401) {
-        stateGetMe.errorMessage = "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ.";
-        stateGetMe.isLoading = false;
-        message.error({
-          content: "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ.",
-          duration: 3,
-        });
-      } else {
-        responseError = error.response.data.error;
-      }
-      stateGetMe.errorMessage = responseError;
-    }
+    // } catch (error: any) {
+    //   let responseError = "";
+    //   if (error.response.status === 422) {
+    //     responseError = Object.keys(error.response.data.errors)
+    //       .map((key) => `${key}: ${error.response.data.errors[key].join(", ")}`)
+    //       .join("; ");
+    //   } else {
+    //     responseError = error.response.data.error;
+    //   }
+    //   stateGetMe.errorMessage = responseError;
+    // }
     stateGetMe.isLoading = false;
   }
 

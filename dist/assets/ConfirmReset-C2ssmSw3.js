@@ -1,0 +1,1 @@
+import{d as e,f as t,o,_ as s}from"./index-B4OLFXgi.js";const c={class:"otp-container flex flex-col justify-center items-center h-screen bg-gray-200"},n=e({__name:"ConfirmReset",setup(r){return(a,_)=>(o(),t("div",c))}}),i=s(n,[["__scopeId","data-v-bc41a668"]]);export{i as default};

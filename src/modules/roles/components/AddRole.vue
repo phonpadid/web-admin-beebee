@@ -5,9 +5,9 @@ import { useRoleSchema } from "../schema/role.schema";
 import { rolesStore } from "../store/role.store";
 import { notification } from "ant-design-vue";
 import { RolesEntity } from "../entity/role.entity";
-import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 
 const { schema, schemaKey } = useRoleSchema();
 // Loading state
