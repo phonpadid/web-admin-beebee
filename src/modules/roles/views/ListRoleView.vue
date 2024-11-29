@@ -81,11 +81,11 @@ const filteredData = computed(() => {
 <template>
   <a-flex justify="space-between" :align="'flex-start'">
     <p class="text-base font-bold text-blue-500">
-      <line-chart-outlined /> 
-      {{ $t('messages.role.item')  }}
+      <line-chart-outlined />
+      {{ $t("messages.role.item") }}
     </p>
     <a-button type="primary" @click="push({ name: 'addRole.index' })">
-      {{ $t('messages.role.add_role') }}
+      {{ $t("messages.role.add_role") }}
     </a-button>
   </a-flex>
   <a-divider style="margin-top: 10px" />
@@ -100,38 +100,44 @@ const filteredData = computed(() => {
     :loading="state.isLoading"
     :row-key="(record: any) => record.id"
   >
-  <template #bodyCell="{ column, record }">
-    <template v-if="column.dataIndex === 'actions'">
-      <div class="flex items-center justify-center gap-2">
-        <a-tooltip>
-          <template #title>{{ $t('messages.role.edit') }}</template>
-          <ButtonCircle bgColor="bg-white" textColor="text-blue-700" @click="getEdit(record)">
-            <template #icon>
-              <Icon icon="solar-pen-bold" width="18" />
-            </template>
-          </ButtonCircle>
-        </a-tooltip>
-        <a-tooltip>
-          <template #title>{{ $t('messages.role.delete') }}</template>
-          <ButtonCircle bgColor="bg-white hover:text-red-600" textColor="text-red-600">
-            <template #icon>
-              <a-popconfirm
-                :title="$t('popconfirm.delete.messages')"
-                :ok-text="$t('popconfirm.delete.okay')"
-                :cancel-text="$t('popconfirm.delete.cancel')"
-                @confirm="confirm(record.id)"
-                @cancel="cancel"
-                class="text-red-600"
-              >
-                <Icon icon="solar-trash-bin-2-bold" width="18" />
-              </a-popconfirm>
-            </template>
-          </ButtonCircle>
-        </a-tooltip>
-        
-      </div>
+    <template #bodyCell="{ column, record }">
+      <template v-if="column.dataIndex === 'actions'">
+        <div class="flex items-center justify-center gap-2">
+          <a-tooltip>
+            <template #title>{{ $t("messages.role.edit") }}</template>
+            <ButtonCircle
+              bgColor="bg-white"
+              textColor="text-blue-700"
+              @click="getEdit(record)"
+            >
+              <template #icon>
+                <Icon icon="solar-pen-bold" width="18" />
+              </template>
+            </ButtonCircle>
+          </a-tooltip>
+          <a-tooltip>
+            <template #title>{{ $t("messages.role.delete") }}</template>
+            <ButtonCircle
+              bgColor="bg-white hover:text-red-600"
+              textColor="text-red-600"
+            >
+              <template #icon>
+                <a-popconfirm
+                  :title="$t('popconfirm.delete.messages')"
+                  :ok-text="$t('popconfirm.delete.okay')"
+                  :cancel-text="$t('popconfirm.delete.cancel')"
+                  @confirm="confirm(record.id)"
+                  @cancel="cancel"
+                  class="text-red-600"
+                >
+                  <Icon icon="solar-trash-bin-2-bold" width="18" />
+                </a-popconfirm>
+              </template>
+            </ButtonCircle>
+          </a-tooltip>
+        </div>
+      </template>
     </template>
-  </template>
   </a-table>
 </template>
 
