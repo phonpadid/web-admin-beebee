@@ -8,6 +8,9 @@ dependencies:
   '@ant-design/icons-vue':
     specifier: ^7.0.1
     version: 7.0.1(vue@3.5.12)
+  '@chenfengyuan/vue-barcode':
+    specifier: ^2.0.2
+    version: 2.0.2(jsbarcode@3.11.6)(vue@3.5.12)
   '@iconify/vue':
     specifier: 4.1.1
     version: 4.1.1(vue@3.5.12)
@@ -23,6 +26,9 @@ dependencies:
   dayjs:
     specifier: ^1.11.12
     version: 1.11.13
+  jsbarcode:
+    specifier: ^3.11.6
+    version: 3.11.6
   pinia:
     specifier: ^2.1.7
     version: 2.2.4(typescript@5.6.3)(vue@3.5.12)
@@ -77,7 +83,7 @@ devDependencies:
     specifier: ^5.2.0
     version: 5.4.9(sass@1.80.3)
   vue-tsc:
-    specifier: ^2.1.10
+    specifier: ^2.0.6
     version: 2.1.10(typescript@5.6.3)
 
 packages:
@@ -136,6 +142,16 @@ packages:
       '@babel/helper-string-parser': 7.25.7
       '@babel/helper-validator-identifier': 7.25.7
       to-fast-properties: 2.0.0
+
+  /@chenfengyuan/vue-barcode@2.0.2(jsbarcode@3.11.6)(vue@3.5.12):
+    resolution: {integrity: sha512-lHQhYfcqWeeA/UYoe4O+O6c8WD+t9WO8SiWohKOVVIiwPhcvC58YxhvlFvJme0/CPL7+Sh1XCpMaC9Mo2Dt5jQ==}
+    peerDependencies:
+      jsbarcode: ^3.11.0
+      vue: ^3.0.0
+    dependencies:
+      jsbarcode: 3.11.6
+      vue: 3.5.12(typescript@5.6.3)
+    dev: false
 
   /@ctrl/tinycolor@3.6.1:
     resolution: {integrity: sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==}
@@ -1398,6 +1414,10 @@ packages:
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
+    dev: false
+
+  /jsbarcode@3.11.6:
+    resolution: {integrity: sha512-G5TKGyKY1zJo0ZQKFM1IIMfy0nF2rs92BLlCz+cU4/TazIc4ZH+X1GYeDRt7TKjrYqmPfTjwTBkU/QnQlsYiuA==}
     dev: false
 
   /lilconfig@2.1.0:
