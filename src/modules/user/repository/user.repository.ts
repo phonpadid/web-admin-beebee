@@ -78,7 +78,9 @@ export class UserRepository implements UserInterfaces {
     formData.append("email", input.email);
     formData.append("user_type", userType.Admin);
     formData.append("phone_number", input.phone_number);
-    formData.append("is_staff", String(input.is_staff));
+    if(input.is_staff) {
+      formData.append("is_staff", String(input.is_staff));
+    }
     formData.append("is_superuser", String(input.is_superuser));
     formData.append("is_active", String(input.is_active));
     if (input.groups && Array.isArray(input.groups)) {

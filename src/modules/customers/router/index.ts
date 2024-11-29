@@ -9,28 +9,28 @@ export const customersRoute: RouteRecordRaw[] = [
     name: "customers",
     component: () => import("../views/ListCustomerView.vue"),
     meta: {
-      label: ["ຈັດການລູກຄ້າ"],
+      label: ["customers.label"],
       // requiredRoles: [GET_ROLES.ADMIN, GET_ROLES.SUPER_ADMIN, GET_ROLES.USER],
     },
     // beforeEnter: roleGuard,
   },
   {
     path: "customer_edit/:id",
-    name: "customer_edit.index",
+    name: "customer_edit",
     component: () => import("../components/UpdateCustomer.vue"),
-    meta: {label: ['ລາຍລະອຽດຜູ້ໃຊ້']}
+    meta: {label: ['customers.label']}
   },
   {
     path: "addCustomer",
-    name: "addCustomer.index",
+    name: "addCustomer",
     component: () => import("../components/AddCustomer.vue"),
-    meta: {label: ['ເພີ່ມຂໍ້ມູນລູກຄ້າ']}
+    meta: {label: ['customers.label_add']}
   },
   {
     path: "getMe",
     name: "getMe.index",
     component: () => import("../../authentication/views/GetMeView.vue"),
-    meta: {label: ["ໂປຣຟາຍຂອງຂ້ອຍ"]},
+    meta: {label: ["me.label"]},
   },
   
 ];

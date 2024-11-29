@@ -29,16 +29,6 @@ export const permissionsStore = defineStore("permissions-store", () => {
     btnLoading: false,
     error: "",
   });
-  // const statePer = reactive<IGState<IGPaginated<PermissionsEntity>>>({
-  //   data: {
-  //     props: [],
-  //     total: 0,
-  //   },
-  //   isLoading: false,
-  //   btnLoading: false,
-  //   error: "",
-  // });
-
   const setStateFilter = reactive<
     IGPaginate<Pick<PermissionsEntity, PermissionsFilterType>>
   >({
@@ -67,7 +57,6 @@ export const permissionsStore = defineStore("permissions-store", () => {
       statePermission.data.total = results.data.total;
       statePermission.isLoading = false;
     }
-    // console.log("Data from API:", statePermission.data.props);
   }
   async function getAllPer() {
     statePermission.isLoading = true;
@@ -77,10 +66,14 @@ export const permissionsStore = defineStore("permissions-store", () => {
       limit: setStateFilterPer.limit,
       filter: setStateFilterPer.filter,
     });
+    
 
     if (results && results.data && results.status === "success") {
-      statePermission.data.props = results.data.props;
-      statePermission.data.total = results.data.total;
+      const perid = [12, 11, 8];
+      const data = results.data.props.filter(per => perid.includes(Number(per.content_type)));
+    
+      statePermission.data.props = data;
+      statePermission.data.total = data.length;
       statePermission.isLoading = false;
     }
     // console.log("Data from API:", statePermission.data.props);

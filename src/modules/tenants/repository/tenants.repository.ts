@@ -29,16 +29,40 @@ export class TenantsRepository implements TenantsInterfaces {
       status: "success",
     };
   }
-  async update(input: TenantsEntity): Promise<IResponse<TenantsEntity>> {
+  async update(input: TenantsEntity, id: number): Promise<IResponse<TenantsEntity>> {
+    console.log('idTenant:', id);
     const res = await this._api.axios({
       method: "put",
-      url: `/tenants/update/${input.id}`,
+      url: `/tenants/${id}/`,
       data: {
+        id: id,
         name: input.name,
         schema_name: input.schema_name,
         domain: input.domain,
       },
     });
+    
+    return {
+      data: res.data,
+      message: "ອັບເດດສຳເລັດ",
+      status: "success",
+    };
+  }
+  async updateDomain(input: TenantsEntity, id: number): Promise<IResponse<TenantsEntity>> {
+    console.log();
+    
+    const res = await this._api.axios({
+      method: "put",
+      url: `/domains/${id}/`,
+      data: {
+        id: id,
+        name: input.name,
+        schema_name: input.schema_name,
+        domain: input.domain,
+        tenant: input.id?.toString()
+      },
+    });
+    
     return {
       data: res.data,
       message: "ອັບເດດສຳເລັດ",
@@ -50,7 +74,7 @@ export class TenantsRepository implements TenantsInterfaces {
   ): Promise<IResponse<IGPaginated<TenantsEntity>>> {
     const res = await this._api.axios({
       // url: "/tenants/",
-      url: "/domains/",
+      url: "/tenants/",
       params: {
         page: args.page,
         page_size: args.limit,

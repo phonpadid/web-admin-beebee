@@ -59,7 +59,6 @@ export class PermissionsRepository implements PermissionsInterfaces {
       },
     });
     const { results, count } = res.data;
-    console.log('tou:');
     
     return {
       data: { props: results, total: count },

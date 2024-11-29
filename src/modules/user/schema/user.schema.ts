@@ -1,51 +1,50 @@
-import type { Rule } from "ant-design-vue/es/form";
+import { Rule } from "ant-design-vue/es/form";
+import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 
-export const UserShcema: Record<string, Rule[]> = {
-  first_name: [{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນກ່ອນ" }],
-  last_name: [{ required: true, message: "ກະລຸນາເລືອກຂໍ້ມູນກ່ອນ" }],
-  groups: [{ required: true, message: "ກະລຸນາເລືອກບົດບາດກ່ອນ" }],
-  phone_number: [
-    { required: true, message: "ກະລຸນາປ້ອນເບີໂທກ່ອນ", trigger: "blur" },
-  ],
-  email: [
-    { required: true, message: "ກະລຸນາປ້ອນອີວເມວກ່ອນ", trigger: "blur" },
-    {
-      type: "email",
-      message: "ຕ້ອງເປັນຮູບແບບອີວເມວ name@gmail.com",
-      trigger: "change",
-    },
-  ],
-  password: [
-    { required: true, message: "ກະລຸນາປ້ອນລະຫັດຜ່ານກ່ອນ", trigger: "change" },
-    {
-      min: 6,
-      message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 6 ຕົວຂື້ນໄປ",
-      trigger: "change",
-    },
-    {
-      pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-      message: "ລະຫັດຜ່ານຕ້ອງປະກອບດ້ວຍຕົວອັກສອນ ແລະ ຕົວເລກ ",
-      trigger: "change",
-    },
-  ],
-  password_confirmation: [
-    {
-      required: true,
-      message: "ກະລຸນາປ້ອນຢືນຢັນລະຫັດຜ່ານກ່ອນ",
-      trigger: "blur",
-    },
-    {
-      min: 6,
-      message: "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວ 6 ຕົວຂື້ນໄປ",
-      trigger: "change",
-    },
-    {
-      pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-      message: "ລະຫັດຜ່ານຕ້ອງປະກອບດ້ວຍຕົວອັກສອນ ແລະ ຕົວເລກ ",
-      trigger: "change",
-    },
-  ],
-  // avatar: [
-  //   { required: true, message: "ກະລຸນາເລືອກຮູບພາບກ່ອນ", trigger: "change" },
-  // ],
+export const useUserSchema = () => {
+  const { t, locale } = useI18n();
+  const schemaKey = ref(0); // Force schema refresh
+
+  // Schema definition as a computed property
+  const schema = computed<Record<string, Rule[]>>(() => ({
+    first_name: [{ required: true, message: t("validation.user.fname"), trigger: "blur"  }],
+    last_name: [{ required: true, message: t("validation.user.lname"), trigger: "blur"  }],
+    phone_number: [
+      { required: true, message: t("validation.user.phone_number"), trigger: "blur" },
+    ],
+    email: [
+      { required: true, message: t("validation.user.email"), trigger: "blur" },
+      { type: "email", message: t("validation.user.style_email"), trigger: "change" },
+    ],
+    password: [
+      { required: true, message: t("validation.user.password"), trigger: "change" },
+      { min: 6, message: t("validation.user.length_pass"), trigger: "change" },
+      {
+        pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
+        message: t("validation.user.pattern"),
+        trigger: "change",
+      },
+    ],
+    password_confirmation: [
+      {
+        required: true,
+        message: t("validation.user.confirm_password"),
+        trigger: "blur",
+      },
+      { min: 8, message: t("validation.user.length_pass"), trigger: "change" },
+      {
+        pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
+        message: t("validation.user.pattern"),
+        trigger: "change",
+      },
+    ],
+  }));
+
+  // Watch for locale changes and increment schemaKey to trigger re-render
+  watch(locale, () => {
+    schemaKey.value += 1;
+  });
+
+  return { schema, schemaKey };
 };

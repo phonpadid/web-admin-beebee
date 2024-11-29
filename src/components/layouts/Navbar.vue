@@ -1,5 +1,5 @@
 <template>
-  <div class="  ">
+  <div>
     <a-layout-header style="background: #fff">
       <menu-unfold-outlined
         v-if="collapsed"
@@ -13,57 +13,35 @@
         @click="onCollapsed"
         style="margin-left: -35px; font-size: 20px"
       />
-  
+
       <div class="header-action-container">
-        <a-badge count="2">
-          <a-avatar shape="square" size="large" class="navbar-btn">
-            <shopping-cart-outlined class="menu-icon" />
-          </a-avatar>
-        </a-badge>
-        <a-badge count="3">
-          <a-avatar shape="square" size="large" class="navbar-btn">
-            <comment-outlined class="menu-icon" />
-          </a-avatar>
-        </a-badge>
-        
-            <!-- <div @click="show_me" class="w-10 h-10 rounded-full -mr-4">
-              <img
-              v-if="state.data?.avatar"
-              :src="(state.data?.avatar)"
-              alt=""
-              class=" flex items-center justify-center"
-            />
-            <img
-              v-else
-              src="../../assets/profile.jpg"
-              alt=""
-              class="w-10 h-10 rounded-full flex items-center justify-center"
-            />
-            </div> -->
-            <ShowMeView/>
-        <!-- Logout with hover -->
-        <!-- <div class="logout-container" @mouseover="showLogout = true" @mouseleave="showLogout = false"> -->
-          <!-- <div
-            class="logout w-8 h-8 rounded-full bg-blue-200 hover:bg-blue-300 text-blue-500 flex items-center justify-center"
-          >
-            <LogoutOutlined />
-          </div> -->
-          
-          <!-- Hover content -->
-          <!-- <transition name="fade">
-            <div v-if="showLogout" class="logout-popup">
-              <template v-if="!confirmLogout">
-                <a-button @click="logout()">ອອກຈາກລະບົບ</a-button>
-              </template>
-            </div>
-          </transition> -->
-        <!-- </div> -->
+        <a-dropdown>
+          <a class="ant-dropdown-link flex items-center ring-1 ring-slate-200 shadow-ms px-2 h-12 rounded-sm gap-2" @click.prevent>
+            <!-- <GlobalOutlined /> -->
+             <img v-if="locale === 'la'" src="/public/lao.png" alt="" srcset="" width="20px" height="20px">
+             <img v-else src="/public/en.png" alt="" srcset="" width="20px" height="20px">
+            {{ currentLanguageName }}
+            <DownOutlined :style="{fontSize: '12px'}"/>
+          </a>
+          <template #overlay>
+            <a-menu class="language-menu ">
+              <a-menu-item v-for="lang in languages" :key="lang.value" @click="changeLanguage(lang.value)" class="menu-item">
+                <div class="flex-item">
+                  <img :src="lang.icon" alt="flag" class="flag-icon" />
+                  <span>{{ lang.name }}</span>
+                </div>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+        <ShowMeView />
       </div>
     </a-layout-header>
   </div>
 </template>
 
 <script lang="ts" setup>
+<<<<<<< HEAD
 import { ref, onMounted } from "vue";
 import {
   ShoppingCartOutlined,
@@ -71,18 +49,60 @@ import {
   MenuFoldOutlined,
   CommentOutlined,
 } from "@ant-design/icons-vue";
+=======
+import { ref, computed, onMounted } from "vue";
+import { DownOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons-vue";
+>>>>>>> 741ce8a078fae04d3d1575d6adc04cff81c85f42
 import { useAuthStore } from "@/modules/authentication/store/index";
 import ShowMeView from "@/modules/authentication/views/ShowMeView.vue";
+import { useI18n } from "vue-i18n";
+
 const collapsed = ref<boolean>(false);
+<<<<<<< HEAD
 const {showMe } = useAuthStore();
+=======
+const { showMe } = useAuthStore();
+>>>>>>> 741ce8a078fae04d3d1575d6adc04cff81c85f42
 const emit = defineEmits<{ (e: "toggleSidebar"): void }>();
 
+// Toggle sidebar collapse
 const onCollapsed = () => {
   collapsed.value = !collapsed.value;
   emit("toggleSidebar");
 };
+<<<<<<< HEAD
+=======
+
+// Localization and language setup
+const { t, locale } = useI18n();
+const currentLanguageName = ref<string>("");
+
+// Define languages using a computed property
+import laIcon from "../../../public/lao.png";
+import enIcon from "../../../public/en.png";
+const languages = computed(() => [
+  { name: t("messages.language.en"), value: "en", icon:  enIcon},
+  { name: t("messages.language.lo"), value: "la", icon:  laIcon},
+]);
+
+// Function to update the display name of the current language
+const updateCurrentLanguageName = () => {
+  const selectedLang = languages.value.find(lang => lang.value === locale.value);
+  currentLanguageName.value = selectedLang ? selectedLang.name : "Language";
+};
+
+// Update language function now accepts langValue as a parameter
+const changeLanguage = (langValue: string) => {
+  locale.value = langValue;
+  localStorage.setItem("locale", langValue);
+  updateCurrentLanguageName(); // Update display name after change
+};
+
+// Initialize current language on component mount
+>>>>>>> 741ce8a078fae04d3d1575d6adc04cff81c85f42
 onMounted(async () => {
   await showMe();
+  updateCurrentLanguageName(); // Set initial language name
 });
 </script>
 
@@ -94,22 +114,6 @@ onMounted(async () => {
   align-items: center;
   gap: 20px;
   margin-right: -25px;
-
-  .navbar-btn {
-    background-color: rgb(191, 219, 254);
-    color: rgb(59, 130, 246);
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-    border-radius: 50% !important;
-    padding-right: 0;
-    padding-left: 0;
-    text-align: center !important;
-
-    :hover {
-      cursor: pointer;
-    }
-  }
 }
 
 .ant-layout-header {
@@ -119,35 +123,26 @@ onMounted(async () => {
   height: 64px;
 }
 
-.logout-container {
-  position: relative;
-}
-
-.logout-popup {
-  position: absolute;
-  right: 0;
-  z-index: 1000;
-  border-radius: 4px;
-  padding: 2px;
-  background-color: white; // Set background for the popup
-  a-button {
-    width: 100%;
-  }
-}
-
-/* Transition for fade-in and fade-out */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.confirm-buttons {
+.language-menu {
   display: flex;
-  gap: 10px; // Space between Yes and Cancel buttons
+  flex-direction: column; /* Make the menu items stack vertically */
+  padding: 0;
+}
+
+.menu-item {
+  display: flex;  /* Use flexbox for each menu item */
+  align-items: center;  /* Align items vertically */
+  padding: 4px 10px;  /* Optional: Adjust padding for better spacing */
+}
+
+.flex-item {
+  display: flex;   /* Flexbox for flag and text */
+  align-items: center;  /* Vertical center */
+}
+
+.flag-icon {
+  width: 14px;  /* Set flag size */
+  height: 14px;  /* Set flag size */
+  margin-right: 6px;  /* Space between flag and text */
 }
 </style>

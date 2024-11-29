@@ -9,7 +9,7 @@ export const userRoute: RouteRecordRaw[] = [
     name: "user",
     component: () => import("../views/ListUserView.vue"),
     meta: {
-      label: ["ຈັດການຜູ້ໃຊ້"],
+      label: ["users.label"],
       // requiredRoles: [GET_ROLES.ADMIN, GET_ROLES.SUPER_ADMIN, GET_ROLES.USER],
     },
     // beforeEnter: roleGuard,
@@ -18,19 +18,19 @@ export const userRoute: RouteRecordRaw[] = [
     path: "editProfile/:id",
     name: "editProfile",
     component: () => import("../components/EditProfile.vue"),
-    meta: {label: ['ລາຍລະອຽດຜູ້ໃຊ້']}
+    meta: {label: ['users.detail_user']}
   },
   {
     path: "addUser",
     name: "addUser.index",
     component: () => import("../components/AddUser.vue"),
-    meta: {label: ['ເພີ່ມຂໍ້ມູນຜູ້ໃຊ້']}
+    meta: {label: ['users.add_user']}
   },
   {
     path: "getMe",
     name: "getMe.index",
     component: () => import("../../authentication/views/GetMeView.vue"),
-    meta: {label: ["ໂປຣຟາຍຂອງຂ້ອຍ"]},
+    meta: {label: ["me.label"]},
   },
   
 ];

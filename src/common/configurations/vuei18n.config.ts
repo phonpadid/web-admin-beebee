@@ -1,6 +1,6 @@
 import { createI18n } from "vue-i18n";
 import enMessages from "../localization/en.json";
-import laMessages from "../localization/la.json";
+import laMessages from "../localization/lo.json";
 
 const locale = localStorage.getItem("locale") || "en";
 

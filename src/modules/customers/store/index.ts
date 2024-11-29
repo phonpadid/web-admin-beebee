@@ -36,7 +36,9 @@ export const customerStore = defineStore("customer-store", () => {
     {
       // page: 1,
       limit: 10,
-      filter: {},
+      filter: {
+        first_name: ''
+      },
     }
   );
 

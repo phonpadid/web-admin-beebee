@@ -1,10 +1,11 @@
+import { IFile } from "@/common/interfaces/file.interface";
 import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 
 export interface CustomerEntity {
   customer_id: string;
   id: string;
-  first_name?: string;
+  first_name: string;
   last_name: string;
   email: string;
   is_active?: boolean;
@@ -15,7 +16,8 @@ export interface CustomerEntity {
   user_permissions?: PermissionsEntity[]; // Allow user_permissions to be a single number or an array of numbers
   password?: string | undefined;
   password_confirmation?: string;
-  avatar?: File;
+  avatar?:IFile | string;
+  full_avatar_url?: IFile | string;
   created_at?: string;
   updated_at?: string;
 }

@@ -6,7 +6,7 @@ export const dashboardRoute: RouteRecordRaw[] = [
     name: "admin_dashboard",
     component: () => import("../views/Dashboard.vue"),
     meta: {
-      label: ["ໜ້າຫຼັກ"],
+      label: ["home_page"],
     },
   },
 ];

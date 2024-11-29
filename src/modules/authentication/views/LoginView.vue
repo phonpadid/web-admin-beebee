@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { useAuthStore } from "../store/index";
-import { message } from "ant-design-vue";
 import { ref } from "vue";
 import { loginSchema } from "../schema/login.schema";
 import { useRouter } from "vue-router";
 const { push } = useRouter();
-const { stateGetMe, login, form, clearFormUser } = useAuthStore();
+const { stateGetMe, login, form } = useAuthStore();
 const loading = ref(false);
 const formRef = ref();
 
@@ -13,24 +12,15 @@ const loginUser = async () => {
   formRef.value
     .validate()
     .then(async () => {
-      if (stateGetMe.errorMessage) {
-        message.error({
-          content: stateGetMe.errorMessage,
-          duration: 3,
-        });
-      } else {
-        loading.value = true;
-        await login(form);
-        message.success({
-          content: "ຍີນດີຕ້ອນຮັບເຂົ້າສູ່ລະບົບ.",
-          duration: 3,
-        });
-        formRef.value.resetFields();
-        clearFormUser();
-      }
-    })
-    .catch((error: any) => {
-      console.log("error", error);
+      
+      loading.value = true;
+      await login(form);
+      console.log('message:', stateGetMe);
+        // formRef.value.resetFields();
+        // clearFormUser();
+    }).catch((errror: unknown) => {
+      console.log('errr', errror);
+      
     })
     .finally(() => {
       loading.value = false;

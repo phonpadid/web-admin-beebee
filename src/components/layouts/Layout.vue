@@ -1,80 +1,103 @@
 <template>
-    <a-layout style="min-height: 100vh;">
-        <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible style="background: #fff">
-            <SideBar/>
-        </a-layout-sider>
-        <a-layout>
-            <div class="z-40 sticky min-w-full transition-all">
-                <Navbar @toggle-sidebar="() => (collapsed = !collapsed)"/>
-            </div>
-            <a-breadcrumb :style="{ padding: '10px', background: '#fff', minHeight: '10px' }">
-                <p style="margin-left: 5px;"></p>
-                <a-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" :style="{ fontSize: '16', fontWeight: '500'}">
-                    {{ item }}
-                </a-breadcrumb-item>
-            </a-breadcrumb>
+  <a-layout style="min-height: 100vh; overflow: hidden">
+    <!-- Sidebar -->
+    <a-layout-sider
+      v-model:collapsed="collapsed"
+      :trigger="null"
+      collapsible
+      style="background: #fff; position: sticky; top: 0; height: 100vh; overflow: auto;"
+    >
+      <div class="transition-all sticky top-0 z-10">
+        <SideBar />
+      </div>
+    </a-layout-sider>
 
-            <a-layout-content :style="{ margin: '10px 10px', padding: '24px', background: '#fff', minHeight: '280px' }">
-                <router-view />
-            </a-layout-content>
-            <Footer/>
-        </a-layout>
+    <!-- Main layout -->
+    <a-layout style="overflow: auto; height: 100vh;">
+      <!-- Navbar -->
+      <div class="min-w-full transition-all sticky top-0 z-10">
+        <Navbar @toggle-sidebar="() => (collapsed = !collapsed)" />
+      </div>
+
+      <!-- Breadcrumbs with Search Bar -->
+      <div class="min-w-full transition-all sticky -mt-1">
+        <a-breadcrumb :style="{ padding: '10px', background: '#fff', minHeight: '10px' }">
+          <p style="margin-left: 5px"></p>
+          <a-breadcrumb-item
+            v-for="(item, index) in breadcrumbItems"
+            :key="index"
+            :style="{ fontSize: '16px', fontWeight: '500' }"
+          >
+            {{ item }}
+
+            <!-- Global search input -->
+            <a-input-search 
+              v-if="isSearchableRoute"
+              v-model:value="searchQuery"
+              :placeholder="searchPlaceholder"
+              style="width: 200px; margin-left: 50px; margin-top: -6px"
+              @search="onSearch"
+            />
+          </a-breadcrumb-item>
+        </a-breadcrumb>
+      </div>
+
+      <!-- Main content area where router-view will be loaded -->
+      <a-layout-content
+        :style="{ margin: '10px 10px', padding: '24px', background: '#fff', minHeight: '280px', overflow: 'auto' }"
+      >
+        <!-- Pass searchQuery only when needed -->
+        <router-view :search-query="isSearchableRoute ? searchQuery : null" />
+      </a-layout-content>
+
+      <!-- Footer -->
+      <Footer />
     </a-layout>
-  </template>
-  <script lang="ts" setup>
-    import { onMounted, ref } from 'vue';
-    import SideBar from './Sidebar.vue';
-    import Navbar from './Navbar.vue';
-    import Footer from './Footer.vue';
-    import { RouteLocationNormalizedLoaded, onBeforeRouteUpdate, useRoute } from 'vue-router';
+  </a-layout>
+</template>
 
-    const route = useRoute();
-    const collapsed = ref<boolean>(false);
-    const breadcrumbItems = ref<Array<string>>([]);
+<script lang="ts" setup>
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
+import SideBar from "./Sidebar.vue";
+import Navbar from "./Navbar.vue";
+import Footer from "./Footer.vue";
+import { useI18n } from "vue-i18n";
 
-    onBeforeRouteUpdate((to: any) => {
-        getBreadcrumbItems(to);
+// Router and layout state
+const route = useRoute();
+const { t } = useI18n();
+const collapsed = ref<boolean>(false);
+const searchQuery = ref<string>("");
+
+// Check if the current route requires a search query
+const isSearchableRoute = computed(() => {
+  return route.name === 'roles.index' || 
+         route.name === 'user' ||
+         route.name === 'permissions' ||
+         route.name === 'customers' ||
+         route.name === 'tenants';
+});
+
+// Breadcrumbs items (skips the root path)
+const breadcrumbItems = computed(() => {
+  return route.matched
+    .filter((_, idx) => idx !== 0) // Skip the root path
+    .flatMap((matched) => {
+      const labels = matched.meta.label as string[] | undefined;
+      return labels ? labels.map((item) => t(item)) : [];
     });
+});
 
-    function getBreadcrumbItems(to: RouteLocationNormalizedLoaded) {
-        breadcrumbItems.value = [];
-        to.matched.forEach((matched, idx) => {
-            if (idx !== 0) {
-                const labels = matched.meta.label as string[];
-                labels.map((item) => {
-                    breadcrumbItems.value.push(item as string)
-                })
-                // matched.meta['label'] ? breadcrumbItems.value.push(matched.meta['label'] as string) : null;
-            }
-        })
-    }
+// Computed property for translating placeholder
+const searchPlaceholder = computed(() => t("messages.placeholer.search"));
 
-    onMounted(() => {
-        getBreadcrumbItems(route);
-    })
-  </script>
+// Search function to update searchQuery
+function onSearch(value: string) {
+  searchQuery.value = value;
+}
+</script>
 
-  <style lang="scss">
-    #components-layout-demo-custom-trigger .trigger {
-        font-size: 18px;
-        line-height: 64px;
-        padding: 0 24px;
-        cursor: pointer;
-        transition: color 0.3s;
-    }
-    
-    #components-layout-demo-custom-trigger .trigger:hover {
-        color: #1890ff;
-    }
-    
-    #components-layout-demo-custom-trigger .logo {
-        height: 32px;
-        background: rgba(255, 255, 255, 0.3);
-        margin: 16px;
-    }
-    
-    .site-layout .site-layout-background {
-        background: #fff;
-    }
-  </style>
-  
+<style lang="scss">
+/* Add any additional styling here */
+</style>

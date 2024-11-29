@@ -1,125 +1,124 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { rolesStore } from "../store/role.store";
+import { ref, computed, onMounted } from "vue";
 import { LineChartOutlined } from "@ant-design/icons-vue";
-import ModalAddRolesView from "../components/ModalRole.vue";
-import { columns } from "./columns";
+import { rolesStore } from "../store/role.store";
+import { useRouter } from "vue-router";
+import { notification } from "ant-design-vue";
 import ButtonCircle from "@/components/Button/ButtonCircle.vue";
 import { Icon } from "@iconify/vue";
 import { RolesEntity } from "../entity/role.entity";
-import { notification } from "ant-design-vue";
-import { permissionsStore } from "@/modules/permissions/store/permissions.store";
-const modalAdd = ref();
-const modalEdit = ref();
-const { getAll, setStateFilter, state, remove } = rolesStore();
-const {   getAllPer } = permissionsStore();
-const openModalAdd = () => {
-  if (modalAdd.value) {
-    modalAdd.value.open = true;
-    modalAdd.value.isEditMode = false;
-    modalAdd.value.item = null;
-    modalAdd.value.permission = getAllPer;
-  }
-};
+import { columns } from "./columns";
+import { useI18n } from "vue-i18n";
 
-const openModalEdit = (record: RolesEntity) => {
-  const foundRecord = state.data.props.find((data: RolesEntity) => data.id === record.id);
-  if (foundRecord && modalEdit.value) {
-    modalEdit.value.item = foundRecord;
-    modalEdit.value.permissions = getAllPer,
-    modalEdit.value.isEditMode = true;
-    modalEdit.value.open = true;
-  }
+const { t } = useI18n();
+const getColumns = computed(() => columns(t));
+
+// Receive searchQuery as a prop
+const props = defineProps<{ searchQuery: string }>();
+
+// Roles store and router
+const { getAll, setStateFilter, state, remove } = rolesStore();
+const { push } = useRouter();
+
+const getEdit = (role: RolesEntity) => {
+  push({ name: "editRoles.index", params: { id: role.id } });
 };
 
 const confirm = async (id: string) => {
-  await remove(Number(id))
+  await remove(Number(id));
   notification.success({
-    message: "Delete Success",
-    description: "ລົບຂໍ້ມູນສຳເລັດ",
+    message: t("popconfirm.message_success.title"),
+    description: t("popconfirm.message_success.messages"),
   });
-  await getAll()
-  
+  await getAll();
 };
 
 const cancel = () => {
-  notification.success({
-    message: "Cancel Delete Success",
-    description: "ຍົກເລີກການລຶບ",
+  notification.error({
+    message: t("popconfirm.message_cancel.title"),
+    description: t("popconfirm.message_cancel.messages"),
   });
 };
 
-
+// Pagination configuration for the table
+const paginationLocale = computed(() => ({
+  items_per_page: t("pagination.items_per_page"),
+}));
 const paginationConfig = ref({
   total: 0,
   pageSize: setStateFilter.limit,
   current: setStateFilter.page,
   showSizeChanger: true,
   pageSizeOptions: ["10", "20", "50", "100"],
+  locale: paginationLocale,
   onChange: handlePageChange,
 });
 
-async function handlePageChange(page: any, pageSize: any) {
+async function handlePageChange(page: number, pageSize: number) {
   paginationConfig.value.current = page;
   paginationConfig.value.pageSize = pageSize;
-
   setStateFilter.page = page;
   setStateFilter.limit = pageSize;
-
   await getAll();
- 
-  
 }
+
 onMounted(async () => {
-  // console.log('data:', state.data.props);
   await getAll();
   paginationConfig.value.total = state.data.total;
-  
+});
+
+// Computed property to filter data based on the global search query
+const filteredData = computed(() => {
+  if (!props.searchQuery) return state.data.props;
+  return state.data.props.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(props.searchQuery.toLowerCase())
+    )
+  );
 });
 </script>
 
 <template>
   <a-flex justify="space-between" :align="'flex-start'">
     <p class="text-base font-bold text-blue-500">
-      <line-chart-outlined />
-      ລາຍການRoles
+      <line-chart-outlined /> 
+      {{ $t('messages.role.item')  }}
     </p>
-    <a-button type="primary" @click="openModalAdd">ເພີມຂໍ້ມູນ</a-button>
+    <a-button type="primary" @click="push({ name: 'addRole.index' })">
+      {{ $t('messages.role.add_role') }}
+    </a-button>
   </a-flex>
   <a-divider style="margin-top: 10px" />
+
+  <!-- Data table with filteredData as the data source -->
   <a-table
     :scroll="{ x: true }"
     class="whitespace-nowrap"
-    :columns="columns"
-    :dataSource="state.data.props"
+    :columns="getColumns"
+    :dataSource="filteredData"
     :pagination="paginationConfig"
     :loading="state.isLoading"
     :row-key="(record: any) => record.id"
   >
-    <template #bodyCell="{ column, record }">
-      <template v-if="column.dataIndex === 'actions'">
-        <div class="flex items-center justify-center gap-2">
-          <a-tooltip>
-            <template #title> ແກ້ໄຂ້ </template>
-            <ButtonCircle
-              bgColor="bg-white "
-              textColor="text-blue-700"
-              @click="() => openModalEdit(record)"
-            >
-              <template #icon>
-                <Icon icon="solar-pen-bold" width="18" />
-              </template>
-            </ButtonCircle>
-          </a-tooltip>
-          <ButtonCircle
-            bgColor="bg-white hover:text-red-600"
-            textColor="text-red-600 "
-          >
+  <template #bodyCell="{ column, record }">
+    <template v-if="column.dataIndex === 'actions'">
+      <div class="flex items-center justify-center gap-2">
+        <a-tooltip>
+          <template #title>{{ $t('messages.role.edit') }}</template>
+          <ButtonCircle bgColor="bg-white" textColor="text-blue-700" @click="getEdit(record)">
+            <template #icon>
+              <Icon icon="solar-pen-bold" width="18" />
+            </template>
+          </ButtonCircle>
+        </a-tooltip>
+        <a-tooltip>
+          <template #title>{{ $t('messages.role.delete') }}</template>
+          <ButtonCircle bgColor="bg-white hover:text-red-600" textColor="text-red-600">
             <template #icon>
               <a-popconfirm
-                title="ເຈົ້າເເນ່ໃຈທີ່ຈະລຶບຂໍ້ມູນນີ້ ຫຼື ບໍ?"
-                ok-text="ເເມ່ນ"
-                cancel-text="ບໍ່ເເມ່ນ"
+                :title="$t('popconfirm.delete.messages')"
+                :ok-text="$t('popconfirm.delete.okay')"
+                :cancel-text="$t('popconfirm.delete.cancel')"
                 @confirm="confirm(record.id)"
                 @cancel="cancel"
                 class="text-red-600"
@@ -128,12 +127,14 @@ onMounted(async () => {
               </a-popconfirm>
             </template>
           </ButtonCircle>
-        </div>
-      </template>
+        </a-tooltip>
+        
+      </div>
     </template>
+  </template>
   </a-table>
-  <ModalAddRolesView ref="modalAdd" />
-  <ModalAddRolesView ref="modalEdit" />
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+/* Add any additional styles here */
+</style>

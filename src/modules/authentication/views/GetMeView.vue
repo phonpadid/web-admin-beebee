@@ -2,66 +2,88 @@
   <div class="pb-4 flex justify-between">
     <p class="text-base font-bold text-blue-500">
       <line-chart-outlined />
-      ລາຍລະອຽດ
+      {{ $t("me.detail") }}
     </p>
   </div>
 
   <a-form
     layout="vertical"
     ref="form"
-    :rules="updateUserShcema"
+    :rules="schema"
+    :key="schemaKey"
     :model="userFormState"
     class="flex-col flex"
   >
     <!-- Upload Section -->
-    <a-form-item class="flex items-center justify-start mb-10" name="avatar">
+    <a-form-item label=" " class="-mt-12" name="avatar">
+      <div class="flex flex-col items-center sm:items-start gap-6">
+        <a-image
+          v-if="avatarPreviewURL || userFormState.avatar"
+          :src="avatarPreviewURL || userFormState.avatar"
+          width="10rem"
+          height="10rem"
+          style="object-fit: contain"
+        >
+          <template #previewMask>
+            <span>{{ $t("preview") }}</span>
+          </template>
+        </a-image>
+        <img
+          v-else
+          src="/src/assets/nodata.png"
+          width="200rem"
+          height="200rem"
+          class="my-4"
+          style="object-fit: contain"
+          alt=""
+        />
+        <a-alert
+          v-if="imageErrorMessage"
+          :message="imageErrorMessage"
+          type="error"
+          banner
+          closable
+          @close="imageErrorMessage = ''"
+        />
+      </div>
+    </a-form-item>
+    <a-form-item class="-mt-12" label=" ">
       <a-upload
-        v-model:value="userFormState.avatar"
         :showUploadList="false"
         accept=".png, .jpeg, .jpg"
+        multiple
         :before-upload="onUpload"
       >
-        <span v-if="imageErrorMessage" class="text-red-500">
-          {{ imageErrorMessage }}
-        </span>
-        <div
-          v-if="uploadImg"
-          id="photo"
-          class="w-[200px] h-[150px] rounded-md border"
-          :style="{
-            backgroundImage: `url(${uploadImg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }"
-        ></div>
-        <div
-          v-else
-          class="flex-col w-[200px] h-[150px] rounded-md flex justify-center items-center hover:ring-1 border-dashed border-2 border-sky-500 ring-slate-200 ring-1 hover:bg-slate-200 shadow-md"
-        >
-          <div class="ant-upload-text text-slate-500">ເລືອກຮູບພາບ</div>
-        </div>
+        <a-button> {{ $t("customers.table_field.choose_profile") }} </a-button>
       </a-upload>
       <a-button
-        v-if="userFormState.avatar"
-        class="text-red-700 ml-2 -top-3 hover:text-red-600"
         @click="clearImage"
+        v-if="userFormState.avatar"
+        class="ml-4 text-red-600"
       >
-        <DeleteOutlined />
+        {{ $t("customers.table_field.btn.remove") }}
       </a-button>
     </a-form-item>
-
     <!-- Input Fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ຊື່" name="first_name" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.fname')"
+        name="first_name"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນຊື່"
+          :placeholder="placeholders.firstName"
           class="h-12"
           v-model:value="userFormState.first_name"
         />
       </a-form-item>
-      <a-form-item label="ນາມສະກຸນ" name="last_name" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.lname')"
+        name="last_name"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນນາມສະກຸນ"
+          :placeholder="placeholders.lastName"
           class="h-12"
           v-model:value="userFormState.last_name"
         />
@@ -69,16 +91,24 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item label="ເບິໂທ" name="phone_number" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.phone_number')"
+        name="phone_number"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນເບີໂທ"
+          :placeholder="placeholders.phoneNumber"
           class="h-12"
           v-model:value="userFormState.phone_number"
         />
       </a-form-item>
-      <a-form-item label="ອີເມວ" name="email" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.email')"
+        name="email"
+        class="w-full"
+      >
         <a-input
-          placeholder="ກະລຸນາປ້ອນອີເມວ"
+          :placeholder="placeholders.email"
           class="h-12"
           v-model:value="userFormState.email"
         />
@@ -88,7 +118,7 @@
     <a-collapse v-model:activeKey="activeKey" class="mt-2">
       <a-collapse-panel
         key="1"
-        header="ກຳນົດບົດບາດໃຫ້ຜູ້ໃຊ້"
+        :header="$t('users.table_field.get_roles')"
         name="groups"
         class="w-full"
       >
@@ -108,7 +138,7 @@
     <a-collapse v-model:activeKey="activeKeyPermission" class="mt-8">
       <a-collapse-panel
         key="1"
-        header="ກຳນົດສິດທີ່ໃຫ້ຜູ້ໃຊ້"
+        :header="$t('users.table_field.get_permissions')"
         name="user_permission"
         class="w-full"
       >
@@ -135,7 +165,7 @@
           :checked="userFormState.is_superuser"
           @change="userFormState.is_superuser = $event.target.checked"
         >
-          super user
+          {{ $t("users.table_field.super_user") }}
         </a-checkbox>
       </a-form-item>
       <a-form-item label="" name="is_staff" class="md:w-[10rem]">
@@ -143,7 +173,7 @@
           :checked="userFormState.is_staff"
           @change="userFormState.is_staff = $event.target.checked"
         >
-          ພະນັກງານ
+          {{ $t("users.table_field.staff") }}
         </a-checkbox>
       </a-form-item>
       <a-form-item label="" name="is_active" class="md:w-[10rem]">
@@ -151,75 +181,102 @@
           :checked="userFormState.is_active"
           @change="userFormState.is_active = $event.target.checked"
         >
-          ສະຖານະ
+          {{ $t("users.table_field.status") }}
         </a-checkbox>
       </a-form-item>
     </div>
     <!-- Submit Buttons -->
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
-        <a-button type="primary" @click="handleOrderDetailsSubmit"
-          >ປ່ຽນຂໍ້ມູນໂປຣຟາຍ</a-button
-        >
+        <a-button type="primary" @click="handleOrderDetailsSubmit">{{
+          $t("me.btn")
+        }}</a-button>
       </a-form-item>
     </div>
   </a-form>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
+const avatarPreviewURL = ref<string | null>(null);
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { usersStore } from "@/modules/user/store/index";
 import { useAuthStore } from "../store/index";
-import { useRouter } from "vue-router";
 import { notification } from "ant-design-vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
-import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 import { UserEntity } from "@/modules/user/entity/user.entity";
-import { updateUserShcema } from "@/modules/user/schema/update-user.schema";
-import { DeleteOutlined } from "@ant-design/icons-vue";
+import { useUpdateUserSchema } from "@/modules/user/schema/update-user.schema";
+import { useI18n } from "vue-i18n";
+import { LineChartOutlined } from "@ant-design/icons-vue";
+import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
+const { schema, schemaKey } = useUpdateUserSchema();
 const imageErrorMessage = ref<string>("");
 
+function onUpload(avatar: File) {
+  const maxSizeMB = 5;
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+  if (avatar.size > maxSizeBytes) {
+    imageErrorMessage.value = `ຂະໜາດຮູບຕ້ອງບໍ່ເກີນ ${maxSizeMB}MB`;
+    return false;
+  }
+  imageErrorMessage.value = "";
+  if (avatarPreviewURL.value) {
+    URL.revokeObjectURL(avatarPreviewURL.value);
+  }
+  avatarPreviewURL.value = URL.createObjectURL(avatar); // Create a new object URL
+  userFormState.value.avatar = avatar; // Store the File object directly
+  return false; // Prevent the default upload behavior
+}
+
 const clearImage = () => {
-  userFormState.value.avatar = undefined; // Reset the avatar in form state
-  uploadImg.value = ""; // Reset image preview
+  userFormState.value.avatar = undefined;
+  avatarPreviewURL.value = "";
 };
 
-const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
 const { update } = usersStore();
 const { stateGetMe } = useAuthStore();
 const uploadImg = ref<string | File | null>(null);
-const userFormState = ref<UserEntity>({
+  const loading = ref(false);
+  const userFormState = ref<UserEntity>({
   id: "",
   first_name: "",
   last_name: "",
-  user_type: 0,
+  type: "",
   phone_number: "",
   groups: [],
   is_active: false,
   is_superuser: false,
   is_staff: false,
   user_permissions: [],
-  avatar: undefined,
+  avatar: undefined, // Keep this strictly a File object
   email: "",
-  password: "",
 });
+//translate placeholder
+const { t } = useI18n();
+const placeholders = computed(() => ({
+  firstName: t("placeholder.user.fname"),
+  lastName: t("placeholder.user.lname"),
+  phoneNumber: t("placeholder.user.phone_number"),
+  email: t("placeholder.user.email"),
+  password: t("placeholder.user.password"),
+  confirmPassword: t("placeholder.user.confirm_password"),
+}));
 const form = ref();
 const loadingRoles = ref<boolean>(true);
 const loadingPermission = ref<boolean>(true);
 const activeKey = ref(["1"]);
 const activeKeyPermission = ref(["1"]);
 const roles = ref<RolesEntity[]>([]);
-const permissions = ref<RolesPermissionsEntity[]>([]);
+const permissions = ref<PermissionsEntity[]>([]);
 const handleOrderDetailsSubmit = async () => {
   form.value
-    .validate()
-    .then(async () => {
-      console.log('userId:', userFormState.value.id);
-      
+  .validate()
+  .then(async () => {
+      loading.value = true;
       await update(userFormState.value, userFormState.value.id);
       notification.success({
         message: "Save Success",
@@ -227,12 +284,12 @@ const handleOrderDetailsSubmit = async () => {
       });
     })
     .catch((error: any) => {
-     if(error.status === 403) {
-      notification.warn({
-        message: "ເຕືອນ",
-        description: "ທ່ານບໍ່ມີສິດແກ້ໄຂ",
-      });
-     }
+      if (error.status === 403) {
+        notification.warn({
+          message: "ເຕືອນ",
+          description: "ທ່ານບໍ່ມີສິດແກ້ໄຂ",
+        });
+      }
     });
 };
 
@@ -241,20 +298,20 @@ const populateUserForm = async () => {
   try {
     // Fetch roles
     await getAll();
-    roles.value = state.data?.props?.map((role: RolesEntity) => ({
-      id: role.id,
-      name: role.name,
-    })) || [];
+    roles.value =
+      state.data?.props?.map((role: RolesEntity) => ({
+        id: role.id,
+        name: role.name,
+      })) || [];
     loadingRoles.value = false;
 
     // Fetch permissions
     await getAllPer();
-    permissions.value = statePermission.data?.props?.map(
-      (perm: RolesPermissionsEntity) => ({
+    permissions.value =
+      statePermission.data?.props?.map((perm: any) => ({
         id: perm.id,
         name: perm.name,
-      })
-    ) || [];
+      })) || [];
     loadingPermission.value = false;
 
     // Fetch user data
@@ -262,15 +319,13 @@ const populateUserForm = async () => {
       const userData = stateGetMe.data;
 
       userFormState.value = {
-        ...userData,
+        ...(userData as any),
         groups: Array.isArray(userData.groups)
-          ? userData.groups.map((role: RolesEntity) => role.id)
-          : userData.groups,
+          ? userData.groups.map((role: any) => role.id)
+          : [],
         user_permissions: Array.isArray(userData.user_permissions)
-          ? userData.user_permissions.map(
-              (perm: RolesPermissionsEntity) => perm.id
-            )
-          : userData.user_permissions,
+          ? userData.user_permissions.map((perm: any) => perm.id)
+          : [],
       };
 
       // Set avatar if available
@@ -280,7 +335,6 @@ const populateUserForm = async () => {
     console.error("Error populating user form:", error);
   }
 };
-
 
 // Watch for changes in stateGetMe and update userFormState
 watch(
@@ -300,7 +354,7 @@ watch(
         groups: newData.groups.map((role: RolesEntity) => role.id) || [],
         user_permissions:
           newData.user_permissions.map(
-            (perm: RolesPermissionsEntity) => perm.id
+            (perm: PermissionsEntity) => perm.id
           ) || [],
         avatar: newData.avatar || "",
       };
@@ -314,10 +368,10 @@ onMounted(async () => {
   await populateUserForm();
 });
 
-const onUpload = (file: File) => {
-  uploadImg.value = URL.createObjectURL(file);
-  return false;
-};
+// const onUpload = (file: File) => {
+//   uploadImg.value = URL.createObjectURL(file);
+//   return false;
+// };
 </script>
 
 <style scoped>

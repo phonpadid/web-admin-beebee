@@ -1,30 +1,35 @@
-export const columns = [
+import { CustomerEntity } from "../entity/customer.entity";
+
+export const columns = (t: any) => [
   {
-    title: "ໂປຣຟາຍ",
-    dataIndex: "avatar",
+    title: t("customers.table_field.avatar"),
+    dataIndex: "full_avatar_url",
   },
   {
-    title: "ຊື່",
-    dataIndex: "first_name",
+    title: t("users.table_field.full_name"),
+    dataIndex: "full_name",
+    key: "full_name",
+    customRender: ({ record }: { record: CustomerEntity }) => 
+      `${record.first_name} ${record.last_name}`,
   },
+  // {
+  //   title: t("customers.table_field.lname"),
+  //   dataIndex: "last_name",
+  // },
   {
-    title: "ນາມສະກຸນ",
-    dataIndex: "last_name",
-  },
-  {
-    title: "ອີເມວ",
+    title: t("customers.table_field.email"),
     dataIndex: "email",
   },
   {
-    title: "ປະເພດລູກຄ້າ",
+    title: t("customers.table_field.type"),
     dataIndex: "type",
   },
   {
-    title: "ວັນທີສ້າງ",
+    title: t("customers.table_field.created_at"),
     dataIndex: "created_at",
   },
   {
-    title: "ເພີ່ມເຕີມ",
+    title: t("customers.table_field.more"),
     dataIndex: "actions",
     align: "center"
   },

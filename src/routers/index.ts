@@ -3,7 +3,6 @@ import { restaurantRoute } from "../modules/restaurant/router";
 import { authenticationRoute } from "@/modules/authentication/router";
 import { userRoute } from "@/modules/user/router";
 import { rolesRoute } from "@/modules/roles/router";
-import { rolesPermissionsRoute } from "@/modules/role_permissions/router";
 import { dashboardRoute } from "@/modules/admin/dashboard/router";
 import { tenantsRoute } from "@/modules/tenants/router";
 import { permissionsRoute } from "@/modules/permissions/router";
@@ -16,7 +15,7 @@ const router = createRouter({
       path: "/admin",
       component: () => import("../components/layouts/Layout.vue"),
       children: [ 
-        ...restaurantRoute, ...userRoute, ...rolesRoute, ...rolesPermissionsRoute,
+        ...restaurantRoute, ...userRoute, ...rolesRoute,
         ...dashboardRoute,
         ...tenantsRoute,
         ...permissionsRoute,
@@ -29,6 +28,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  console.log(from);
+  
   const userDataString = localStorage.getItem('access')
   if (!userDataString) {
     if (to.name !== 'login' && !to.meta.skipAuthCheck) {

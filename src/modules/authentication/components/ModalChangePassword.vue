@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, computed } from "vue";
-import ButtonDefault from "@/components/Button/ButtonDefault.vue";
+import { defineProps, defineEmits, ref, computed, reactive } from "vue";
+// import ButtonDefault from "@/components/Button/ButtonDefault.vue";
 import { useAuthStore } from "../store/index";
 import { MeEntity } from "../entity/me.entity";
 import { notification } from "ant-design-vue";
 import { useRouter } from "vue-router";
 import { ChangePasswordSchema } from "../schema/change-password.schema";
+const { schema, schemaKey } = ChangePasswordSchema();
+import { useI18n } from "vue-i18n";
 
 const { changePassword } = useAuthStore();
 const { push } = useRouter();
 const form = ref();
-
+const loading = ref(false);
 // Define props and emit events
 defineProps({
   openModalChangePassword: Boolean,
 });
 const emit = defineEmits(["update:openModalChangePassword"]);
 const closeModal = () => {
+  loading.value = true;
   changePasswordFormState.value = { ...initialFormState }; // Reset form data
   form.value?.resetFields();
   emit("update:openModalChangePassword", false); // Notify parent to set open to false
@@ -28,45 +31,61 @@ const initialFormState: MeEntity = {
   new_password: "",
   confirm_password: "",
 };
-const loading = ref(false);
+const { t } = useI18n();
+const placeholders = computed(() => ({
+  old_password: t("placeholder.change_password.old_password"),
+  new_password: t("placeholder.change_password.new_password"),
+  confirm_password: t("placeholder.change_password.confirm_password"),
+}));
 const changePasswordFormState = ref<MeEntity>({
   ...initialFormState,
 });
+const msgErrors = reactive<any>({});
+const submitted = ref(false);
+// function isPasswordMismatch(): boolean {
+//   const { new_password, confirm_password } = changePasswordFormState.value;
+//   return (
+//     (loading.value || new_password !== confirm_password) &&
+//     !!new_password &&
+//     !!confirm_password
+//   );
+// }
 const handleOrderSubmit = async () => {
-  form.value
-    .validate()
-    .then(async () => {
-      try {
-        if (
-          changePasswordFormState.value.new_password ===
-          changePasswordFormState.value.confirm_password
-        ) {
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-          await changePassword(changePasswordFormState.value);
-          notification.success({
-            message: "Update Success",
-            description: "ອັບເດດສຳເລັດ",
-          });
-          loading.value = false;
-          push({ name: "getMe.index" });
-        } else {
-          notification.error({
-            message: "ຜິດພາດ.",
-            description: "ການຢືນຢັນລະຫັດບໍ່ຖືກຕ້ອງ.",
-          });
-        }
-      } catch (error: any) {
-        if (error.status === 400) {
-          notification.error({
-            message: "ຜິດພາດ",
-            description: "ລະຫັດຜ່ານເກົ່າບໍ່ຖືກຕ້ອງ.",
-          });
-        }
+  form.value.validate().then(async () => {
+    try {
+      loading.value = true;
+      if (
+        changePasswordFormState.value.new_password ===
+        changePasswordFormState.value.confirm_password
+      ) {
+        submitted.value = true;
+        await changePassword(changePasswordFormState.value);
+        notification.success({
+          message: t('messages.success'),
+          description: t('change_password.message.success'),
+        });
+        loading.value = false;
+        push({ name: "getMe.index" });
+        closeModal();
+      }else {
+        notification.error({
+          message: t('messages.error'),
+          description: t('validation.change_password.password_no_match'),
+        });
+        loading.value = false;
+
       }
-    })
-    .catch((error: unknown) => {
-      console.log("error", error);
-    });
+    } catch (error: any) {
+      loading.value = false;
+      if (error.response && error.response.data) {
+        // Backend validation error response structure
+        const apiErrors = error.response.data || {};
+        Object.keys(apiErrors).forEach((field) => {
+          msgErrors[field] = Array(apiErrors[field]) ? apiErrors[field][0] : "";
+        });
+      }
+    }
+  });
 };
 
 //disable button submit
@@ -74,13 +93,14 @@ const isDisabled = computed(() => {
   const { old_password, new_password, confirm_password } =
     changePasswordFormState.value;
   return (
-    loading.value || // Disable if loading
     !old_password || // Disable if old password is empty
     !new_password || // Disable if new password is empty
-    !confirm_password || // Disable if confirm password is empty
-    new_password !== confirm_password // Disable if passwords do not match
+    !confirm_password
   );
 });
+const clearData = (key: string) => {
+  msgErrors[key] = "";
+};
 </script>
 
 <template>
@@ -155,6 +175,9 @@ const isDisabled = computed(() => {
 </template>
 
 <style scoped>
+.ant-modal-footer {
+  display: block;
+}
 .modal {
   text-align: center;
 }

@@ -1,30 +1,35 @@
-export const columns = [
+import { UserEntity } from "../entity/user.entity";
+
+export const columns = (t: any) => [
   {
-    title: "ໂປຣຟາຍ",
+    title: t("users.table_field.avatar"),
     dataIndex: "avatar",
   },
   {
-    title: "ຊື່",
-    dataIndex: "first_name",
+    title: t("users.table_field.full_name"),
+    dataIndex: "full_name",
+    key: "full_name",
+    customRender: ({ record }: { record: UserEntity }) => 
+      `${record.first_name} ${record.last_name}`,
   },
+  // {
+  //   title: t("users.table_field.lname"),
+  //   dataIndex: "last_name",
+  // },
   {
-    title: "ນາມສະກຸນ",
-    dataIndex: "last_name",
-  },
-  {
-    title: "ອີເມວ",
+    title: t("users.table_field.email"),
     dataIndex: "email",
   },
   {
-    title: "ວັນທີສ້າງ",
+    title: t("users.table_field.created_at"),
     dataIndex: "created_at",
   },
   {
-    title: "ວັນທີອັບເດດ",
+    title: t("users.table_field.updated_at"),
     dataIndex: "updated_at",
   },
   {
-    title: "ເພີ່ມເຕີມ",
+    title: t("users.table_field.more"),
     dataIndex: "actions",
     align: "center"
   },
