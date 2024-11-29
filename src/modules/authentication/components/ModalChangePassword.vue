@@ -71,7 +71,8 @@ const handleOrderSubmit = async () => {
 
 //disable button submit
 const isDisabled = computed(() => {
-  const { old_password, new_password, confirm_password } = changePasswordFormState.value;
+  const { old_password, new_password, confirm_password } =
+    changePasswordFormState.value;
   return (
     loading.value || // Disable if loading
     !old_password || // Disable if old password is empty
@@ -85,71 +86,71 @@ const isDisabled = computed(() => {
 <template>
   <div class="change-password ring-1 bg-slate-400">
     <a-modal
-    :visible="openModalChangePassword"
-    @cancel="closeModal"
-    @close="closeModal"
-    :maskClosable="false"
-    width="480px"
-    title="ປ່ຽນລະຫັດຜ່ານຂອງທ່ານ"
-  >
-    <div>
-      <p class="text-slate-600 ml-6">
-        ໃຫ້ທ່ານປ້ອນລະຫັດເກົ່າຂອງທ່ານເພື່ອຢືນຢັນທີ່ຈະປ່ຽນລະຫັດຜ່ານເກົ່າ
-      </p>
-    </div>
-    <a-form
-      layout="vertical"
-      ref="form"
-      :rules="ChangePasswordSchema"
-      :model="changePasswordFormState"
+      :visible="openModalChangePassword"
+      @cancel="closeModal"
+      @close="closeModal"
+      :maskClosable="false"
+      width="480px"
+      title="ປ່ຽນລະຫັດຜ່ານຂອງທ່ານ"
     >
-      <a-form-item
-        class="form-item-centered"
-        label="ລະຫັດຜ່ານເກົ່າຂອງທ່ານ"
-        name="old_password"
+      <div>
+        <p class="text-slate-600 ml-6">
+          ໃຫ້ທ່ານປ້ອນລະຫັດເກົ່າຂອງທ່ານເພື່ອຢືນຢັນທີ່ຈະປ່ຽນລະຫັດຜ່ານເກົ່າ
+        </p>
+      </div>
+      <a-form
+        layout="vertical"
+        ref="form"
+        :rules="ChangePasswordSchema"
+        :model="changePasswordFormState"
       >
-        <a-input-password
-          placeholder="ໃສ່ລະຫັດຜ່ານເກົ່າຂອງທ່ານ"
-          v-model:value="changePasswordFormState.old_password"
-        />
-      </a-form-item>
-      <a-form-item
-        class="form-item-centered"
-        label="ສ້າງລະຫັດຜ່ານໃໝ່"
-        name="new_password"
-      >
-        <a-input-password
-          placeholder="ໃສ່ລະຫັດຜ່ານໃໝ່ຂອງທ່ານ"
-          v-model:value="changePasswordFormState.new_password"
-        />
-      </a-form-item>
-      <a-form-item
-        class="form-item-centered"
-        label="ຢືນຢັນລະຫັດຜ່ານໃໝ່"
-        name="confirm_password"
-      >
-        <a-input-password
-          placeholder="ຢືນຢັນລະຫັດຜ່ານ"
-          v-model:value="changePasswordFormState.confirm_password"
-        />
-      </a-form-item>
-      <a-button
-        key="submit"
-        class="w-full"
-        type="primary"
-        :loading="loading"
-        @click="handleOrderSubmit"
-        :disabled="isDisabled"
-        >ປ່ຽນລະຫັດຜ່ານ</a-button
-      >
-      <a-button key="back" class="w-full mt-2" @click="closeModal"
-        >ຍົກເລີກ</a-button
-      >
-    </a-form>
-    <template #footer>
-      <ButtonDefault @click="closeModal">Close</ButtonDefault>
-    </template>
-  </a-modal>
+        <a-form-item
+          class="form-item-centered"
+          label="ລະຫັດຜ່ານເກົ່າຂອງທ່ານ"
+          name="old_password"
+        >
+          <a-input-password
+            placeholder="ໃສ່ລະຫັດຜ່ານເກົ່າຂອງທ່ານ"
+            v-model:value="changePasswordFormState.old_password"
+          />
+        </a-form-item>
+        <a-form-item
+          class="form-item-centered"
+          label="ສ້າງລະຫັດຜ່ານໃໝ່"
+          name="new_password"
+        >
+          <a-input-password
+            placeholder="ໃສ່ລະຫັດຜ່ານໃໝ່ຂອງທ່ານ"
+            v-model:value="changePasswordFormState.new_password"
+          />
+        </a-form-item>
+        <a-form-item
+          class="form-item-centered"
+          label="ຢືນຢັນລະຫັດຜ່ານໃໝ່"
+          name="confirm_password"
+        >
+          <a-input-password
+            placeholder="ຢືນຢັນລະຫັດຜ່ານ"
+            v-model:value="changePasswordFormState.confirm_password"
+          />
+        </a-form-item>
+        <a-button
+          key="submit"
+          class="w-full"
+          type="primary"
+          :loading="loading"
+          @click="handleOrderSubmit"
+          :disabled="isDisabled"
+          >ປ່ຽນລະຫັດຜ່ານ</a-button
+        >
+        <a-button key="back" class="w-full mt-2" @click="closeModal"
+          >ຍົກເລີກ</a-button
+        >
+      </a-form>
+      <template #footer>
+        <ButtonDefault @click="closeModal">Close</ButtonDefault>
+      </template>
+    </a-modal>
   </div>
 </template>
 

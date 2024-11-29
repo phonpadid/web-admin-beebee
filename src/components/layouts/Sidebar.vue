@@ -45,9 +45,15 @@
             <span class="title">ຈັດການຂໍ້ມູນຫຼັກ</span>
           </span>
         </template>
-        <a-menu-item key="8" class="menu" @click="goToRoute('user')">ຜູ້ໃຊ້</a-menu-item>
-        <a-menu-item key="9" class="menu" @click="goToRoute('roles')">ບົດບາດ</a-menu-item>
-        <a-menu-item key="10" class="menu" @click="goToRoute('permissions')">ສິດທີ່</a-menu-item>
+        <a-menu-item key="8" class="menu" @click="goToRoute('user')"
+          >ຜູ້ໃຊ້</a-menu-item
+        >
+        <a-menu-item key="9" class="menu" @click="goToRoute('roles')"
+          >ບົດບາດ</a-menu-item
+        >
+        <a-menu-item key="10" class="menu" @click="goToRoute('permissions')"
+          >ສິດທີ່</a-menu-item
+        >
       </a-sub-menu>
     </a-menu>
   </div>
@@ -57,11 +63,9 @@
 import { ref, watchEffect } from "vue";
 import {
   HomeOutlined,
-  UsergroupAddOutlined,
   ShoppingCartOutlined,
   SettingOutlined,
   ShoppingOutlined,
-  ClockCircleOutlined,
 } from "@ant-design/icons-vue";
 import { useRouter, useRoute } from "vue-router";
 
@@ -75,7 +79,7 @@ const routeToKeyMap: Record<string, string> = {
   tenants: "3",
   user: "8",
   roles: "9",
-  permissions: "10"
+  permissions: "10",
 };
 watchEffect(() => {
   const routeName = route.name as string;

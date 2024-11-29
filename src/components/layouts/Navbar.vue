@@ -70,24 +70,17 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   CommentOutlined,
-  LogoutOutlined,
 } from "@ant-design/icons-vue";
 import { useAuthStore } from "@/modules/authentication/store/index";
 import ShowMeView from "@/modules/authentication/views/ShowMeView.vue";
 const collapsed = ref<boolean>(false);
-const showLogout = ref<boolean>(false); 
-const confirmLogout = ref<boolean>(false); // State to track confirmation prompt
-const { logout, state, showMe } = useAuthStore();
+const {showMe } = useAuthStore();
 const emit = defineEmits<{ (e: "toggleSidebar"): void }>();
 
 const onCollapsed = () => {
   collapsed.value = !collapsed.value;
   emit("toggleSidebar");
 };
-const show_me = () => {
-  console.log('data:', state.data);
-  
-}
 onMounted(async () => {
   await showMe();
 });

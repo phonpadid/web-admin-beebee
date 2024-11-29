@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="clearfix">
     <a-upload
       v-model:file-list="fileList"
@@ -91,4 +91,4 @@ const handlePreview = async (file: UploadProps['fileList'][number]) => {
   margin-top: 8px;
   color: #666;
 }
-</style>
+</style> -->

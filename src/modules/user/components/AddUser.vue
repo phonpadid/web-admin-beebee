@@ -1,3 +1,135 @@
+<script lang="ts" setup>
+import { rolesStore } from "@/modules/roles/store/role.store";
+import { LineChartOutlined } from "@ant-design/icons-vue";
+import { ref, onMounted } from "vue";
+import { RolesEntity } from "@/modules/roles/entity/role.entity";
+import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
+import { UserEntity } from "../entity/user.entity";
+import { usersStore } from "../store/index";
+import { notification } from "ant-design-vue";
+import { useRouter } from "vue-router";
+import { UserShcema } from "../schema/user.schema";
+import { permissionsStore } from "@/modules/permissions/store/permissions.store";
+const { push } = useRouter();
+const { state, getAll } = rolesStore();
+const { statePermission, getAllPer } = permissionsStore();
+const imageErrorMessage = ref<string>("");
+const { create } = usersStore();
+const initialFormState: UserEntity = {
+  id: "",
+  first_name: "",
+  last_name: "",
+  user_type: 0, // Assuming `user_type` is a number (e.g., 0 for default type)
+  phone_number: "",
+  groups: [], // Empty array for groups of type number[]
+  user_permissions: [], // Empty array for user_permissions of type number[]
+  avatar: undefined, // Avatar should be `undefined` initially (assuming type is `File | undefined`)
+  email: "",
+  password: "",
+  password_confirmation: "",
+};
+const form = ref();
+const loading = ref(false);
+const userFormState = ref<UserEntity>({
+  ...initialFormState,
+});
+const resetForm = () => {
+  userFormState.value = { ...initialFormState };
+};
+const handleOrderDetailsSubmit = async () => {
+  form.value
+    .validate()
+    .then(async () => {
+      loading.value = true;
+      try {
+        if (
+          userFormState.value.password ===
+          userFormState.value.password_confirmation
+        ) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          await create(userFormState.value); // ตรวจสอบ response
+
+          // console.log("บันทึกสำเร็จ", response);
+
+          notification.success({
+            message: "Save Success",
+            description: "ບັນທຶກສຳເລັດ",
+          });
+          resetForm();
+          loading.value = false;
+          push({ name: "user" });
+        } else {
+          notification.warn({
+            message: "warn",
+            description: "ຢືນຢັນລະຫັດຜ່ານບໍ່ຕົງກັນ",
+          });
+        }
+      } catch (error) {
+        console.log("เกิดข้อผิดพลาด", error);
+
+        // notification.error({
+        //   message: "Failed",
+        //   description: "ຜິດຜາດ",
+        // });
+        loading.value = false;
+      }
+    })
+    .catch((error: unknown) => {
+      console.log("error", error);
+    });
+};
+
+const roles = ref<RolesEntity[]>([]);
+const permissions = ref<RolesPermissionsEntity[]>([]);
+const loadingRoles = ref<boolean>(true);
+const loadingPermission = ref<boolean>(true);
+
+// Handle image upload
+function onUpload(avatar: any) {
+  const maxSizeMB = 5;
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+  if (avatar.size > maxSizeBytes) {
+    imageErrorMessage.value = `ຂະໜາດຮູບຕ້ອງບໍ່ເກີນ ${maxSizeMB}MB`;
+    return false;
+  }
+
+  imageErrorMessage.value = "";
+  const objectURL = URL.createObjectURL(avatar);
+  avatar.objectURL = objectURL;
+  userFormState.value.avatar = avatar;
+
+  return false;
+}
+
+const clearImage = () => {
+  userFormState.value.avatar = undefined;
+};
+
+// Fetch roles on mount
+onMounted(async () => {
+  await getAll();
+  roles.value = state.data.props.map((role: RolesEntity) => ({
+    id: role.id,
+    name: role.name,
+  }));
+  loadingRoles.value = false;
+
+  await getAllPer();
+  permissions.value = statePermission.data.props.map(
+    (per: RolesPermissionsEntity) => ({
+      id: per.id,
+      name: per.name,
+    })
+  );
+  loadingPermission.value = false;
+});
+
+const activeKey = ref(["1"]);
+const activeKeyPermission = ref(["1"]);
+</script>
+
 <template>
   <div class="pb-4 flex justify-between">
     <p class="text-base font-bold text-blue-500">
@@ -15,7 +147,7 @@
   >
     <!-- Upload section -->
 
-    <a-form-item label=" " class="-mt-12" name="avatar">
+    <a-form-item label="" class="-mt-12" name="avatar">
       <div class="flex flex-col items-center sm:items-start gap-6">
         <a-image
           :src="
@@ -177,137 +309,6 @@
   </a-form>
 </template>
 
-<script lang="ts" setup>
-import { rolesStore } from "@/modules/roles/store/role.store";
-import { LineChartOutlined } from "@ant-design/icons-vue";
-import { ref, onMounted } from "vue";
-import { RolesEntity } from "@/modules/roles/entity/role.entity";
-import { RolesPermissionsEntity } from "@/modules/role_permissions/entity/role.permissions.entity";
-import { UserEntity } from "../entity/user.entity";
-import { usersStore } from "../store/index";
-import { notification } from "ant-design-vue";
-import { useRouter } from "vue-router";
-import { UserShcema } from "../schema/user.schema";
-import { permissionsStore } from "@/modules/permissions/store/permissions.store";
-const { push } = useRouter();
-const { state, getAll } = rolesStore();
-const { statePermission, getAllPer } = permissionsStore();
-const imageErrorMessage = ref<string>("");
-const { create } = usersStore();
-const initialFormState: UserEntity = {
-  id: "",
-  first_name: "",
-  last_name: "",
-  user_type: 0, // Assuming `user_type` is a number (e.g., 0 for default type)
-  phone_number: "",
-  groups: [], // Empty array for groups of type number[]
-  user_permissions: [], // Empty array for user_permissions of type number[]
-  avatar: undefined, // Avatar should be `undefined` initially (assuming type is `File | undefined`)
-  email: "",
-  password: "",
-  password_confirmation: "",
-};
-const form = ref();
-const loading = ref(false);
-const userFormState = ref<UserEntity>({
-  ...initialFormState,
-});
-const resetForm = () => {
-  userFormState.value = { ...initialFormState };
-};
-const handleOrderDetailsSubmit = async () => {
-  form.value
-    .validate()
-    .then(async () => {
-      loading.value = true;
-      try {
-        if (
-          userFormState.value.password ===
-          userFormState.value.password_confirmation
-        ) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          await create(userFormState.value); // ตรวจสอบ response
-
-          // console.log("บันทึกสำเร็จ", response);
-
-          notification.success({
-            message: "Save Success",
-            description: "ບັນທຶກສຳເລັດ",
-          });
-          resetForm();
-          loading.value = false;
-          push({ name: "user" });
-        } else {
-          notification.warn({
-            message: "warn",
-            description: "ຢືນຢັນລະຫັດຜ່ານບໍ່ຕົງກັນ",
-          });
-        }
-      } catch (error) {
-        console.log("เกิดข้อผิดพลาด", error);
-
-        // notification.error({
-        //   message: "Failed",
-        //   description: "ຜິດຜາດ",
-        // });
-        loading.value = false;
-      }
-    })
-    .catch((error: unknown) => {
-      console.log("error", error);
-    });
-};
-
-const roles = ref<RolesEntity[]>([]);
-const permissions = ref<RolesPermissionsEntity[]>([]);
-const loadingRoles = ref<boolean>(true);
-const loadingPermission = ref<boolean>(true);
-
-// Handle image upload
-function onUpload(avatar: any) {
-  const maxSizeMB = 5;
-  const maxSizeBytes = maxSizeMB * 1024 * 1024;
-
-  if (avatar.size > maxSizeBytes) {
-    imageErrorMessage.value = `ຂະໜາດຮູບຕ້ອງບໍ່ເກີນ ${maxSizeMB}MB`;
-    return false;
-  }
-
-  imageErrorMessage.value = "";
-  const objectURL = URL.createObjectURL(avatar);
-  avatar.objectURL = objectURL;
-  userFormState.value.avatar = avatar;
-
-  return false;
-}
-
-const clearImage = () => {
-  userFormState.value.avatar = undefined;
-};
-
-// Fetch roles on mount
-onMounted(async () => {
-  await getAll();
-  roles.value = state.data.props.map((role: RolesEntity) => ({
-    id: role.id,
-    name: role.name,
-  }));
-  loadingRoles.value = false;
-
-  await getAllPer();
-  permissions.value = statePermission.data.props.map(
-    (per: RolesPermissionsEntity) => ({
-      id: per.id,
-      name: per.name,
-    })
-  );
-  loadingPermission.value = false;
-});
-
-const activeKey = ref(["1"]);
-const activeKeyPermission = ref(["1"]);
-</script>
 <style scoped>
 .ant-select-selection-search-input {
   /* Ensure the overall height is specified */
