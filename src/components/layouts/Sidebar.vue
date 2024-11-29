@@ -35,7 +35,6 @@
             <span class="title">{{t("messages.menu_sidebar.manage_user")}}</span>
           </span>
         </template>
-<<<<<<< HEAD
         <a-menu-item key="8" class="menu" @click="goToRoute('user')"
           >ຜູ້ໃຊ້</a-menu-item
         >
@@ -45,11 +44,6 @@
         <a-menu-item key="10" class="menu" @click="goToRoute('permissions')"
           >ສິດທີ່</a-menu-item
         >
-=======
-        <a-menu-item key="8" class="menu" @click="goToRoute('user')">{{t("messages.menu_sidebar.user")}}</a-menu-item>
-        <a-menu-item key="9" class="menu" @click="goToRoute('roles.index')">{{t("messages.menu_sidebar.role")}}</a-menu-item>
-        <a-menu-item key="10" class="menu" @click="goToRoute('permissions')">{{t("messages.menu_sidebar.permission")}}</a-menu-item>
->>>>>>> 741ce8a078fae04d3d1575d6adc04cff81c85f42
       </a-sub-menu>
     </a-menu>
   </div>
