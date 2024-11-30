@@ -36,7 +36,7 @@
         <a-menu-item key="8" class="menu" @click="goToRoute('user')"
           >ຜູ້ໃຊ້</a-menu-item
         >
-        <a-menu-item key="9" class="menu" @click="goToRoute('roles')"
+        <a-menu-item key="9" class="menu" @click="goToRoute('roles.index')"
           >ບົດບາດ</a-menu-item
         >
         <a-menu-item key="10" class="menu" @click="goToRoute('permissions')"
