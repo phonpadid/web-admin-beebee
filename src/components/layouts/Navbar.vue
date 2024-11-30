@@ -16,16 +16,35 @@
 
       <div class="header-action-container">
         <a-dropdown>
-          <a class="ant-dropdown-link flex items-center ring-1 ring-slate-200 shadow-ms px-2 h-10 rounded-sm gap-2" @click.prevent>
+          <a class="ant-dropdown-link flex items-center ring-1 ring-slate-200 shadow-ms px-2 h-12 rounded-sm gap-2" @click.prevent>
             <!-- <GlobalOutlined /> -->
-             <img v-if="locale === 'la'" src="/public/lao.png" alt="" srcset="" width="20px" height="20px">
-             <img v-else src="/public/en.png" alt="" srcset="" width="20px" height="20px">
+            <img
+              v-if="locale === 'la'"
+              src="/public/lao.png"
+              alt=""
+              srcset=""
+              width="20px"
+              height="20px"
+            />
+            <img
+              v-else
+              src="/public/en.png"
+              alt=""
+              srcset=""
+              width="20px"
+              height="20px"
+            />
             {{ currentLanguageName }}
-            <DownOutlined :style="{fontSize: '12px'}"/>
+            <DownOutlined :style="{ fontSize: '12px' }" />
           </a>
           <template #overlay>
-            <a-menu class="language-menu ">
-              <a-menu-item v-for="lang in languages" :key="lang.value" @click="changeLanguage(lang.value)" class="menu-item">
+            <a-menu class="language-menu">
+              <a-menu-item
+                v-for="lang in languages"
+                :key="lang.value"
+                @click="changeLanguage(lang.value)"
+                class="menu-item"
+              >
                 <div class="flex-item">
                   <img :src="lang.icon" alt="flag" class="flag-icon" />
                   <span>{{ lang.name }}</span>
@@ -42,7 +61,11 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
-import { DownOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons-vue";
+import {
+  DownOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+} from "@ant-design/icons-vue";
 import { useAuthStore } from "@/modules/authentication/store/index";
 import ShowMeView from "@/modules/authentication/views/ShowMeView.vue";
 import { useI18n } from "vue-i18n";
@@ -65,13 +88,15 @@ const currentLanguageName = ref<string>("");
 import laIcon from "../../../public/lao.png";
 import enIcon from "../../../public/en.png";
 const languages = computed(() => [
-  { name: t("messages.language.en"), value: "en", icon:  enIcon},
-  { name: t("messages.language.lo"), value: "la", icon:  laIcon},
+  { name: t("messages.language.en"), value: "en", icon: enIcon },
+  { name: t("messages.language.lo"), value: "la", icon: laIcon },
 ]);
 
 // Function to update the display name of the current language
 const updateCurrentLanguageName = () => {
-  const selectedLang = languages.value.find(lang => lang.value === locale.value);
+  const selectedLang = languages.value.find(
+    (lang) => lang.value === locale.value
+  );
   currentLanguageName.value = selectedLang ? selectedLang.name : "Language";
 };
 
@@ -113,19 +138,19 @@ onMounted(async () => {
 }
 
 .menu-item {
-  display: flex;  /* Use flexbox for each menu item */
-  align-items: center;  /* Align items vertically */
-  padding: 4px 10px;  /* Optional: Adjust padding for better spacing */
+  display: flex; /* Use flexbox for each menu item */
+  align-items: center; /* Align items vertically */
+  padding: 4px 10px; /* Optional: Adjust padding for better spacing */
 }
 
 .flex-item {
-  display: flex;   /* Flexbox for flag and text */
-  align-items: center;  /* Vertical center */
+  display: flex; /* Flexbox for flag and text */
+  align-items: center; /* Vertical center */
 }
 
 .flag-icon {
-  width: 14px;  /* Set flag size */
-  height: 14px;  /* Set flag size */
-  margin-right: 6px;  /* Space between flag and text */
+  width: 14px; /* Set flag size */
+  height: 14px; /* Set flag size */
+  margin-right: 6px; /* Space between flag and text */
 }
 </style>

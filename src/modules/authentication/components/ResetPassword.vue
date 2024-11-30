@@ -46,32 +46,28 @@ const form = ref({
 </script>
 
 <template>
-  <div class="w-full h-screen flex flex-col justify-center bg-gray-200 items-center">
+  <div
+    class="w-full h-screen flex flex-col justify-center bg-gray-200 items-center"
+  >
     <img
-          src="/public/logo_beer.jpg"
-          alt=""
-          srcset=""
-          class="ring-1 ring-slate-200 shadow-md w-[130px] h-[130px] mb-4 -mt-6 rounded-full"
-        />
+      src="/public/logo_beer.jpg"
+      alt=""
+      srcset=""
+      class="ring-1 ring-slate-200 shadow-md w-[130px] h-[130px] mb-4 -mt-6 rounded-full"
+    />
     <div
       class="flex flex-col w-[470px] h-[420px] bg-gray-100 rounded-md shadow-md justify-center p-6"
     >
       <div class="flex-col flex items-center px-4">
-        
         <h1 class="text-lg -mt-[5.5rem]">ກຸ້ຄືນລະຫັດຜ່ານ</h1>
         <h2 class="text-[12px] text-gray-600">
-            ໃສ່ທີ່ຢູ່ອີເມວຂອງທ່ານຢູ່ລຸ່ມນີ້ ແລ້ວພວກເຮົາຈະສົ່ງລະຫັດ OTP ໄປຫາທ່ານເພື່ອກູ້ຄືນລະຫັດຜ່ານຂອງທ່ານ.
+          ໃສ່ທີ່ຢູ່ອີເມວຂອງທ່ານຢູ່ລຸ່ມນີ້ ແລ້ວພວກເຮົາຈະສົ່ງລະຫັດ OTP
+          ໄປຫາທ່ານເພື່ອກູ້ຄືນລະຫັດຜ່ານຂອງທ່ານ.
         </h2>
       </div>
       <div class="p-4">
-        <a-form
-          :model="form"
-          name="basic"
-          class="myfont"
-          :rules="loginSchema"
-        >
-          <a-form-item
-            name="email">
+        <a-form :model="form" name="basic" class="myfont" :rules="loginSchema">
+          <a-form-item name="email">
             <span class="">ທີ່ຢູ່ອີເມວ</span>
             <a-input
               v-model:value="form.email"
@@ -79,16 +75,20 @@ const form = ref({
             />
           </a-form-item>
           <a-form-item class="mt-8">
-              <a-button
+            <a-button
               type="primary"
-              @click="push({name: 'confirmPassword'})"
+              @click="push({ name: 'confirmPassword' })"
               html-type="submit"
               class="w-full btn"
-              >
+            >
               ກູ້ຄືນ
             </a-button>
-        </a-form-item>
-        <span @click="push({name: 'login'})" class="text-blue-400 hover:text-sky-600 cursor-pointer">ເຂົ້າສູ່ລະບົບດຽວນີ້ບໍ່ ?</span>
+          </a-form-item>
+          <span
+            @click="push({ name: 'login' })"
+            class="text-blue-400 hover:text-sky-600 cursor-pointer"
+            >ເຂົ້າສູ່ລະບົບດຽວນີ້ບໍ່ ?</span
+          >
         </a-form>
       </div>
     </div>

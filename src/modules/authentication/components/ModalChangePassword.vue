@@ -61,19 +61,18 @@ const handleOrderSubmit = async () => {
         submitted.value = true;
         await changePassword(changePasswordFormState.value);
         notification.success({
-          message: t('messages.success'),
-          description: t('change_password.message.success'),
+          message: t("messages.success"),
+          description: t("change_password.message.success"),
         });
         loading.value = false;
         push({ name: "getMe.index" });
         closeModal();
-      }else {
+      } else {
         notification.error({
-          message: t('messages.error'),
-          description: t('validation.change_password.password_no_match'),
+          message: t("messages.error"),
+          description: t("validation.change_password.password_no_match"),
         });
         loading.value = false;
-
       }
     } catch (error: any) {
       loading.value = false;
@@ -163,29 +162,28 @@ const clearData = (key: string) => {
             {{ $t("validation.change_password.password_no_match") }}
           </span> -->
         </a-form-item>
-        
       </a-form>
       <template #footer>
         <!-- <ButtonDefault :isLoading="loading" @click="closeModal" class="block"
           >Close</ButtonDefault
         > -->
-       <div class="mb-10 flex-col flex items-center justify-center">
-        <a-button
-        key="submit"
-        class="w-full"
-        type="primary"
-        :isLoading="loading"
-        @click="handleOrderSubmit"
-        :disabled="isDisabled"
-        >{{ $t("change_password.btn") }}
-      </a-button>
-      <a-button
-        key="back"
-        class="w-full mt-4 -left-1 text-red-600"
-        @click="closeModal"
-        >{{ $t("users.cancel") }}
-      </a-button>
-       </div>
+        <div class="mb-10 flex-col flex items-center justify-center">
+          <a-button
+            key="submit"
+            class="w-full"
+            type="primary"
+            :isLoading="loading"
+            @click="handleOrderSubmit"
+            :disabled="isDisabled"
+            >{{ $t("change_password.btn") }}
+          </a-button>
+          <a-button
+            key="back"
+            class="w-full mt-4 -left-1 text-red-600"
+            @click="closeModal"
+            >{{ $t("users.cancel") }}
+          </a-button>
+        </div>
       </template>
     </a-modal>
   </div>
