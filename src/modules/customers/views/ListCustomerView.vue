@@ -101,6 +101,9 @@ const customerTypeColors: { [key in CustomerType]: string } = {
 function getCustomerTypeColor(type: string): string {
   return customerTypeColors[type as CustomerType] || "text-gray-500 bg-gray-100";
 }
+const toAddCustomer = () => {
+  push({ name: 'addCustomer' })
+}
 </script>
 
 <template>
@@ -109,7 +112,7 @@ function getCustomerTypeColor(type: string): string {
       <line-chart-outlined />
       {{ $t("customers.label_list") }}
     </p>
-    <a-button type="primary" @click="push({ name: 'addCustomer' })">
+    <a-button type="primary" @click="toAddCustomer">
       {{ $t("customers.add") }}
     </a-button>
   </a-flex>

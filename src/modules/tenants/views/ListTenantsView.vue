@@ -74,7 +74,7 @@ async function handlePageChange(page: number, pageSize: number) {
 onMounted(async () => {
   await getAll();
   paginationConfig.value.total = state.data.total;
-  console.log("data", state.data.props);
+  // console.log("data", state.data.props);
 });
 const props = defineProps<{ searchQuery: string }>();
 const filteredData = computed(() => {

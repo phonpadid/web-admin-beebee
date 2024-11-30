@@ -34,6 +34,7 @@
             <a-input-search 
               v-if="isSearchableRoute"
               v-model:value="searchQuery"
+              :searchQuery="isSearchableRoute ? searchQuery : null"
               :placeholder="searchPlaceholder"
               style="width: 200px; margin-left: 50px; margin-top: -6px"
               @search="onSearch"

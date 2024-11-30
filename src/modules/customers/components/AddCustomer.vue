@@ -295,7 +295,7 @@ import {
   CameraOutlined,
   DeleteOutlined,
 } from "@ant-design/icons-vue";
-import { ref, onMounted, computed, reactive } from "vue";
+import { ref, onMounted, computed, defineProps, reactive } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { CustomerEntity } from "../entity/customer.entity";
 import { customerStore } from "../store/index";
@@ -311,6 +311,13 @@ const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
 const imageErrorMessage = ref<string>("");
 const { create } = customerStore();
+
+defineProps({
+  searchQuery: {
+    type: String,
+    default: null,
+  },
+});
 const initialFormState: CustomerEntity = {
   customer_id: "",
   id: "",

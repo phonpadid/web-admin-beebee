@@ -63,15 +63,17 @@ const avatarUrl = computed(() => {
       <template #title>
         <span class="custom-tooltip-text text-[12px]">{{ $t('setting.hover') }} </span>
       </template>
-      <span class="md:text-lg text-[12px] font-bold text-slate-700" @click="showDrawer">
-        <div class="w-10 h-10 rounded-full">
-          <img
-            :src="avatarUrl"
-            alt="Profile Avatar"
-            class="w-10 h-10 rounded-full flex items-center justify-center"
-          />
-        </div>
-      </span>
+      <span 
+      class="md:text-lg text-[12px] font-bold text-slate-700" 
+      @click="showDrawer">
+      <div class="w-10 h-10 rounded-full">
+        <img
+          :src="avatarUrl"
+          alt="Profile Avatar"
+          class="w-10 h-10 rounded-full flex items-center justify-center"
+        />
+      </div>
+    </span>
     </a-tooltip>
   </div>
 

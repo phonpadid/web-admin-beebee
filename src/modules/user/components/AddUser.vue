@@ -1,7 +1,13 @@
 <template>
   <div class="pb-4 flex justify-between">
-    <p class="text-base font-bold text-blue-500">
-      <line-chart-outlined />
+    <p class="text-base font-bold text-blue-500 flex items-center gap-1">
+      <!-- <line-chart-outlined /> -->
+      <span
+      @click="push({ name: 'user' })"
+      class="hover:ring-red-300 text-[12px] w-10 h-6 ring-1 ring-slate-300 rounded-sm flex items-center justify-center outline-none"
+    >
+      <ArrowLeftOutlined />
+    </span>
       {{ $t("users.form_update") }}
     </p>
   </div>
@@ -9,7 +15,8 @@
   <a-form
     layout="vertical"
     ref="form"
-    :rules="schema" :key="schemaKey"
+    :rules="schema"
+    :key="schemaKey"
     :model="userFormState"
     class="flex-col flex"
   >
@@ -62,13 +69,17 @@
         v-if="userFormState.avatar"
         class="ml-4 text-red-600"
       >
-      {{ $t("customers.table_field.btn.remove") }}
+        {{ $t("customers.table_field.btn.remove") }}
       </a-button>
     </a-form-item>
 
     <!-- Input fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item :label="$t('users.table_field.fname')" name="first_name" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.fname')"
+        name="first_name"
+        class="w-full"
+      >
         <a-input
           :placeholder="placeholders.firstName"
           class="h-12"
@@ -77,7 +88,11 @@
         />
         <span style="color: red">{{ msgErrors.first_name }}</span>
       </a-form-item>
-      <a-form-item :label="$t('users.table_field.lname')" name="last_name" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.lname')"
+        name="last_name"
+        class="w-full"
+      >
         <a-input
           :placeholder="placeholders.lastName"
           class="h-12"
@@ -87,7 +102,11 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item :label="$t('users.table_field.phone_number')" name="phone_number" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.phone_number')"
+        name="phone_number"
+        class="w-full"
+      >
         <a-input
           :placeholder="placeholders.phoneNumber"
           class="h-12"
@@ -96,7 +115,11 @@
         />
         <span style="color: red">{{ msgErrors.phone_number }}</span>
       </a-form-item>
-      <a-form-item :label="$t('users.table_field.email')" name="email" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.email')"
+        name="email"
+        class="w-full"
+      >
         <a-input
           :placeholder="placeholders.email"
           class="h-12"
@@ -108,7 +131,11 @@
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item :label="$t('users.table_field.password')" name="password" class="w-full">
+      <a-form-item
+        :label="$t('users.table_field.password')"
+        name="password"
+        class="w-full"
+      >
         <a-input-password
           type="password"
           :placeholder="placeholders.password"
@@ -185,11 +212,13 @@
     <!-- Submit Buttons -->
     <div class="md:flex md:flex-row flex-col gap-4">
       <a-form-item class="flex items-center mt-4 justify-center">
-        <a-button type="primary" @click="handleOrderDetailsSubmit"
-          >{{$t("users.save")}}</a-button
-        >
+        <a-button type="primary" @click="handleOrderDetailsSubmit">{{
+          $t("users.save")
+        }}</a-button>
         &nbsp;
-        <a-button danger @click="push({ name: 'user.list' })">{{$t("users.cancel")}}</a-button>
+        <a-button danger @click="push({ name: 'user.list' })">{{
+          $t("users.cancel")
+        }}</a-button>
       </a-form-item>
     </div>
   </a-form>
@@ -197,7 +226,7 @@
 
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
-import { LineChartOutlined } from "@ant-design/icons-vue";
+import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 import { ref, onMounted, reactive, computed } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { UserEntity } from "../entity/user.entity";
@@ -208,7 +237,7 @@ import { useUserSchema } from "../schema/user.schema";
 import { permissionsStore } from "@/modules/permissions/store/permissions.store";
 import { useI18n } from "vue-i18n";
 import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
-const {schema, schemaKey} = useUserSchema()
+const { schema, schemaKey } = useUserSchema();
 const { push } = useRouter();
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
@@ -216,6 +245,12 @@ const avatarPreviewURL = ref<string | null>(null);
 const imageErrorMessage = ref<string>("");
 const { create } = usersStore();
 const msgErrors = reactive<any>({});
+defineProps({
+  searchQuery: {
+    type: String,
+    default: null,
+  },
+});
 const initialFormState: UserEntity = {
   id: "",
   first_name: "",
@@ -263,8 +298,8 @@ const handleOrderDetailsSubmit = async () => {
         // console.log("บันทึกสำเร็จ", response);
 
         notification.success({
-          message: t('messages.success'),
-          description: t('messages.description'),
+          message: t("messages.success"),
+          description: t("messages.description"),
         });
         resetForm();
         loading.value = false;
@@ -272,8 +307,8 @@ const handleOrderDetailsSubmit = async () => {
         await getAll();
       } else {
         notification.warn({
-          message: t('messages.error'),
-          description: t('validation.change_password.password_no_match'),
+          message: t("messages.error"),
+          description: t("validation.change_password.password_no_match"),
         });
       }
     } catch (error: any) {

@@ -131,7 +131,6 @@ export class UserRepository implements UserInterfaces {
     };
   }
   async getOne(id: number): Promise<IResponse<UserEntity>> {
-    console.log("props:");
     const props = await this._api.axios({
       url: "/accounts/users/" + id,
     });

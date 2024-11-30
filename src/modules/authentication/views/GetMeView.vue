@@ -1,7 +1,13 @@
 <template>
   <div class="pb-4 flex justify-between">
-    <p class="text-base font-bold text-blue-500">
-      <line-chart-outlined />
+    <p class="text-base font-bold text-blue-500 flex items-center gap-1">
+      <!-- <line-chart-outlined /> -->
+      <span
+        @click="push({ name: 'admin_dashboard' })"
+        class="hover:ring-red-300 text-[12px] w-10 h-6 ring-1 ring-slate-300 rounded-sm flex items-center justify-center outline-none"
+      >
+        <ArrowLeftOutlined />
+      </span>
       {{ $t("me.detail") }}
     </p>
   </div>
@@ -170,7 +176,7 @@
       </a-form-item>
       <a-form-item label="" name="is_staff" class="md:w-[10rem]">
         <a-checkbox
-          :checked="userFormState.is_staff"
+          :checked="!!userFormState.is_staff"
           @change="userFormState.is_staff = $event.target.checked"
         >
           {{ $t("users.table_field.staff") }}
@@ -208,11 +214,12 @@ import { permissionsStore } from "@/modules/permissions/store/permissions.store"
 import { UserEntity } from "@/modules/user/entity/user.entity";
 import { useUpdateUserSchema } from "@/modules/user/schema/update-user.schema";
 import { useI18n } from "vue-i18n";
-import { LineChartOutlined } from "@ant-design/icons-vue";
+import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
+import { useRouter } from "vue-router";
 const { schema, schemaKey } = useUpdateUserSchema();
 const imageErrorMessage = ref<string>("");
-
+const { push } = useRouter();
 function onUpload(avatar: File) {
   const maxSizeMB = 5;
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
@@ -240,8 +247,14 @@ const { statePermission, getAllPer } = permissionsStore();
 const { update } = usersStore();
 const { stateGetMe } = useAuthStore();
 const uploadImg = ref<string | File | null>(null);
-  const loading = ref(false);
-  const userFormState = ref<UserEntity>({
+const loading = ref(false);
+defineProps({
+  searchQuery: {
+    type: String,
+    default: null,
+  },
+});
+const userFormState = ref<UserEntity>({
   id: "",
   first_name: "",
   last_name: "",
@@ -274,8 +287,8 @@ const roles = ref<RolesEntity[]>([]);
 const permissions = ref<PermissionsEntity[]>([]);
 const handleOrderDetailsSubmit = async () => {
   form.value
-  .validate()
-  .then(async () => {
+    .validate()
+    .then(async () => {
       loading.value = true;
       await update(userFormState.value, userFormState.value.id);
       notification.success({
@@ -320,6 +333,7 @@ const populateUserForm = async () => {
 
       userFormState.value = {
         ...(userData as any),
+        is_staff: Boolean(userData.is_staff),
         groups: Array.isArray(userData.groups)
           ? userData.groups.map((role: any) => role.id)
           : [],
@@ -353,9 +367,8 @@ watch(
         is_staff: newData.email || "",
         groups: newData.groups.map((role: RolesEntity) => role.id) || [],
         user_permissions:
-          newData.user_permissions.map(
-            (perm: PermissionsEntity) => perm.id
-          ) || [],
+          newData.user_permissions.map((perm: PermissionsEntity) => perm.id) ||
+          [],
         avatar: newData.avatar || "",
       };
       uploadImg.value = newData.avatar || "";
@@ -367,13 +380,6 @@ watch(
 onMounted(async () => {
   await populateUserForm();
 });
-
-// const onUpload = (file: File) => {
-//   uploadImg.value = URL.createObjectURL(file);
-//   return false;
-// };
 </script>
 
-<style scoped>
-/* Add any scoped styles here if needed */
-</style>
+<style scoped></style>

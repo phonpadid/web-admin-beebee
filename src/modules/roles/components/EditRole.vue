@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from "vue";
-import { LineChartOutlined } from "@ant-design/icons-vue";
+import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 import { useRoleSchema } from "../schema/role.schema";
 import { rolesStore } from "../store/role.store";
 import { notification } from "ant-design-vue";
@@ -113,8 +113,14 @@ const placeholders = computed(() => ({
 <template>
   <div class="form-role">
     <div class="pb-4 flex justify-between">
-      <p class="text-base font-bold text-blue-500">
-        <line-chart-outlined />
+      <p class="text-base font-bold text-blue-500 flex items-center gap-1">
+        <!-- <line-chart-outlined /> -->
+        <span
+        @click="push({ name: 'roles.index' })"
+        class="hover:ring-red-300 text-[12px] w-10 h-6 ring-1 ring-slate-300 rounded-sm flex items-center justify-center outline-none"
+      >
+        <ArrowLeftOutlined />
+      </span>
         {{ $t("messages.role.form_edit") }}
       </p>
     </div>

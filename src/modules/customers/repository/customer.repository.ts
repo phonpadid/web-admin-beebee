@@ -144,7 +144,6 @@ export class CustomerRepository implements CustomerInterfaces {
     };
   }
   async getOne(id: number): Promise<IResponse<CustomerEntity>> {
-    console.log('props:',);
     const props = await this._api.axios({
       url: "/accounts/customers/" + id
     });

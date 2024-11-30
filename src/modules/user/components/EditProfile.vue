@@ -1,7 +1,13 @@
 <template>
   <div class="pb-4 flex justify-between">
-    <p class="text-base font-bold text-blue-500">
-      <line-chart-outlined />
+    <p class="text-base font-bold text-blue-500 flex items-center gap-1">
+      <!-- <line-chart-outlined /> -->
+      <span
+      @click="push({ name: 'user' })"
+      class="hover:ring-red-300 text-[12px] w-10 h-6 ring-1 ring-slate-300 rounded-sm flex items-center justify-center outline-none"
+    >
+      <ArrowLeftOutlined />
+    </span>
       {{ $t("users.edit_user") }}
     </p>
   </div>
@@ -210,13 +216,19 @@ import { permissionsStore } from "@/modules/permissions/store/permissions.store"
 import { useUpdateUserSchema } from "../schema/update-user.schema";
 import { PermissionsEntity } from "@/modules/permissions/entity/permissions.entity";
 import { useI18n } from "vue-i18n";
+import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 const {schema, schemaKey} = useUpdateUserSchema()
 const router = useRouter();
 const { push } = router;
 const { state, getAll } = rolesStore();
 const { statePermission, getAllPer } = permissionsStore();
 const uploadImg = ref<string | File | null>(null);
-
+  defineProps({
+  searchQuery: {
+    type: String,
+    default: null,
+  },
+});
 const { update, stateGetOne, getOneUser } = usersStore();
 
 const initialFormState: UserEntity = {
