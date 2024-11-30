@@ -34,13 +34,13 @@
           </span>
         </template>
         <a-menu-item key="8" class="menu" @click="goToRoute('user')"
-          >ຜູ້ໃຊ້</a-menu-item
+          >{{ t('messages.menu_sidebar.user') }} </a-menu-item
         >
         <a-menu-item key="9" class="menu" @click="goToRoute('roles.index')"
-          >ບົດບາດ</a-menu-item
+          >{{ t('messages.menu_sidebar.role') }}</a-menu-item
         >
         <a-menu-item key="10" class="menu" @click="goToRoute('permissions')"
-          >ສິດທີ່</a-menu-item
+          >{{ t('messages.menu_sidebar.permission') }}</a-menu-item
         >
       </a-sub-menu>
     </a-menu>

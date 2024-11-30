@@ -70,7 +70,7 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.removeItem("access");
     localStorage.removeItem("roles");
     localStorage.removeItem("permissions");
-
+    localStorage.removeItem("locale")
     router.push({ name: "login" });
   }
 

@@ -16,7 +16,7 @@
 
       <div class="header-action-container">
         <a-dropdown>
-          <a class="ant-dropdown-link flex items-center ring-1 ring-slate-200 shadow-ms px-2 h-12 rounded-sm gap-2" @click.prevent>
+          <a class="ant-dropdown-link flex items-center ring-1 ring-slate-200 shadow-ms px-2 h-8 rounded-sm gap-2" @click.prevent>
             <!-- <GlobalOutlined /> -->
             <img
               v-if="locale === 'la'"
