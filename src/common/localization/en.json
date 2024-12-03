@@ -53,7 +53,7 @@
             "permission": "Permissions"
         }
     },
-    "home_page": "Home Page",
+    "home_page": "Dashboard",
     "customers": {
         "label": "Manage customers",
         "label_add": "Add customers",
@@ -229,6 +229,7 @@
         },
         "tenants": {
             "name": "Please enter a name",
+            "length_name": "Can't enter more then 100 character",
             "schema_name": "Please enter a schema name",
             "exists": "This schema name exists.",
             "length": "Can't enter more then 63 characters",

@@ -27,4 +27,7 @@ export class TenantsService {
   ): Promise<void | IResponse<IGPaginated<TenantsEntity>>> {
     return await this._api.getAll(input);
   }
+  async remove(id: number): Promise<void | IResponse<TenantsEntity>> {
+    return await this._api.remove(id);
+  }
 }

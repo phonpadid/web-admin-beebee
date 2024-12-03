@@ -3,7 +3,7 @@ import { RolesEntity } from "@/modules/roles/entity/role.entity";
 
 export interface UserEntity {
   id: string;
-  first_name?: string;
+  first_name: string;
   last_name: string;
   email: string;
   type?: string;

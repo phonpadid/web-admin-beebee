@@ -1,6 +1,6 @@
 export interface TenantsEntity {
   id?: string;
-  name?: string;
+  name: string;
   schema_name?: string;
   domain?: string;
   // domain: {

@@ -7,7 +7,6 @@ import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { MeEntity } from "../entity/me.entity";
 import { message } from "ant-design-vue";
-
 export interface AuthState {
   data: UserEntity | null;
   isLoading: boolean;

@@ -14,4 +14,5 @@ export interface TenantsInterfaces {
   getAll(
     args: IGPaginate<Pick<TenantsEntity, TenantsFilterType>>
   ): Promise<IResponse<IGPaginated<TenantsEntity>>>;
+  remove(id: number): Promise<any>;
 }

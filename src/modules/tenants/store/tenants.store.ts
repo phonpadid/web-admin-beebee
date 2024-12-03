@@ -32,7 +32,9 @@ export const tenantsStore = defineStore("tenants-store", () => {
   >({
     // page: 1,
     limit: 10,
-    filter: {},
+    filter: {
+      name: ''
+    },
   });
 
   async function getAll() {
@@ -80,7 +82,16 @@ export const tenantsStore = defineStore("tenants-store", () => {
   async function updateDomain(input: TenantsEntity, id: number) {
     return await service.updateDomain(input, id);
   }
+  async function remove(id: number) {
+    state.isLoading = true;
+    const results = await service.remove(id);
 
+    if (results && results.data && results.status === "success") {
+      state.isLoading = false;
+      
+    }
+    // console.log("Data from API:", state.data.props);
+  }
   return {
     getAll,
     create,
@@ -88,5 +99,6 @@ export const tenantsStore = defineStore("tenants-store", () => {
     updateDomain,
     state,
     setStateFilter,
+    remove
   };
 });

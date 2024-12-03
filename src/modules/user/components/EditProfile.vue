@@ -72,7 +72,7 @@
 
     <!-- Input fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item hidden label="ຊື່" name="id" class="w-full">
+      <a-form-item hidden label="" name="id" class="w-full">
         <a-input
           :placeholder="placeholders.firstName"
           class="h-12"
@@ -83,32 +83,77 @@
         <a-input
          :placeholder="placeholders.firstName"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.first_name && (userFormState.first_name.length) > 149,
+          }"
           v-model:value="userFormState.first_name"
         />
+        <span
+        v-if="msgErrors.first_name && (userFormState.first_name.length) > 149"
+        class="text-red-500"
+        >{{$t('validation.user.length_name')}}
+      </span>
       </a-form-item>
       <a-form-item :label="$t('users.table_field.lname')" name="last_name" class="w-full">
         <a-input
           :placeholder="placeholders.lastName"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.last_name && (userFormState.last_name.length) > 149,
+          }"
           v-model:value="userFormState.last_name"
         />
+        <span
+        v-if="msgErrors.last_name && (userFormState.last_name.length) > 149"
+        class="text-red-500"
+        >{{$t('validation.user.length_name')}}
+      </span>
       </a-form-item>
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item :label="$t('users.table_field.phone_number')" name="phone_number" class="w-full">
+      <a-form-item 
+      :label="$t('users.table_field.phone_number')" 
+      name="phone_number" 
+      class="w-full"
+      >
         <a-input
           :placeholder="placeholders.phoneNumber"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.phone_number && userFormState.phone_number.length > 11,
+          }"
           v-model:value="userFormState.phone_number"
         />
+        <span
+          v-if="msgErrors.phone_number && userFormState.phone_number.length > 11"
+          class="text-red-500"
+          >{{$t('validation.user.length_phone')}}
+        </span>
       </a-form-item>
       <a-form-item :label="$t('users.table_field.email')" name="email" class="w-full">
         <a-input
           :placeholder="placeholders.email"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.email && userFormState.email.length > 254 || msgErrors.email === 'user with this email address already exists.' || msgErrors.email === 'Enter a valid email address.'
+          }"
           v-model:value="userFormState.email"
         />
+        <span
+          v-if="msgErrors.email && userFormState.email.length > 254"
+          class="text-red-500"
+          >{{ $t("validation.user.email_length") }}
+        </span>
+        <span
+          v-else-if="msgErrors.email && msgErrors.email === 'user with this email address already exists.'"
+          class="text-red-500"
+          >{{ $t("validation.user.email_exits") }}
+        </span>
       </a-form-item>
     </div>
 
@@ -206,7 +251,7 @@
 
 <script lang="ts" setup>
 import { rolesStore } from "@/modules/roles/store/role.store";
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch, computed, reactive } from "vue";
 import { RolesEntity } from "@/modules/roles/entity/role.entity";
 import { UserEntity } from "../entity/user.entity";
 import { usersStore } from "../store/index";
@@ -263,7 +308,7 @@ const resetForm = () => {
   userFormState.value = { ...initialFormState };
   uploadImg.value = ""; // Reset uploaded image preview
 };
-
+const msgErrors = reactive<any>({});
 const handleOrderDetailsSubmit = async () => {
   form.value.validate().then(async () => {
     try {
@@ -274,11 +319,14 @@ const handleOrderDetailsSubmit = async () => {
       });
       resetForm();
       push({ name: "user" });
-    } catch (error) {
-      notification.error({
-        message: t('messages.error'),
-        description: t('messages.update_failed'),
-      });
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        // Backend validation error response structure
+        const apiErrors = error.response.data || {};
+        Object.keys(apiErrors).forEach((field) => {
+          msgErrors[field] = Array(apiErrors[field]) ? apiErrors[field][0] : "";
+        });
+      }
     }
   });
 };

@@ -1,0 +1,1 @@
+import{u as r}from"./user.schema-CzutrDlL.js";import{k as t}from"./index-BpXBQnxn.js";const n=()=>{const{schema:e,schemaKey:s}=r();return{schema:t(()=>{const{password:c,password_confirmation:m,...a}=e.value;return a}),schemaKey:s}};export{n as u};

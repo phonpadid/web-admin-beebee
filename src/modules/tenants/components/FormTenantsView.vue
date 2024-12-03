@@ -120,7 +120,11 @@ const placeholders = computed(() => ({
         <a-input
           :placeholder="placeholders.name"
           v-model:value="tenantsFormState.name"
+          :class="{ 'ring-1 ring-red-500 mb-1': msgErrors.name && tenantsFormState.name.length >= 100}"
         />
+        <span v-if=" msgErrors.name && tenantsFormState.name.length >= 100" class="text-red-500">{{
+          $t("validation.tenants.length_name")
+        }}</span>
       </a-form-item>
       <a-form-item
         class="form-item-centered"
