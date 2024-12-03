@@ -13,7 +13,7 @@ import { useI18n } from "vue-i18n";
 const modalAdd = ref();
 const modalEdit = ref();
 
-const { getAll, state, setStateFilter } = tenantsStore();
+const { getAll, state, setStateFilter, remove } = tenantsStore();
 
 const openModalAdd = () => {
   if (modalAdd.value) {
@@ -31,14 +31,14 @@ const openModalEdit = (record: TenantsEntity) => {
   }
 };
 
-const confirm = (id: string) => {
-  state.data.props = state.data.props.filter(
-    (permissions) => permissions.id !== id
-  );
+const confirm = async (id: number) => {
+  state.isLoading = true;
+  await remove(id)
   notification.success({
     message: t("popconfirm.message_success.title"),
     description: t("popconfirm.message_success.messages"),
   });
+  await getAll()
 };
 
 const cancel = () => {

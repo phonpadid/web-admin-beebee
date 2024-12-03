@@ -1,1 +1,0 @@
-import{u as r}from"./user.schema-CCvNCDtu.js";import{k as t}from"./index-B4OLFXgi.js";const n=()=>{const{schema:e,schemaKey:s}=r();return{schema:t(()=>{const{password:c,password_confirmation:m,...a}=e.value;return a}),schemaKey:s}};export{n as u};

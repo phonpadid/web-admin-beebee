@@ -22,7 +22,6 @@ export class TenantsRepository implements TenantsInterfaces {
         domain: input.domain,
       },
     });
-    console.log(response);
     return {
       data: response.data,
       message: "ບັນທຶກສຳເລັດ",
@@ -49,8 +48,7 @@ export class TenantsRepository implements TenantsInterfaces {
     };
   }
   async updateDomain(input: TenantsEntity, id: number): Promise<IResponse<TenantsEntity>> {
-    console.log();
-    
+  
     const res = await this._api.axios({
       method: "put",
       url: `/domains/${id}/`,
@@ -85,6 +83,18 @@ export class TenantsRepository implements TenantsInterfaces {
     return {
       data: { props: results, total: count },
       status: "success",
+    };
+  }
+
+  async remove(id: number): Promise<IResponse<void>> {
+    const props = await this._api.axios({
+      method: "delete",
+      url: `/tenants/${id}/`,
+    });
+
+    return {
+      data: props.data,
+      status: props.data.status,
     };
   }
 }

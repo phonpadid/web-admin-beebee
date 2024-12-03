@@ -72,52 +72,81 @@
     </a-form-item>
     <!-- Input Fields -->
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item
-        :label="$t('users.table_field.fname')"
-        name="first_name"
-        class="w-full"
-      >
+      <a-form-item :label="$t('users.table_field.fname')" name="first_name" class="w-full">
         <a-input
-          :placeholder="placeholders.firstName"
+         :placeholder="placeholders.firstName"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.first_name && (userFormState.first_name.length) > 149,
+          }"
           v-model:value="userFormState.first_name"
         />
+        <span
+        v-if="msgErrors.first_name && (userFormState.first_name.length) > 149"
+        class="text-red-500"
+        >{{$t('validation.user.length_name')}}
+      </span>
       </a-form-item>
-      <a-form-item
-        :label="$t('users.table_field.lname')"
-        name="last_name"
-        class="w-full"
-      >
+      <a-form-item :label="$t('users.table_field.lname')" name="last_name" class="w-full">
         <a-input
           :placeholder="placeholders.lastName"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.last_name && (userFormState.last_name.length) > 149,
+          }"
           v-model:value="userFormState.last_name"
         />
+        <span
+        v-if="msgErrors.last_name && (userFormState.last_name.length) > 149"
+        class="text-red-500"
+        >{{$t('validation.user.length_name')}}
+      </span>
       </a-form-item>
     </div>
 
     <div class="md:flex md:flex-row flex-col gap-4">
-      <a-form-item
-        :label="$t('users.table_field.phone_number')"
-        name="phone_number"
-        class="w-full"
+      <a-form-item 
+      :label="$t('users.table_field.phone_number')" 
+      name="phone_number" 
+      class="w-full"
       >
         <a-input
           :placeholder="placeholders.phoneNumber"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.phone_number && userFormState.phone_number.length > 11,
+          }"
           v-model:value="userFormState.phone_number"
         />
+        <span
+          v-if="msgErrors.phone_number && userFormState.phone_number.length > 11"
+          class="text-red-500"
+          >{{$t('validation.user.length_phone')}}
+        </span>
       </a-form-item>
-      <a-form-item
-        :label="$t('users.table_field.email')"
-        name="email"
-        class="w-full"
-      >
+      <a-form-item :label="$t('users.table_field.email')" name="email" class="w-full">
         <a-input
           :placeholder="placeholders.email"
           class="h-12"
+          :class="{
+            'ring-1 ring-red-500 mb-1':
+              msgErrors.email && userFormState.email.length > 254 || msgErrors.email === 'user with this email address already exists.' || msgErrors.email === 'Enter a valid email address.'
+          }"
           v-model:value="userFormState.email"
         />
+        <span
+          v-if="msgErrors.email && userFormState.email.length > 254"
+          class="text-red-500"
+          >{{ $t("validation.user.email_length") }}
+        </span>
+        <span
+          v-else-if="msgErrors.email && msgErrors.email === 'user with this email address already exists.'"
+          class="text-red-500"
+          >{{ $t("validation.user.email_exits") }}
+        </span>
       </a-form-item>
     </div>
     <!-- Role Selection -->
@@ -203,7 +232,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch, computed, reactive } from "vue";
 const avatarPreviewURL = ref<string | null>(null);
 import { rolesStore } from "@/modules/roles/store/role.store";
 import { usersStore } from "@/modules/user/store/index";
@@ -285,16 +314,27 @@ const activeKey = ref(["1"]);
 const activeKeyPermission = ref(["1"]);
 const roles = ref<RolesEntity[]>([]);
 const permissions = ref<PermissionsEntity[]>([]);
+  const msgErrors = reactive<any>({});
 const handleOrderDetailsSubmit = async () => {
   form.value
     .validate()
     .then(async () => {
-      loading.value = true;
-      await update(userFormState.value, userFormState.value.id);
-      notification.success({
-        message: "Save Success",
-        description: "User saved successfully!",
-      });
+      try {
+        loading.value = true;
+        await update(userFormState.value, userFormState.value.id);
+        notification.success({
+          message: t("messages.success"),
+          description: t("messages.update"),
+        });
+      } catch (error: any) {
+        if (error.response && error.response.data) {
+        // Backend validation error response structure
+        const apiErrors = error.response.data || {};
+        Object.keys(apiErrors).forEach((field) => {
+          msgErrors[field] = Array(apiErrors[field]) ? apiErrors[field][0] : "";
+        });
+      }
+      }
     })
     .catch((error: any) => {
       if (error.status === 403) {

@@ -1,6 +1,6 @@
 export interface PermissionsEntity {
   id: string;
-  name?: string;
+  name: string;
   codename?: string;
   content_type?: string;
   created_at?: string;

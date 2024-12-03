@@ -34,14 +34,14 @@ export const permissionsStore = defineStore("permissions-store", () => {
   >({
     // page: 1,
     limit: 10,
-    filter: {},
+    filter: {name: ''},
   });
   const setStateFilterPer = reactive<
     IGPaginate<Pick<PermissionsEntity, PermissionsFilterType>>
   >({
     page: 1,
     limit: 10000,
-    filter: {},
+    filter: {name: ''},
   });
 
   async function getAllPermission() {

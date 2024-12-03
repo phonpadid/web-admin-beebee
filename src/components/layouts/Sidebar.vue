@@ -76,7 +76,12 @@ watchEffect(() => {
   selectedKeys.value = [routeToKeyMap[routeName] || "1"];
 });
 const goToRoute = async (routeName: string) => {
-  router.push({ name: routeName });
+  try {
+    router.push({ name: routeName });
+  } catch (error) {
+    console.log('non..');
+    
+  }
 };
 </script>
 
