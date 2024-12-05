@@ -20,27 +20,25 @@
       </div>
 
       <!-- Breadcrumbs with Search Bar -->
-      <div class="min-w-full transition-all sticky -mt-1">
-        <a-breadcrumb :style="{ padding: '10px', background: '#fff', minHeight: '10px' }">
-          <p style="margin-left: 5px"></p>
+      <div class="min-w-full flex transition-all sticky -mt-1" style="background: #fff; padding: 10px;">
+        <a-breadcrumb>
           <a-breadcrumb-item
             v-for="(item, index) in breadcrumbItems"
             :key="index"
             :style="{ fontSize: '16px', fontWeight: '500' }"
           >
             {{ item }}
-
-            <!-- Global search input -->
-            <a-input-search 
-              v-if="isSearchableRoute"
-              v-model:value="searchQuery"
-              :searchQuery="isSearchableRoute ? searchQuery : null"
-              :placeholder="searchPlaceholder"
-              style="width: 200px; margin-left: 50px; margin-top: -6px"
-              @search="onSearch"
-            />
           </a-breadcrumb-item>
         </a-breadcrumb>
+
+        <!-- Global search input -->
+        <a-input-search 
+          v-if="isSearchableRoute"
+          v-model:value="searchQuery"
+          :placeholder="searchPlaceholder"
+          style="width: 200px; margin-left: 20px; display: inline-block;"
+          @search="onSearch"
+        />
       </div>
 
       <!-- Main content area where router-view will be loaded -->
@@ -49,10 +47,9 @@
       >
         <!-- Pass searchQuery only when needed -->
         <router-view :search-query="isSearchableRoute ? searchQuery : null" />
+        <!-- Footer -->
+        <Footer />
       </a-layout-content>
-
-      <!-- Footer -->
-      <Footer />
     </a-layout>
   </a-layout>
 </template>

@@ -31,7 +31,7 @@ async function handlePageChange(page: number, pageSize: number) {
 onMounted(async () => {
   await getAllPer();
   paginationConfig.value.total = statePermission.data.total;
-  console.log("data", statePermission.data.props);
+  // console.log("data", statePermission.data.props);
 });
 
 const props = defineProps<{ searchQuery: string }>();

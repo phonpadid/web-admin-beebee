@@ -201,7 +201,7 @@
     },
     "change_password": {
         "title": "Change your password",
-        "description": "Please enter old code to confirm to change the old password",
+        "description": "Please enter old password to confirm to change the old password",
         "old_password": "Old password",
         "new_password": "Create new password",
         "confirm_password": "Confirm new password",
